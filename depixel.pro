@@ -59,3 +59,7 @@ HEADERS  += MainWindow.h \
     Widgets/RenderArea.h
 
 FORMS    += MainWindow.ui
+
+DISTFILES += \
+    Doc/uncrustify.cfg \
+    Samples/metalslug.png

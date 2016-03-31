@@ -18,12 +18,12 @@ public:
     /**
      * Empty Constructor
      */
-    Diagram ( );
+    Diagram();
 
     /**
      * Empty Destructor
      */
-    virtual ~Diagram ( );
+    virtual ~Diagram();
 
 
 private:
@@ -32,7 +32,7 @@ private:
     DiagramCell** _cells;
     int _width;
     int _height;
-    std::vector<Point2D> _TJunctionPoints;
+    std::vector< Point2D > _TJunctionPoints;
 
 public:
 
@@ -42,7 +42,7 @@ public:
      * @brief createDiagram             Create a generalized Voronoi Diagram for the input graph
      * @param graph                     Similarity graph generated for the image
      */
-    void createDiagram(SimilarityGraph* graph);
+    void createDiagram( SimilarityGraph* graph );
 
     /**
      * @brief printToImage              Make a image representation of the diagram
@@ -50,21 +50,21 @@ public:
      * @param scale_graph               Image scale
      * @param show_borders              Define if cell's borders will be displayed
      */
-    void printToImage(Image* img, float scale_graph, bool show_border);
+    void printToImage( Image* img, float scale_graph, bool show_border );
 
     /**
      * @brief printPixelsBorders        Draw lines to represent pixels borders
      * @param img                       Image container that will receive data
      * @param scale_graph               Image scale
      */
-    void printPixelsBorders(Image* img, float scale_graph);
+    void printPixelsBorders( Image* img, float scale_graph );
 
     /**
      * @brief printToSplines            Make a image representation of the splines
      * @param img                       Image container that will receive data
      * @param scale_graphh              Image scale
      */
-    void printToSplines(Image* img, float scale_graph);
+    void printToSplines( Image* img, float scale_graph );
 
     /**
      * @brief extractFirstCellEdges     Extract cell edges from first cell where starts
@@ -75,7 +75,8 @@ public:
      * @param width                     SimilarityGraph width
      * @return                          List of spline first control points
      */
-    vector<Point2D> extractFirstCellEdges(SimilarityGraph* graph, vector<Point2D> cellPoints, int index, int _width);
+    vector< Point2D > extractFirstCellEdges( SimilarityGraph* graph, vector< Point2D > cellPoints, int index,
+                                             int _width );
 
     /**
      * @brief extractCellEdges          Extract cell edges to be control points of the spline
@@ -86,7 +87,9 @@ public:
      * @param width                     SimilarityGraph width
      * @return                          List of cell points that are part of spline control points
      */
-    vector<Point2D> extractCellEdges(SimilarityGraph* graph, vector<Point2D> cellPoints, Point2D lastPoint, int index, int _width);
+    vector< Point2D > extractCellEdges( SimilarityGraph* graph, vector< Point2D > cellPoints, Point2D lastPoint,
+                                        int index,
+                                        int _width );
 
     /**
      * @brief exctractSplinePoints      Extracts the points of the cell in right order to build the spline
@@ -94,7 +97,7 @@ public:
      * @param borderIndexes             Indexes of nodes that are in border of connected componenents of the graph
      * @return                          List of spline control points
      */
-    vector<Point2D> extractSplinePoints(SimilarityGraph* graph, vector<int> borderIndexes);
+    vector< Point2D > extractSplinePoints( SimilarityGraph* graph, vector< int > borderIndexes );
 
     /**
      * @brief extractBorderPoints       Walk throught the borders of the graph's conected components.
@@ -103,15 +106,15 @@ public:
      * @param colorList                 List of splines color
      * @return                          List of splines
      */
-    vector<vector<Point2D> > extractBorderPoints(SimilarityGraph* graph, vector<char*> *colorList);
+    vector< vector< Point2D > > extractBorderPoints( SimilarityGraph* graph, vector< char* >* colorList );
 
     void optimize();
 
-    bool detectTJunction(int index, int _width);
+    bool detectTJunction( int index, int _width );
 
-    bool detectTPoint(int j, int i, int _width, Point2D *out);
+    bool detectTPoint( int j, int i, int _width, Point2D* out );
 
-    std::vector< std::vector <Point2D> > getPolygons();
+    std::vector< std::vector< Point2D > > getPolygons();
 
 
     /* Accessor methods */
@@ -126,11 +129,9 @@ public:
      * @brief getCells                  Get the value of cell
      * @return                          The value of cell
      */
-    DiagramCell** getCells ( );
+    DiagramCell* * getCells ();
 
 private:
-
-
 };
 
 #endif // DIAGRAM_H

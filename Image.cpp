@@ -13,7 +13,6 @@ Image::Image() :
 }
 
 
-
 Image::Image( u_int width, u_int height ) :
     _size( width * height ),
     _width( width ),
@@ -21,10 +20,9 @@ Image::Image( u_int width, u_int height ) :
     _widthStep( width )
 {
     _qImage = new QImage( width, height, QImage::Format_RGB888 ),
-    _nChannels = _qImage->depth() / sizeof(uchar);
+    _nChannels = _qImage->depth() / sizeof( uchar );
     _buffer = new Pixel[ _size ];
 }
-
 
 
 Image::Image( QImage* qImage ) :
@@ -41,12 +39,13 @@ Image::Image( QImage* qImage ) :
 }
 
 
-
 Image::Image( const char* fileName )
 {
     _qImage = new QImage( fileName );
     if( _qImage->isNull() )
+    {
         return;
+    }
     _size = _qImage->size().width() * _qImage->size().height();
     _width = _qImage->width();
     _height = _qImage->height();
@@ -59,7 +58,6 @@ Image::Image( const char* fileName )
 }
 
 
-
 Image::~Image()
 {
 }
@@ -67,9 +65,8 @@ Image::~Image()
 
 inline u_char Image::pixel( u_int x, u_int y )
 {
-    return (y * _widthStep) + x;
+    return ( y * _widthStep ) + x;
 }
-
 
 
 bool Image::save()
@@ -78,20 +75,20 @@ bool Image::save()
 }
 
 
-
 bool Image::load()
 {
     return true;
 }
 
 
-
 void Image::setPixel( u_int x, u_int y, Pixel pixel )
 {
     int index = ( y * _widthStep ) + x;
 
-    if( index < 0 || index > static_cast<int>( _size ) )
+    if( index < 0 || index > static_cast< int >( _size ) )
+    {
         return;
+    }
 
     _buffer[ ( y * _widthStep ) + ( x ) ] = pixel;
 //    _buffer[ index ].red = 255;
@@ -100,25 +97,27 @@ void Image::setPixel( u_int x, u_int y, Pixel pixel )
 }
 
 
-
 Pixel& Image::getPixel( u_int x, u_int y )
 {
     int index = ( y * _widthStep ) + x;
 
-    if( index < 0 || index > static_cast<int>( _size ) )
+    if( index < 0 || index > static_cast< int >( _size ) )
+    {
         return _buffer[ 0 ];
+    }
 
     return ( _buffer[ index ] );
 }
 
 
-
 void Image::createTest()
 {
-    if( _width == 0)
+    if( _width == 0 )
+    {
         return;
+    }
 
-    _buffer = new Pixel[_width * _height];
+    _buffer = new Pixel[ _width * _height ];
 
 //    for(u_int w = 0; w < _width; w++)
 //    {
@@ -131,11 +130,11 @@ void Image::createTest()
 //        }
 //    }
 
-    for(u_int w = 0; w < _width; w++)
+    for( u_int w = 0; w < _width; w++ )
     {
-        for(u_int h = 0; h < _height; h++)
+        for( u_int h = 0; h < _height; h++ )
         {
-            int channelValue = 255 * ( (float) w / (float) _width);
+            int channelValue = 255 * ( ( float ) w / ( float ) _width );
             QRgb pixelRGB = qRgb( channelValue, channelValue, channelValue );
             _qImage->setPixel( w, h, pixelRGB );
         }
@@ -145,12 +144,10 @@ void Image::createTest()
 }
 
 
-
 u_int Image::getSize()
 {
     return _size;
 }
-
 
 
 u_int Image::getWidth()
@@ -159,12 +156,10 @@ u_int Image::getWidth()
 }
 
 
-
 u_int Image::getHeight()
 {
     return _height;
 }
-
 
 
 u_int Image::getWidthStep()
@@ -173,12 +168,10 @@ u_int Image::getWidthStep()
 }
 
 
-
 QImage* Image::getQImage()
 {
     return _qImage;
 }
-
 
 
 QImage* Image::getQImageFromBuffer()
@@ -186,22 +179,24 @@ QImage* Image::getQImageFromBuffer()
     //_qImage = new QImage( reinterpret_cast<u_char*>( _buffer ), _width, _height, _widthStep * _nChannels, QImage::Format_RGB888);
 
     #pragma omp for
-    for(u_int w = 0; w < _width; w++)
+    for( u_int w = 0; w < _width; w++ )
     {
-        for(u_int h = 0; h < _height; h++)
+        for( u_int h = 0; h < _height; h++ )
         {
 //            u_char pixelRGB = ( u_char ) 255 * ( (float) w / (float) _width);
 //            _buffer[ pixel( w, h ) ].red = pixelRGB;
 //            _buffer[ pixel( w, h ) ].green = pixelRGB;
 //            _buffer[ pixel( w, h ) ].blue = pixelRGB;
 
-            _qImage->setPixel( w, h, qRgb( _buffer[ pixel( w, h ) ].red, _buffer[ pixel( w, h ) ].green, _buffer[ pixel( w, h ) ].blue ));
+            _qImage->setPixel( w, h,
+                               qRgb( _buffer[ pixel( w,
+                                                     h ) ].red,
+                                     _buffer[ pixel( w, h ) ].green, _buffer[ pixel( w, h ) ].blue ) );
         }
     }
 
     return _qImage;
 }
-
 
 
 Pixel* Image::getBuffer()
@@ -210,39 +205,39 @@ Pixel* Image::getBuffer()
 }
 
 
-
 void Image::fillBufferRGB()
 {
     #pragma omp for
-    for(u_int w = 0; w < _width; w++)
+    for( u_int w = 0; w < _width; w++ )
     {
-        for(u_int h = 0; h < _height; h++)
+        for( u_int h = 0; h < _height; h++ )
         {
-            unsigned int index = ( h * _widthStep ) + (w);
+            unsigned int index = ( h * _widthStep ) + ( w );
             QRgb pixel = _qImage->pixel( w, h );
-            _buffer[ index ].red = (u_char) qRed(pixel);
-            _buffer[ index ].green = (u_char) qGreen(pixel);
-            _buffer[ index ].blue = (u_char) qBlue(pixel);
+            _buffer[ index ].red = ( u_char ) qRed( pixel );
+            _buffer[ index ].green = ( u_char ) qGreen( pixel );
+            _buffer[ index ].blue = ( u_char ) qBlue( pixel );
         }
     }
 }
-
 
 
 void Image::fillQImageRGB()
 {
     #pragma omp for
-    for(u_int w = 0; w < _width; w++)
+    for( u_int w = 0; w < _width; w++ )
     {
-        for(u_int h = 0; h < _height; h++)
+        for( u_int h = 0; h < _height; h++ )
         {
-            unsigned int index = ( h * _widthStep ) + (w);
+            unsigned int index = ( h * _widthStep ) + ( w );
             QRgb pixelRGB = qRgb(
-                        _buffer[ index ].red,
-                        _buffer[ index ].green,
-                        _buffer[ index ].blue );
+                _buffer[ index ].red,
+                _buffer[ index ].green,
+                _buffer[ index ].blue );
 
             _qImage->setPixel( w, h, pixelRGB );
         }
     }
 }
+
+

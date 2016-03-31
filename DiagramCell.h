@@ -20,12 +20,12 @@ public:
     /**
      * Empty Constructor
      */
-    DiagramCell ( );
+    DiagramCell();
 
     /**
      * Empty Destructor
      */
-    virtual ~DiagramCell ( );
+    virtual ~DiagramCell();
 
 
 private:
@@ -33,8 +33,8 @@ private:
     /* Private attributes */
 
     int _numberOfPoints;
-    char _color[3];
-    std::vector<Point2D> _points;
+    char _color[ 3 ];
+    std::vector< Point2D > _points;
 
 public:
 
@@ -46,7 +46,8 @@ public:
      *                                          The convex hull of these points return the polygon that forms the voronoi cell
      * @param node                              Graph node links as char value
      */
-    void createCellFromPattern(SimilarityGraph::Node node, SimilarityGraph::Node nodeLeft, SimilarityGraph::Node nodeRight);
+    void createCellFromPattern( SimilarityGraph::Node node, SimilarityGraph::Node nodeLeft,
+                                SimilarityGraph::Node nodeRight );
 
     /**
      * @brief getBottomRightPoint       Return pointer to the bottom right point
@@ -86,15 +87,15 @@ public:
      * @brief getN_points                   Get the value of n_points
      * @return                              The value of n_points
      */
-    int getN_points ( );
+    int getN_points ();
 
     /**
      * @brief getPoints                     Get the value of points
      * @return                              The value of points
      */
-    vector<Point2D> getPoints ( );
+    vector< Point2D > getPoints ();
 
-    void setColor(char* _color);
+    void setColor( char* _color );
     char* getColor();
 
     /**
@@ -107,7 +108,6 @@ public:
      * @return
      */
     //static CvPoint2D* vectorToArrayOfPoints(vector<Point2D> inVector, int weight, int height, int scale);
-
 };
 
 

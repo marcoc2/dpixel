@@ -121,36 +121,42 @@ coord2_t cross(const Point &O, const Point &A, const Point &B)
  * @param P                         List of points
  * @return                          Points in the convex hull of P
  */
-std::vector<Point> convex_hull(std::vector<Point> P)
+std::vector< Point > convex_hull( std::vector< Point > P )
 {
     const int magnify = 100;
     int n = P.size();
     int k = 0;
-    std::vector<Point> H(2*n);
-    H.resize(20);
+    std::vector< Point > H( 2 * n );
+    H.resize( 20 );
 
     // Sort points lexicographically
-    sort(P.begin(), P.end());
+    sort( P.begin(), P.end() );
 
     // Build lower hull
-    for (int i = 0; i < n; i++) {
-        while (k >= 2 && cross(H[k-2]*magnify, H[k-1]*magnify, P[i]*magnify) <= 0)
+    for( int i = 0; i < n; i++ )
+    {
+        while( k >= 2 && cross( H[ k - 2 ] * magnify, H[ k - 1 ] * magnify, P[ i ] * magnify ) <= 0 )
+        {
             k--;
-        H[k++] = P[i];
+        }
+        H[ k++ ] = P[ i ];
         //H.push_back(P[i]);
         //k++;
     }
 
     // Build upper hull
-    for (int i = n-2, t = k+1; i >= 0; i--) {
-        while (k >= t && cross(H[k-2]*magnify, H[k-1]*magnify, P[i]*magnify) <= 0)
+    for( int i = n - 2, t = k + 1; i >= 0; i-- )
+    {
+        while( k >= t && cross( H[ k - 2 ] * magnify, H[ k - 1 ] * magnify, P[ i ] * magnify ) <= 0 )
+        {
             k--;
-        H[k++] = P[i];
+        }
+        H[ k++ ] = P[ i ];
         //H.push_back(P[i]);
         //k++;
     }
 
-    H.resize(k);
+    H.resize( k );
     return H;
 }
 

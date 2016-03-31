@@ -8,11 +8,13 @@
 
 class SimilarityGraph;
 
-namespace Ui {
+namespace Ui
+{
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow :
+    public QMainWindow
 {
     Q_OBJECT
 
@@ -22,7 +24,7 @@ public:
      * @brief MainWindow
      * @param parent
      */
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow( QWidget* parent = 0 );
     ~MainWindow();
 
 private:
@@ -31,13 +33,13 @@ private:
     Image* _inputImage;
     Image* _outputImage;
     SimilarityGraph* _similarityGraph;
-    QAction *_openAct;
-    QAction *_saveAct;
-    QAction *_exitAct;
-    QAction *_aboutAct;
-    QMenu *_fileMenu;
-    QMenu *_editMenu;
-    QMenu *_helpMenu;
+    QAction* _openAct;
+    QAction* _saveAct;
+    QAction* _exitAct;
+    QAction* _aboutAct;
+    QMenu* _fileMenu;
+    QMenu* _editMenu;
+    QMenu* _helpMenu;
 
     void createActions();
     void createMenus();
@@ -61,7 +63,6 @@ private Q_SLOTS:
     void applyEagle();
     void createSimilarityGraph();
     void applyVector();
-
 };
 
 #endif // MAINWINDOW_H

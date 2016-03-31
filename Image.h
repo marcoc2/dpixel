@@ -9,13 +9,13 @@ class Image
 public:
 
     Image();
-    Image(u_int width, u_int height);
-    Image(QImage* qImage);
+    Image( u_int width, u_int height );
+    Image( QImage* qImage );
     Image( const char* fileName );
     ~Image();
     bool save();
     bool load();
-    Pixel &getPixel( u_int x, u_int y );
+    Pixel& getPixel( u_int x, u_int y );
     void setPixel( u_int x, u_int y, Pixel pixel );
     u_int getSize();
     u_int getWidth();
