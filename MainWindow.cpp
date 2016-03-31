@@ -20,7 +20,7 @@ MainWindow::MainWindow( QWidget* parent ) :
     _ui( new Ui::MainWindow ),
     _inputImage( 0 )
 {
-    _inputImage = new Image( "/home/marco/Dropbox/Programação/Mestrado/Estudo Orientado/graph_cv_gl/alex.png" );
+    _inputImage = new Image( "../Samples/metalslug.png" );
 
     _ui->setupUi( this );
 
