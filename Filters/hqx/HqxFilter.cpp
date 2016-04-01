@@ -1,8 +1,8 @@
 #include "HqxFilter.h"
 #include "hq4x.h"
 
-HqxFilter::HqxFilter( Image* inputImage, Image* outputImage ) :
-    Filter( inputImage, outputImage )
+HqxFilter::HqxFilter(Image* inputImage, float scaleFactor ) :
+    Filter( inputImage, scaleFactor )
 {
 }
 

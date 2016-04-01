@@ -6,7 +6,7 @@
 class CRTFilter : public Filter
 {
 public:
-    CRTFilter( Image* inputImage, Image* outputImage );
+    CRTFilter( Image* inputImage, float scaleFactor );
     ~CRTFilter();
     void apply();
 };

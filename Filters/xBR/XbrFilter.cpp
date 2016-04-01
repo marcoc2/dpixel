@@ -1,8 +1,8 @@
 #include "XbrFilter.h"
 #include "xbr.h"
 
-XbrFilter::XbrFilter( Image* inputImage, Image* outputImage ) :
-    Filter( inputImage, outputImage )
+XbrFilter::XbrFilter( Image* inputImage, float scaleFactor ) :
+    Filter( inputImage, scaleFactor )
 {
 }
 

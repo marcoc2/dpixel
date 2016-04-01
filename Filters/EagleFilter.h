@@ -6,7 +6,7 @@
 class EagleFilter : public Filter
 {
 public:
-    EagleFilter( Image* inputImage, Image* outputImage );
+    EagleFilter( Image* inputImage, float scaleFactor );
     ~EagleFilter();
     void apply();
 };

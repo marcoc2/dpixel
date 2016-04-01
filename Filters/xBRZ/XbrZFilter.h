@@ -7,7 +7,7 @@
 class XbrZFilter : public Filter
 {
 public:
-    XbrZFilter(Image *inputImage, Image *outputImage);
+    XbrZFilter( Image *inputImage, float scaleFactor );
     ~XbrZFilter();
     void apply();
 };

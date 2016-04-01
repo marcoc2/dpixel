@@ -1,10 +1,9 @@
 #include "EagleFilter.h"
 
-EagleFilter::EagleFilter( Image* inputImage, Image* outputImage ) :
-    Filter( inputImage, outputImage )
+EagleFilter::EagleFilter( Image* inputImage, float scaleFactor ) :
+    Filter( inputImage, scaleFactor )
 {
 }
-
 
 
 EagleFilter::~EagleFilter()
@@ -12,12 +11,12 @@ EagleFilter::~EagleFilter()
 }
 
 
-
 void EagleFilter::apply()
 {
-    for(u_int w = 0; w < _inputImage->getWidth(); w++)
+    #pragma omp parallel for
+    for( u_int w = 0; w < _inputImage->getWidth(); w++ )
     {
-        for(u_int h = 0; h < _inputImage->getHeight(); h++)
+        for( u_int h = 0; h < _inputImage->getHeight(); h++ )
         {
             const Pixel& A = _inputImage->getPixel( w - 1, h - 1 );
             const Pixel& B = _inputImage->getPixel( w, h - 1 );
@@ -34,13 +33,13 @@ void EagleFilter::apply()
             Pixel E2;
             Pixel E3;
 
-            E0 = (D == A) && (A == B) ? A : E;
-            E1 = (B == C) && (C == F) ? F : E;
-            E2 = (D == G) && (G == H) ? G : E;
-            E3 = (H == I) && (I == F) ? I : E;
+            E0 = ( D == A ) && ( A == B ) ? A : E;
+            E1 = ( B == C ) && ( C == F ) ? F : E;
+            E2 = ( D == G ) && ( G == H ) ? G : E;
+            E3 = ( H == I ) && ( I == F ) ? I : E;
 
-            u_char w_index = (w) * 2;
-            u_char h_index = (h) * 2;
+            u_char w_index = ( w ) * 2;
+            u_char h_index = ( h ) * 2;
             _outputImage->setPixel( w_index, h_index, E0 );
             _outputImage->setPixel( w_index + 1, h_index, E1 );
             _outputImage->setPixel( w_index, h_index + 1, E2 );
@@ -50,3 +49,5 @@ void EagleFilter::apply()
 
     _outputImage->fillQImageRGB();
 }
+
+

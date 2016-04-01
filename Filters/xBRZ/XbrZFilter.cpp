@@ -2,8 +2,8 @@
 #include "xbrz.h"
 #include "config.h"
 
-XbrZFilter::XbrZFilter( Image* inputImage, Image* outputImage ) :
-    Filter( inputImage, outputImage )
+XbrZFilter::XbrZFilter( Image* inputImage, float scaleFactor ) :
+    Filter( inputImage, scaleFactor )
 {
 }
 

@@ -7,11 +7,16 @@ class Filter
 {
 public:
     Filter( Image* inputImage, Image* outputImage );
+    Filter( Image* inputImage, float scaleFactor );
     Filter( Image* inputImage );
     ~Filter();
+
     virtual void apply() = 0;
 
+    Image* getOutputImage();
+
 protected:
+
     void fillBufferBGRA( u_char* inputBuffer );
     void fillImageBGRA( u_char* outputBuffer );
 
@@ -20,6 +25,8 @@ protected:
 
     Image* _inputImage;
     Image* _outputImage;
+
+    float _scaleFactor;
 };
 
 #endif // FILTER_H

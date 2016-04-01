@@ -708,6 +708,7 @@ void scaleImage(const u_int* src, u_int* trg, int srcWidth, int srcHeight, const
         const u_int* s_p1 = src + srcWidth * std::min(y + 1, srcHeight - 1);
         const u_int* s_p2 = src + srcWidth * std::min(y + 2, srcHeight - 1);
 
+        #pragma omp parallel for
         for (int x = 0; x < srcWidth; ++x)
         {
             const int x_m1 = std::max(x - 1, 0);

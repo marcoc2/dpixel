@@ -7,7 +7,7 @@
 class HqxFilter : public Filter
 {
 public:
-    HqxFilter(Image *inputImage, Image *outputImage);
+    HqxFilter(Image *inputImage, float scaleFactor );
     ~HqxFilter();
     void apply();
 };

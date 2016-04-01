@@ -2,6 +2,7 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QResizeEvent>
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
@@ -14,6 +15,7 @@
 #include "Filters/xBRZ/XbrZFilter.h"
 #include "Filters/Scale2xFilter.h"
 #include "Filters/EagleFilter.h"
+#include "Filters/CRTFilter.h"
 
 MainWindow::MainWindow( QWidget* parent ) :
     QMainWindow( parent ),
@@ -35,7 +37,11 @@ MainWindow::MainWindow( QWidget* parent ) :
     connect( _ui->radioButtonXbrZ, SIGNAL( clicked() ), this, SLOT( applyXbrZ() ) );
     connect( _ui->radioButtonScale2x, SIGNAL( clicked() ), this, SLOT( applyScale2x() ) );
     connect( _ui->radioButtonEagle, SIGNAL( clicked() ), this, SLOT( applyEagle() ) );
+    connect( _ui->radioButtonCRT, SIGNAL( clicked() ), this, SLOT( applyCRT() ) );
     connect( _ui->radioButtonVector, SIGNAL( clicked() ), this, SLOT( applyVector() ) );
+
+    connect( _ui->spinBoxNearestScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyNearest()) );
+    connect( _ui->spinBoxScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyCRT() ) );
 
     enableFiltersFrame();
 
@@ -44,9 +50,13 @@ MainWindow::MainWindow( QWidget* parent ) :
 
     if( _inputImage != 0 )
     {
-        fillQGraphicsView( *( _inputImage->getQImage() ) );
+        fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
+        fillQGraphicsViewOriginal( *( _inputImage->getQImage() ), 6 );
         createSimilarityGraph();
     }
+
+    _windowOriginalWidth = width();
+    _windowOriginalHeight = height();
 }
 
 
@@ -123,11 +133,15 @@ void MainWindow::loadImage()
 
     fillLabels( *_inputImage );
 
-    fillQGraphicsView( *qimage );
+    fillQGraphicsView( *qimage, 1 );
+
+    fillQGraphicsViewOriginal( *qimage, 6 );
 
     createSimilarityGraph();
 
     enableFiltersFrame();
+
+    _ui->radioButtonOriginal->setChecked( true );
 }
 
 
@@ -155,6 +169,19 @@ void MainWindow::fillQGraphicsView( QImage& qimage, u_int scaleFactor )
     QPixmap pixmap = QPixmap::fromImage( qimage.scaled( scaleFactor * qimage.size() ) );
     scene->addPixmap( pixmap );
     _ui->graphicsView->setScene( scene );
+}
+
+
+void MainWindow::fillQGraphicsViewOriginal( QImage& qimage, u_int scaleFactor )
+{
+    if( &qimage == 0 )
+    {
+        return;
+    }
+
+    QGraphicsScene* scene = new QGraphicsScene( this );
+    QPixmap pixmap = QPixmap::fromImage( qimage.scaled( scaleFactor * qimage.size() ) );
+    scene->addPixmap( pixmap );
     _ui->graphicsViewOriginal->setScene( scene );
 }
 
@@ -176,7 +203,7 @@ void MainWindow::saveImage()
 
 void MainWindow::loadOriginal()
 {
-    fillQGraphicsView( *( _inputImage->getQImage() ) );
+    fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
 }
 
 
@@ -214,15 +241,15 @@ void MainWindow::fillLabels( Image image )
 
 void MainWindow::applyNearest()
 {
-    if( _inputImage == 0 )
+    if( _inputImage == 0 || !_ui->radioButtonNearest->isChecked() )
     {
         return;
     }
 
-    QImage* scaledImage = new QImage( _inputImage->getQImage()->scaled( 16 * _inputImage->getQImage()->size() ) );
+    QImage scaledImage( _inputImage->getQImage()->scaled( _ui->spinBoxNearestScaleFactor->value() * _inputImage->getQImage()->size() ) );
 
     QGraphicsScene* scene = new QGraphicsScene( this );
-    QPixmap pixmap = QPixmap::fromImage( *scaledImage );
+    QPixmap pixmap = QPixmap::fromImage( scaledImage );
     scene->addPixmap( pixmap );
     _ui->graphicsView->setScene( scene );
 }
@@ -235,16 +262,9 @@ void MainWindow::applyHqx()
         return;
     }
 
-    _outputImage = new Image( _inputImage->getWidth() * 4, _inputImage->getHeight() * 4 );
-    HqxFilter* hqxFilter = new HqxFilter( _inputImage, _outputImage );
-    hqxFilter->apply();
+    HqxFilter hqxFilter( _inputImage, 4.0f );
 
-    QGraphicsScene* scene = new QGraphicsScene( this );
-    QImage* qimage = _outputImage->getQImage();
-    //qimage->save( "/home/marco/Desktop/asdf.png" );
-    QPixmap pixmap = QPixmap::fromImage( *qimage );
-    scene->addPixmap( pixmap );
-    _ui->graphicsView->setScene( scene );
+    applyAndShowOutputImage( hqxFilter );
 }
 
 
@@ -255,16 +275,9 @@ void MainWindow::applyXbr()
         return;
     }
 
-    _outputImage = new Image( _inputImage->getWidth() * 4, _inputImage->getHeight() * 4 );
-    XbrFilter* xbrFilter = new XbrFilter( _inputImage, _outputImage );
-    xbrFilter->apply();
+    XbrFilter xbrFilter( _inputImage, 4.0f );
 
-    QGraphicsScene* scene = new QGraphicsScene( this );
-    QImage* qimage = _outputImage->getQImage();
-    //qimage->save( "/home/marco/Desktop/asdf.png" );
-    QPixmap pixmap = QPixmap::fromImage( *qimage );
-    scene->addPixmap( pixmap );
-    _ui->graphicsView->setScene( scene );
+    applyAndShowOutputImage( xbrFilter );
 }
 
 
@@ -275,16 +288,22 @@ void MainWindow::applyXbrZ()
         return;
     }
 
-    _outputImage = new Image( _inputImage->getWidth() * 4, _inputImage->getHeight() * 4 );
-    XbrZFilter* xbrZFilter = new XbrZFilter( _inputImage, _outputImage );
-    xbrZFilter->apply();
+    XbrZFilter xbrZFilter( _inputImage, 4.0f );
 
-    QGraphicsScene* scene = new QGraphicsScene( this );
-    QImage* qimage = _outputImage->getQImage();
-    qimage->save( "/home/marco/Desktop/ness_xbrz.png" );
-    QPixmap pixmap = QPixmap::fromImage( *qimage );
-    scene->addPixmap( pixmap );
-    _ui->graphicsView->setScene( scene );
+    applyAndShowOutputImage( xbrZFilter );
+}
+
+
+void MainWindow::applyCRT()
+{
+    if( _inputImage == 0 || !_ui->radioButtonCRT->isChecked() )
+    {
+        return;
+    }
+
+    CRTFilter crtFilter( _inputImage, ( float ) _ui->spinBoxScaleFactor->value() );
+
+    applyAndShowOutputImage( crtFilter );
 }
 
 
@@ -318,18 +337,18 @@ void MainWindow::applyEagle()
         return;
     }
 
-    _outputImage = new Image( _inputImage->getWidth() * 2, _inputImage->getHeight() * 2 );
+    EagleFilter eagleFilter( _inputImage, 2.0f );
 
-    //Image* output4xImage = new Image( _inputImage->getWidth() * 4, _inputImage->getHeight() * 4 );
+    applyAndShowOutputImage( eagleFilter );
+}
 
-    EagleFilter* eagleFilter = new EagleFilter( _inputImage, _outputImage );
 
-    eagleFilter->apply();
-    //scale2xFilter->apply2x( output4xImage );
+void MainWindow::applyAndShowOutputImage( Filter& filter )
+{
+    filter.apply();
 
     QGraphicsScene* scene = new QGraphicsScene( this );
-    QImage* qimage = _outputImage->getQImage();
-    //qimage->save( "/home/marco/Desktop/asdf.png" );
+    QImage* qimage = filter.getOutputImage()->getQImage();
     QPixmap pixmap = QPixmap::fromImage( *qimage );
     scene->addPixmap( pixmap );
     _ui->graphicsView->setScene( scene );
@@ -436,3 +455,33 @@ void MainWindow::applyVector()
 }
 
 
+void MainWindow::resizeEvent( QResizeEvent* event )
+{
+    if( event->oldSize().width() == -1 )
+    {
+        return;
+    }
+
+    _ui->graphicsViewOriginal->resize( width() / 3.5,
+                                       height() / 2.35 );
+
+    _ui->graphicsViewGraph->resize( width() / 3.5,
+                                    height() / 2.35 );
+
+    _ui->graphicsViewGraph->move( _ui->graphicsViewGraph->pos().x(),
+                                  _ui->graphicsViewOriginal->pos().y() + _ui->graphicsViewOriginal->height() + 25 );
+
+    _ui->labelSimilarityGraphView->move( _ui->labelSimilarityGraphView->pos().x(),
+                                         _ui->graphicsViewOriginal->pos().y() + _ui->graphicsViewOriginal->height() + 5 );
+
+    _ui->graphicsView->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
+                             _ui->graphicsView->pos().y() );
+
+    _ui->labelFilteredView->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
+                                  _ui->labelFilteredView->pos().y() );
+
+    _ui->graphicsView->resize( width() / 1.75,
+                               height() - 90 );
+
+    QWidget::resizeEvent(event);
+}

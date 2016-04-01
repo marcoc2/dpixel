@@ -6,7 +6,7 @@
 class XbrFilter : public Filter
 {
 public:
-    XbrFilter( Image *inputImage, Image *outputImage );
+    XbrFilter( Image *inputImage, float scaleFactor );
     ~XbrFilter();
     void apply();
 };

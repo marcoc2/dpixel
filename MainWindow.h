@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "Image.h"
+#include "Filters/Filter.h"
 #include <QMainWindow>
 #include <QRadioButton>
 #include <QGraphicsView>
@@ -41,10 +42,21 @@ private:
     QMenu* _editMenu;
     QMenu* _helpMenu;
 
+    int _windowOriginalWidth;
+    int _windowOriginalHeight;
+
+    //int _graphicsViewOriginalWidth;
+    //int _graphicsViewOriginalWidth;
+
     void createActions();
     void createMenus();
 
     void fillQGraphicsView( QImage& qimage, unsigned int scaleFactor = 8 );
+    void fillQGraphicsViewOriginal( QImage& qimage, unsigned int scaleFactor = 8 );
+
+protected:
+
+    void resizeEvent( QResizeEvent *event ) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
 
@@ -55,10 +67,14 @@ private Q_SLOTS:
     void enableFiltersFrame();
     void aboutDialog();
     void fillLabels( Image image );
+
+    void applyAndShowOutputImage( Filter& filter );
+
     void applyNearest();
     void applyHqx();
     void applyXbr();
     void applyXbrZ();
+    void applyCRT();
     void applyScale2x();
     void applyEagle();
     void createSimilarityGraph();
