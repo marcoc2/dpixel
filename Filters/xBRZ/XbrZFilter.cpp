@@ -3,7 +3,7 @@
 #include "config.h"
 
 #ifdef _WIN32
-#define u_int32_t unsigned int
+ #define u_int32_t unsigned int
 #endif
 
 XbrZFilter::XbrZFilter( Image* inputImage, float scaleFactor ) :
@@ -12,11 +12,9 @@ XbrZFilter::XbrZFilter( Image* inputImage, float scaleFactor ) :
 }
 
 
-
 XbrZFilter::~XbrZFilter()
 {
 }
-
 
 
 void XbrZFilter::apply()
@@ -29,13 +27,14 @@ void XbrZFilter::apply()
     //xbrz::xbr4x( inputBuffer, outputBuffer, _inputImage->getWidth(), _inputImage->getHeight() );
     xbrz::ScalerCfg scalerCfg;
 
-    xbrz::scale( static_cast<size_t>( 4 ),
-                 reinterpret_cast<u_int32_t*>( inputBuffer ),
-                 reinterpret_cast<u_int32_t*>( outputBuffer ),
+    xbrz::scale( static_cast< size_t >( 4 ),
+                 reinterpret_cast< u_int32_t* >( inputBuffer ),
+                 reinterpret_cast< u_int32_t* >( outputBuffer ),
                  _inputImage->getWidth(),
                  _inputImage->getHeight(),
                  scalerCfg );
 
     fillImageBGRA( outputBuffer );
 }
+
 

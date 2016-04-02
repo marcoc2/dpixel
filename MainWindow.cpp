@@ -25,14 +25,11 @@ MainWindow::MainWindow( QWidget* parent ) :
     _originalScene( nullptr ),
     _graphScene( nullptr )
 {
-    if( WIN32 )
-    {
+    #ifdef _WIN32
         _inputImage = new Image( "../pixel-art-remaster/Samples/metalslug.png" );
-    }
-    else
-    {
+    #else
         _inputImage = new Image( "../Samples/metalslug.png" );
-    }
+    #endif
 
 
     _ui->setupUi( this );
