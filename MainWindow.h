@@ -42,8 +42,9 @@ private:
     QMenu* _editMenu;
     QMenu* _helpMenu;
 
-    int _windowOriginalWidth;
-    int _windowOriginalHeight;
+    QGraphicsScene* _resultScene;
+    QGraphicsScene* _originalScene;
+    QGraphicsScene* _graphScene;
 
     //int _graphicsViewOriginalWidth;
     //int _graphicsViewOriginalWidth;

@@ -4,6 +4,11 @@
 #include <QImage>
 #include "Pixel.h"
 
+#ifdef _WIN32
+#define u_int unsigned int
+#define u_char unsigned char
+#endif
+
 class Image
 {
 public:

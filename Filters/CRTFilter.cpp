@@ -23,9 +23,10 @@ void CRTFilter::apply()
                 u_int outW = w * _scaleFactor;
                 u_int outH = h * _scaleFactor;
 
-                Pixel redPixel = Pixel( pixel.red, 0, 0 );
-                Pixel greenPixel = Pixel( 0, pixel.green, 0 );
-                Pixel bluePixel = Pixel( 0, 0, pixel.blue );
+                const unsigned char ground = 50;
+                Pixel redPixel = Pixel( pixel.red, ground, ground );
+                Pixel greenPixel = Pixel( ground, pixel.green, ground );
+                Pixel bluePixel = Pixel( ground, ground, pixel.blue );
 
                 for( u_int outH_t = outH; outH_t < outH + _scaleFactor; outH_t++ )
                 {

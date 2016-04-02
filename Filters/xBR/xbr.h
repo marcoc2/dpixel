@@ -2,6 +2,9 @@
 #define _XBR_h
 
 #include <sys/types.h>
+#ifdef _WIN32
+#include "Image.h"
+#endif
 
 struct SDL_Surface;
 

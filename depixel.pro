@@ -25,6 +25,7 @@ SOURCES += main.cpp\
     Filters/xBRZ/xbrz.cpp \
     Filters/xBRZ/XbrZFilter.cpp \
     Filters/Scale2xFilter.cpp \
+    Filters/CRTFilter.cpp \
     Pixel.cpp \
     Filters/EagleFilter.cpp \
     SimilarityGraph.cpp \
@@ -48,6 +49,7 @@ HEADERS  += MainWindow.h \
     Filters/xBRZ/XbrZFilter.h \
     Filters/xBR/xbr.h \
     Filters/Scale2xFilter.h \
+    Filters/CRTFilter.h \
     Pixel.h \
     Filters/EagleFilter.h \
     SimilarityGraph.h \

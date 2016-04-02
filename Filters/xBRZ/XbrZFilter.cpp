@@ -2,6 +2,10 @@
 #include "xbrz.h"
 #include "config.h"
 
+#ifdef _WIN32
+#define u_int32_t unsigned int
+#endif
+
 XbrZFilter::XbrZFilter( Image* inputImage, float scaleFactor ) :
     Filter( inputImage, scaleFactor )
 {

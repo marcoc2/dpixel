@@ -20,9 +20,20 @@
 MainWindow::MainWindow( QWidget* parent ) :
     QMainWindow( parent ),
     _ui( new Ui::MainWindow ),
-    _inputImage( 0 )
+    _inputImage( nullptr ),
+    _resultScene( nullptr ),
+    _originalScene( nullptr ),
+    _graphScene( nullptr )
 {
-    _inputImage = new Image( "../Samples/metalslug.png" );
+    if( WIN32 )
+    {
+        _inputImage = new Image( "../pixel-art-remaster/Samples/metalslug.png" );
+    }
+    else
+    {
+        _inputImage = new Image( "../Samples/metalslug.png" );
+    }
+
 
     _ui->setupUi( this );
 
@@ -48,15 +59,12 @@ MainWindow::MainWindow( QWidget* parent ) :
     createActions();
     createMenus();
 
-    if( _inputImage != 0 )
+    if( !_inputImage->getQImage()->isNull() )
     {
         fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
         fillQGraphicsViewOriginal( *( _inputImage->getQImage() ), 6 );
         createSimilarityGraph();
     }
-
-    _windowOriginalWidth = width();
-    _windowOriginalHeight = height();
 }
 
 
@@ -165,10 +173,14 @@ void MainWindow::fillQGraphicsView( QImage& qimage, u_int scaleFactor )
         return;
     }
 
-    QGraphicsScene* scene = new QGraphicsScene( this );
+    if( _resultScene != nullptr )
+    {
+        delete _resultScene;
+    }
+    _resultScene = new QGraphicsScene( this );
     QPixmap pixmap = QPixmap::fromImage( qimage.scaled( scaleFactor * qimage.size() ) );
-    scene->addPixmap( pixmap );
-    _ui->graphicsView->setScene( scene );
+    _resultScene->addPixmap( pixmap );
+    _ui->graphicsView->setScene( _resultScene );
 }
 
 
@@ -179,10 +191,14 @@ void MainWindow::fillQGraphicsViewOriginal( QImage& qimage, u_int scaleFactor )
         return;
     }
 
-    QGraphicsScene* scene = new QGraphicsScene( this );
+    if( _originalScene != nullptr )
+    {
+        delete _originalScene;
+    }
+    _originalScene = new QGraphicsScene( this );
     QPixmap pixmap = QPixmap::fromImage( qimage.scaled( scaleFactor * qimage.size() ) );
-    scene->addPixmap( pixmap );
-    _ui->graphicsViewOriginal->setScene( scene );
+    _originalScene->addPixmap( pixmap );
+    _ui->graphicsViewOriginal->setScene( _originalScene );
 }
 
 
@@ -248,10 +264,14 @@ void MainWindow::applyNearest()
 
     QImage scaledImage( _inputImage->getQImage()->scaled( _ui->spinBoxNearestScaleFactor->value() * _inputImage->getQImage()->size() ) );
 
-    QGraphicsScene* scene = new QGraphicsScene( this );
+    if( _resultScene != nullptr )
+    {
+        delete _resultScene;
+    }
+    _resultScene = new QGraphicsScene( this );
     QPixmap pixmap = QPixmap::fromImage( scaledImage );
-    scene->addPixmap( pixmap );
-    _ui->graphicsView->setScene( scene );
+    _resultScene->addPixmap( pixmap );
+    _ui->graphicsView->setScene( _resultScene );
 }
 
 
@@ -321,12 +341,15 @@ void MainWindow::applyScale2x()
     Scale2xFilter* scale2xFilter = new Scale2xFilter( _inputImage, _outputImage );
     scale2xFilter->apply2x( output4xImage );
 
-    QGraphicsScene* scene = new QGraphicsScene( this );
+    if( _resultScene != nullptr )
+    {
+        _resultScene = new QGraphicsScene( this );
+    }
+    _resultScene = new QGraphicsScene( this );
     QImage* qimage = output4xImage->getQImage();
-    //qimage->save( "/home/marco/Desktop/asdf.png" );
     QPixmap pixmap = QPixmap::fromImage( *qimage );
-    scene->addPixmap( pixmap );
-    _ui->graphicsView->setScene( scene );
+    _resultScene->addPixmap( pixmap );
+    _ui->graphicsView->setScene( _resultScene );
 }
 
 
@@ -347,11 +370,21 @@ void MainWindow::applyAndShowOutputImage( Filter& filter )
 {
     filter.apply();
 
-    QGraphicsScene* scene = new QGraphicsScene( this );
+    if( _resultScene != nullptr )
+    {
+        _resultScene = new QGraphicsScene( this );
+    }
+
+    if( _outputImage != nullptr )
+    {
+        //delete _outputImage;
+    }
+    _outputImage = new Image( filter.getOutputImage()->getQImage() );
+
     QImage* qimage = filter.getOutputImage()->getQImage();
     QPixmap pixmap = QPixmap::fromImage( *qimage );
-    scene->addPixmap( pixmap );
-    _ui->graphicsView->setScene( scene );
+    _resultScene->addPixmap( pixmap );
+    _ui->graphicsView->setScene( _resultScene );
 }
 
 
@@ -365,7 +398,7 @@ void MainWindow::createSimilarityGraph()
     _similarityGraph = new SimilarityGraph( _inputImage );
     _similarityGraph->createGraph();
 
-    QGraphicsScene* scene = new QGraphicsScene( this );
+    _graphScene = new QGraphicsScene( this );
     QPen pen( QBrush( Qt::SolidPattern ), 1.5 );
 
     for( unsigned int i = 0; i < _inputImage->getHeight(); i++ )
@@ -375,14 +408,14 @@ void MainWindow::createSimilarityGraph()
             std::vector< SimilarityGraph::Point2D > lines = _similarityGraph->getNodeLines( j, i );
             for( unsigned int t = 0; t < lines.size(); t = t + 2 )
             {
-                scene->addLine( QLine( QPoint( lines[ t ].x, lines[ t ].y ), QPoint( lines[ t + 1 ].x,
+                _graphScene->addLine( QLine( QPoint( lines[ t ].x, lines[ t ].y ), QPoint( lines[ t + 1 ].x,
                                                                                      lines[ t + 1 ].y ) ), pen );
             }
         }
     }
 
 
-    _ui->graphicsViewGraph->setScene( scene );
+    _ui->graphicsViewGraph->setScene( _graphScene );
 }
 
 

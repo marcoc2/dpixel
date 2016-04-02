@@ -60,6 +60,8 @@ Image::Image( const char* fileName )
 
 Image::~Image()
 {
+    delete _buffer;
+    delete _qImage;
 }
 
 

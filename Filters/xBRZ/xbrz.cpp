@@ -14,6 +14,9 @@
 // ****************************************************************************
 
 #include "xbrz.h"
+#ifdef _WIN32
+#include "Image.h"
+#endif
 #include <cassert>
 #include <algorithm>
 
