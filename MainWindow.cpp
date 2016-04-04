@@ -318,7 +318,7 @@ void MainWindow::applyCRT()
         return;
     }
 
-    CRTFilter crtFilter( _inputImage, ( float ) _ui->spinBoxScaleFactor->value() );
+    CRTFilter crtFilter( _inputImage, ( float ) 10.0f ); //_ui->spinBoxScaleFactor->value() );
 
     applyAndShowOutputImage( crtFilter );
 }

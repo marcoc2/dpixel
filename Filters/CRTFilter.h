@@ -9,6 +9,7 @@ public:
     CRTFilter( Image* inputImage, float scaleFactor );
     ~CRTFilter();
     void apply();
+    void applyTypeB();
 };
 
 #endif // CRTFILTER_H
