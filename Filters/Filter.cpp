@@ -17,6 +17,16 @@ Filter::Filter( Image* inputImage, float scaleFactor ) :
 }
 
 
+Filter::Filter( Image* inputImage, int outputWidth, int outputHeight ) :
+    _inputImage( inputImage )
+{
+    _outputImage = new Image( outputWidth,
+                              outputHeight );
+
+    _scaleFactor = ( float ) _outputImage->getWidth() / ( float) _inputImage->getWidth();
+}
+
+
 Filter::Filter( Image* inputImage ) :
     _inputImage( inputImage ),
     _outputImage( 0 )

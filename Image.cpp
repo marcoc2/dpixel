@@ -121,16 +121,16 @@ void Image::createTest()
 
     _buffer = new Pixel[ _width * _height ];
 
-//    for(u_int w = 0; w < _width; w++)
-//    {
-//        for(u_int h = 0; h < _height; h++)
-//        {
-//            u_char pixelRGB = ( u_char ) 255 * ( (float) w / (float) _width);
-//            _buffer[ pixel( w, h ) ].red = pixelRGB;
-//            _buffer[ pixel( w, h ) ].green = pixelRGB;
-//            _buffer[ pixel( w, h ) ].blue = pixelRGB;
-//        }
-//    }
+    //for(u_int w = 0; w < _width; w++)
+    //{
+    //    for(u_int h = 0; h < _height; h++)
+    //    {
+    //        u_char pixelRGB = ( u_char ) 255 * ( (float) w / (float) _width);
+    //        _buffer[ pixel( w, h ) ].red = pixelRGB;
+    //        _buffer[ pixel( w, h ) ].green = pixelRGB;
+    //        _buffer[ pixel( w, h ) ].blue = pixelRGB;
+    //    }
+    //}
 
     for( u_int w = 0; w < _width; w++ )
     {
@@ -243,3 +243,63 @@ void Image::fillQImageRGB()
 }
 
 
+void Image::getInterpolatedPixel( float i, float j, Pixel& interpolatedPixel )
+{
+    float w = i * _width;
+    float h = j * _height;
+    int intW = ( int ) w;
+    int intH = ( int ) h;
+
+    Pixel UL;
+    Pixel UR;
+    Pixel DL;
+    Pixel DR;
+
+    bool isLeft = ( w - ( float ) intW ) * 10 < 5;
+    bool isUp = ( h - ( float ) intH ) * 10 < 5;
+
+    if( isLeft && isUp )
+    {
+        UL = getPixel( intW, intH );
+        UR = getPixel( intW + 1, intH );
+        DL = getPixel( intW, intH + 1 );
+        DR = getPixel( intW + 1, intH + 1 );
+    }
+    else if( isLeft && !isUp )
+    {
+        UL = getPixel( intW, intH - 1 );
+        UR = getPixel( intW + 1, intH - 1 );
+        DL = getPixel( intW, intH );
+        DR = getPixel( intW + 1, intH );
+    }
+    else if( !isLeft && isUp )
+    {
+        UL = getPixel( intW - 1, intH );
+        UR = getPixel( intW, intH );
+        DL = getPixel( intW - 1, intH + 1 );
+        DR = getPixel( intW, intH + 1 );
+    }
+    else if( !isLeft && !isUp )
+    {
+        UL = getPixel( intW - 1, intH - 1 );
+        UR = getPixel( intW, intH - 1 );
+        DL = getPixel( intW - 1, intH );
+        DR = getPixel( intW, intH );
+    }
+
+    Pixel up;
+    Pixel down;
+    interpolatePixels( UL, UR, ( w - ( float ) intW ), up );
+    interpolatePixels( DL, DR, ( w - ( float ) intW ), down );
+
+    interpolatePixels( up, down, ( h - ( float ) intH ), interpolatedPixel );
+}
+
+
+void Image::interpolatePixels( const Pixel& a, const Pixel& b, float fraction,
+                               Pixel& interpolatedPixel )
+{
+    interpolatedPixel.red = ( a.red * fraction ) + ( b.red * ( 1 - fraction ) );
+    interpolatedPixel.green = ( a.green * fraction ) + ( b.green * ( 1 - fraction ) );
+    interpolatedPixel.blue = ( a.blue * fraction ) + ( b.blue * ( 1 - fraction ) );
+}

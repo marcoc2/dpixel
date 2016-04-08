@@ -7,9 +7,11 @@ class CRTFilter : public Filter
 {
 public:
     CRTFilter( Image* inputImage, float scaleFactor );
+    CRTFilter( Image* inputImage, int outputWidth, int outputHeight, float scaleFactor );
     ~CRTFilter();
     void apply();
-    void applyTypeB();
+    void applyAppertureGrill();
+    void applyShadowMask();
 };
 
 #endif // CRTFILTER_H

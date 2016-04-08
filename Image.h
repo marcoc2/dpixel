@@ -5,8 +5,8 @@
 #include "Pixel.h"
 
 #ifdef _WIN32
-#define u_int unsigned int
-#define u_char unsigned char
+#define u_int uint32_t
+#define u_char uint8_t
 #endif
 
 class Image
@@ -33,6 +33,10 @@ public:
     void fillBufferRGB();
     void fillQImageRGB();
     void createTest();
+    void getInterpolatedPixel( float i, float j, Pixel& interpolatedPixel );
+    void interpolatePixels( const Pixel& a, const Pixel& b, float fraction,
+                            Pixel& interpolatedPixel );
+
 
 private:
 

@@ -2,10 +2,6 @@
 #include "xbrz.h"
 #include "config.h"
 
-#ifdef _WIN32
- #define u_int32_t unsigned int
-#endif
-
 XbrZFilter::XbrZFilter( Image* inputImage, float scaleFactor ) :
     Filter( inputImage, scaleFactor )
 {
@@ -28,8 +24,8 @@ void XbrZFilter::apply()
     xbrz::ScalerCfg scalerCfg;
 
     xbrz::scale( static_cast< size_t >( 4 ),
-                 reinterpret_cast< u_int32_t* >( inputBuffer ),
-                 reinterpret_cast< u_int32_t* >( outputBuffer ),
+                 reinterpret_cast< u_int* >( inputBuffer ),
+                 reinterpret_cast< u_int* >( outputBuffer ),
                  _inputImage->getWidth(),
                  _inputImage->getHeight(),
                  scalerCfg );

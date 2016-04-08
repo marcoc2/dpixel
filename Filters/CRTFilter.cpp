@@ -6,6 +6,13 @@ CRTFilter::CRTFilter( Image* inputImage, float scaleFactor ) :
 }
 
 
+CRTFilter::CRTFilter( Image* inputImage, int outputWidth, int outputHeight, float scaleFactor ) :
+    Filter( inputImage, outputWidth, outputHeight )
+{
+    _scaleFactor = scaleFactor;
+}
+
+
 CRTFilter::~CRTFilter()
 {
 }
@@ -13,7 +20,7 @@ CRTFilter::~CRTFilter()
 
 void CRTFilter::apply()
 {
-    applyTypeB();
+    applyShadowMask();
     return;
 
 
@@ -56,9 +63,9 @@ void CRTFilter::apply()
 }
 
 
-void CRTFilter::applyTypeB()
+void CRTFilter::applyAppertureGrill()
 {
-    //#pragma omp parallel for
+    #pragma omp parallel for
     for(u_int w = 0; w < _inputImage->getWidth(); w++)
     {
         for(u_int h = 0; h < _inputImage->getHeight(); h++)
@@ -142,26 +149,36 @@ void CRTFilter::applyTypeB()
                         _outputImage->setPixel( i, j, blueBorder );
                     }
                 }
-
-//                for( u_int i = w_ + 1; i < w_ + 3; i++ )
-//                {
-//                    _outputImage->setPixel( i, j, redPixel );
-//                }
-
-//                for( u_int i = w_ + 3; i < w_ + 6; i++ )
-//                {
-//                    _outputImage->setPixel( i, j, greenPixel );
-//                }
-
-//                for( u_int i = w_ + 7; i < w_ + 9; i++ )
-//                {
-//                    _outputImage->setPixel( i, j, bluePixel );
-//                }
-
-
             }
         }
     }
 
     _outputImage->fillQImageRGB();
 }
+
+
+void CRTFilter::applyShadowMask()
+{
+    const int maskWidth = _outputImage->getWidth();
+    const int maskHeight = _outputImage->getHeight();
+
+    for( int i = 0; i < maskWidth * _scaleFactor; i = i + 3 )
+    {
+        for( int j = 0; j < maskHeight * _scaleFactor; j++ )
+        {
+            Pixel pixel;
+            _inputImage->getInterpolatedPixel( i / ( maskWidth * _scaleFactor ),
+                                               j / ( maskHeight *_scaleFactor ), pixel );
+
+            _outputImage->setPixel( i, j, pixel );
+            _outputImage->setPixel( i + 1, j, pixel );
+            _outputImage->setPixel( i + 2, j, pixel );
+            //_outputImage->setPixel( i, j, Pixel( pixel.red, 0, 0 ) );
+            //_outputImage->setPixel( i + 1, j, Pixel( 0, pixel.green, 0 ) );
+            //_outputImage->setPixel( i + 2, j, Pixel( 0, 0, pixel.blue ) );
+        }
+    }
+
+    _outputImage->fillQImageRGB();
+}
+

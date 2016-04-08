@@ -39,8 +39,8 @@
 #define trV   0x00000006
 
 #ifdef _WIN32
-#define u_int32_t unsigned int
-#define u_int8_t unsigned char
+#define u_int32_t uint32_t
+#define u_int8_t uint8_t
 #endif
 
 /* RGB to YUV lookup table */

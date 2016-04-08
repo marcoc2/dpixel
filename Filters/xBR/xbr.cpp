@@ -41,7 +41,7 @@ namespace xbr{
 #define trV   0x00000006
 
 #ifdef _WIN32
-#define u_int32_t unsigned int
+#define u_int32_t uint32_t
 #endif
 
 /* RGB to YUV lookup table */

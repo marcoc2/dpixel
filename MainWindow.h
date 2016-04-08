@@ -52,8 +52,8 @@ private:
     void createActions();
     void createMenus();
 
-    void fillQGraphicsView( QImage& qimage, unsigned int scaleFactor = 8 );
-    void fillQGraphicsViewOriginal( QImage& qimage, unsigned int scaleFactor = 8 );
+    void fillQGraphicsView( QImage& qimage, u_int scaleFactor = 8 );
+    void fillQGraphicsViewOriginal( QImage& qimage, u_int scaleFactor = 8 );
 
 protected:
 

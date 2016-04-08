@@ -21,6 +21,10 @@
 #include <limits>
 #include "config.h"
 
+#ifdef _WIN32
+#include "Image.h"
+#endif
+
 namespace xbrz
 {
 /*
@@ -50,7 +54,7 @@ THREAD-SAFETY: - parts of the same image may be scaled by multiple threads as lo
 			   
 */
 void scale(size_t factor, //valid range: 2 - 5
-           const unsigned int* src, unsigned int* trg, int srcWidth, int srcHeight,
+           const u_int* src, u_int* trg, int srcWidth, int srcHeight,
            const ScalerCfg& cfg = ScalerCfg(),
            int yFirst = 0, int yLast = std::numeric_limits<int>::max()); //slice of source image
 
@@ -62,12 +66,12 @@ enum SliceType
     NN_SCALE_SLICE_SOURCE,
     NN_SCALE_SLICE_TARGET,
 };
-void nearestNeighborScale(const unsigned int* src, int srcWidth, int srcHeight, int srcPitch, //pitch in bytes!
-                          unsigned int* trg, int trgWidth, int trgHeight, int trgPitch,
+void nearestNeighborScale(const u_int* src, int srcWidth, int srcHeight, int srcPitch, //pitch in bytes!
+                          u_int* trg, int trgWidth, int trgHeight, int trgPitch,
                           SliceType st, int yFirst, int yLast);
 
 //parameter tuning
-bool equalColor(unsigned int col1, unsigned int col2, double luminanceWeight, double equalColorTolerance);
+bool equalColor(u_int col1, u_int col2, double luminanceWeight, double equalColorTolerance);
 
 
 
@@ -75,11 +79,11 @@ bool equalColor(unsigned int col1, unsigned int col2, double luminanceWeight, do
 
 //########################### implementation ###########################
 inline
-void nearestNeighborScale(const unsigned int* src, int srcWidth, int srcHeight,
-                          unsigned int* trg, int trgWidth, int trgHeight)
+void nearestNeighborScale(const u_int* src, int srcWidth, int srcHeight,
+                          u_int* trg, int trgWidth, int trgHeight)
 {
-    nearestNeighborScale(src, srcWidth, srcHeight, srcWidth * sizeof(unsigned int),
-                         trg, trgWidth, trgHeight, trgWidth * sizeof(unsigned int),
+    nearestNeighborScale(src, srcWidth, srcHeight, srcWidth * sizeof(u_int),
+                         trg, trgWidth, trgHeight, trgWidth * sizeof(u_int),
                          NN_SCALE_SLICE_TARGET, 0, trgHeight);
 }
 }
