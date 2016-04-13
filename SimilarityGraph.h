@@ -59,6 +59,8 @@ public:
      */
     Node getNodeIndex( int index );
 
+    Node getNode( int i, int j );
+
     /**
     * Return node array
     * One node for each pixel of the image
@@ -120,6 +122,15 @@ public:
      *                                      FALSE if is not
      */
     bool isValence1( char value );
+
+    /**
+     * @brief getNextNodeInLine Return next node in line for 0/90/180/270 degrees cases only
+     * @param i width index
+     * @param j height index
+     * @param index return param
+     * @return if there is a node in line
+     */
+    bool getNextNodeInLine( int i, int j, int& index );
 
 private:
 

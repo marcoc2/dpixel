@@ -61,6 +61,7 @@ MainWindow::MainWindow( QWidget* parent ) :
         fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
         fillQGraphicsViewOriginal( *( _inputImage->getQImage() ), 6 );
         createSimilarityGraph();
+        checkUpscale();
     }
 }
 
@@ -514,4 +515,29 @@ void MainWindow::resizeEvent( QResizeEvent* event )
                                height() - 90 );
 
     QWidget::resizeEvent(event);
+}
+
+
+void MainWindow::checkUpscale()
+{
+    bool* visited = new bool[ _similarityGraph->getWidth() * _similarityGraph->getHeight() ];
+    std::fill( visited, visited + _similarityGraph->getWidth() * _similarityGraph->getHeight(), false );
+
+    for( unsigned int i = 0; i < _similarityGraph->getHeight(); i++ )
+    {
+        for( unsigned int j = 0; j < _similarityGraph->getWidth(); j++ )
+        {
+            if( !visited[ i * _similarityGraph->getWidth() * j ] )
+            {
+                visited[ i * _similarityGraph->getWidth() * j ] = true;
+                int index = 0;
+                SimilarityGraph::Node node = _similarityGraph->getNode( j, i );
+                while( _similarityGraph->getNextNodeInLine( i, j, index ) )
+                {
+                    visited[ index ] = true;
+                    i++;
+                }
+            }
+        }
+    }
 }

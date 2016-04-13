@@ -524,6 +524,11 @@ SimilarityGraph::Node SimilarityGraph::getNodeIndex (int index )
 }
 
 
+SimilarityGraph::Node SimilarityGraph::getNode( int i, int j )
+{
+    return _graph[ i * getWidth() + j ];
+}
+
 
 SimilarityGraph::Node* SimilarityGraph::getGraphBuffer()
 {
@@ -727,4 +732,40 @@ int SimilarityGraph::calcVal2PathSize(int index, int edge, int result)
              return result;
         //}
     //}
+}
+
+
+bool SimilarityGraph::getNextNodeInLine( int i, int j, int& index )
+{
+    unsigned int width = getWidth();
+    index = i * getWidth() + j;
+    int edge = _graph[ index ].value;
+
+    switch( edge )
+    {
+        case 0: return false;
+        case 1:
+        {
+            index += width;
+            return true;
+        };
+        case 2: return false;
+        case 3:
+        {
+            index--;
+            return true;
+        }
+        case 4:
+        {
+           index++;
+           return true;
+        }
+        case 5: return false;
+        case 6:
+        {
+            index = index - width;
+            return true;
+        }
+        case 7: return false;
+    }
 }

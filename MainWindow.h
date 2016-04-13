@@ -79,6 +79,7 @@ private Q_SLOTS:
     void applyScale2x();
     void applyEagle();
     void createSimilarityGraph();
+    void checkUpscale();
     void applyVector();
 };
 
