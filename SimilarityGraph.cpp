@@ -735,37 +735,45 @@ int SimilarityGraph::calcVal2PathSize(int index, int edge, int result)
 }
 
 
-bool SimilarityGraph::getNextNodeInLine( int i, int j, int& index )
+bool SimilarityGraph::getNextNodeInLine( int& index )
 {
-    unsigned int width = getWidth();
-    index = i * getWidth() + j;
     int edge = _graph[ index ].value;
 
-    switch( edge )
+    if( !CHECK_BIT( edge, 0 ) && !CHECK_BIT( edge, 1 ) && !CHECK_BIT( edge, 2 ) && CHECK_BIT( edge, 3 ) )
     {
-        case 0: return false;
-        case 1:
-        {
-            index += width;
-            return true;
-        };
-        case 2: return false;
-        case 3:
-        {
-            index--;
-            return true;
-        }
-        case 4:
-        {
-           index++;
-           return true;
-        }
-        case 5: return false;
-        case 6:
-        {
-            index = index - width;
-            return true;
-        }
-        case 7: return false;
+        index++;
+        return true;
     }
+    else
+    {
+        return false;
+    }
+
+//    switch( edge )
+//    {
+//        case 0: return false;
+//        case 1:
+//        {
+//            index += width;
+//            return true;
+//        };
+//        case 2: return false;
+//        case 3:
+//        {
+//            index--;
+//            return true;
+//        }
+//        case 4:
+//        {
+//           index++;
+//           return true;
+//        }
+//        case 5: return false;
+//        case 6:
+//        {
+//            index = index - width;
+//            return true;
+//        }
+//        case 7: return false;
+//    }
 }

@@ -46,6 +46,8 @@ private:
     QGraphicsScene* _originalScene;
     QGraphicsScene* _graphScene;
 
+    std::vector< int > _adjacentInLine;
+
     //int _graphicsViewOriginalWidth;
     //int _graphicsViewOriginalWidth;
 
@@ -80,6 +82,7 @@ private Q_SLOTS:
     void applyEagle();
     void createSimilarityGraph();
     void checkUpscale();
+    void createHistogram();
     void applyVector();
 };
 

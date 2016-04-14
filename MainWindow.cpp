@@ -28,7 +28,7 @@ MainWindow::MainWindow( QWidget* parent ) :
     #ifdef _WIN32
         _inputImage = new Image( "../pixel-art-remaster/Samples/metalslug.png" );
     #else
-        _inputImage = new Image( "../Samples/metalslug.png" );
+        _inputImage = new Image( "../Samples/sonic_3x.png" );
     #endif
 
 
@@ -520,24 +520,55 @@ void MainWindow::resizeEvent( QResizeEvent* event )
 
 void MainWindow::checkUpscale()
 {
-    bool* visited = new bool[ _similarityGraph->getWidth() * _similarityGraph->getHeight() ];
-    std::fill( visited, visited + _similarityGraph->getWidth() * _similarityGraph->getHeight(), false );
+    bool* visited = new bool[ _similarityGraph->getWidth() * _similarityGraph->getHeight() ]();
+//    for(int i = 0; i < _similarityGraph->getWidth() * _similarityGraph->getHeight(); i++) {
+//        visited[i] = 0;
+//    }
+    //std::fill( visited, visited + ( _similarityGraph->getWidth() * _similarityGraph->getHeight() ), 0 );
+    int numberOfAdjacentNeighbors;
 
     for( unsigned int i = 0; i < _similarityGraph->getHeight(); i++ )
     {
         for( unsigned int j = 0; j < _similarityGraph->getWidth(); j++ )
         {
-            if( !visited[ i * _similarityGraph->getWidth() * j ] )
+            numberOfAdjacentNeighbors = 0;
+            if( !visited[ i * _similarityGraph->getWidth() + j ] )
             {
-                visited[ i * _similarityGraph->getWidth() * j ] = true;
-                int index = 0;
-                SimilarityGraph::Node node = _similarityGraph->getNode( j, i );
-                while( _similarityGraph->getNextNodeInLine( i, j, index ) )
+                visited[ i * _similarityGraph->getWidth() + j ] = true;
+                int index = i * _similarityGraph->getWidth() + j;
+
+                while( _similarityGraph->getNextNodeInLine( index ) )
                 {
                     visited[ index ] = true;
-                    i++;
+                    numberOfAdjacentNeighbors++;
+                }
+                if( numberOfAdjacentNeighbors > 0 )
+                {
+                    _adjacentInLine.push_back( numberOfAdjacentNeighbors );
                 }
             }
         }
+    }
+
+    delete visited;
+
+    createHistogram();
+}
+
+
+void MainWindow::createHistogram()
+{
+    int* histogram = new int[ _adjacentInLine.size() ];
+    std::fill( histogram, histogram + _adjacentInLine.size(), 0 );
+    for( auto const& i : _adjacentInLine )
+    {
+        histogram[ i ]++;
+    }
+
+    std::sort( histogram, histogram + _adjacentInLine.size() );
+
+    for( int i = 0; i < 10; i++ )
+    {
+        printf( "%d\n", histogram[ _adjacentInLine.size() - i - 1] );
     }
 }

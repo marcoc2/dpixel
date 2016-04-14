@@ -125,12 +125,10 @@ public:
 
     /**
      * @brief getNextNodeInLine Return next node in line for 0/90/180/270 degrees cases only
-     * @param i width index
-     * @param j height index
      * @param index return param
      * @return if there is a node in line
      */
-    bool getNextNodeInLine( int i, int j, int& index );
+    bool getNextNodeInLine( int& index );
 
 private:
 
