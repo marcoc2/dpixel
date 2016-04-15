@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QResizeEvent>
@@ -16,6 +14,9 @@
 #include "Filters/Scale2xFilter.h"
 #include "Filters/EagleFilter.h"
 #include "Filters/CRTFilter.h"
+
+#include <stdio.h>
+#include <map>
 
 MainWindow::MainWindow( QWidget* parent ) :
     QMainWindow( parent ),
@@ -539,14 +540,22 @@ void MainWindow::checkUpscale()
                 visited[ i * _similarityGraph->getWidth() + j ] = true;
                 int index = i * _similarityGraph->getWidth() + j;
 
-                while( _similarityGraph->getNextNodeInLine( index ) )
+                if( _similarityGraph->isStartNodeOnHorizontal( index ) )
                 {
-                    visited[ index ] = true;
+
                     numberOfAdjacentNeighbors++;
-                }
-                if( numberOfAdjacentNeighbors > 0 )
-                {
-                    _adjacentInLine.push_back( numberOfAdjacentNeighbors );
+
+                    while( _similarityGraph->getNextNodeInLine( index ) )
+                    {
+                        visited[ index ] = true;
+                        numberOfAdjacentNeighbors++;
+                    }
+                    visited[ index ] = true;
+
+                    if( numberOfAdjacentNeighbors > 2 )
+                    {
+                        _adjacentInLine.push_back( numberOfAdjacentNeighbors );
+                    }
                 }
             }
         }
@@ -562,6 +571,7 @@ void MainWindow::createHistogram()
 {
     int size = _adjacentInLine.size();
     int* histogram = new int[ size ]();
+    std::map< int, int > histogramMap;
     //std::fill( histogram, histogram + size, 0 );
 
     int* adjacentSorted = new int[ size ]();
@@ -569,37 +579,43 @@ void MainWindow::createHistogram()
     for( auto const& i : _adjacentInLine )
     {
         histogram[ i ]++;
+        histogramMap[ i ] = histogram[ i ];
     }
 
     //pos_min is short for position of min
-//    int pos_min, temp;
+    int pos_min, temp;
 
-//    for( int i = 0; i < size - 1; i++ )
-//    {
-//        pos_min = i;//set pos_min to the current index of array
-
-//        for( int j = i + 1; j < size; j++ )
-//        {
-//            if( histogram[ j ] < histogram[ pos_min ] )
-//            {
-//                pos_min = j;
-//            }
-//        }
-
-//        if( pos_min != i )
-//        {
-//            temp = histogram[ i ];
-//            histogram[ i ] = histogram[ pos_min ];
-//            histogram[ pos_min ] = temp;
-//            adjacentSorted[ pos_min ] = _adjacentInLine[ i ];
-//        }
-//    }
-
-    //std::sort( histogram, histogram + _adjacentInLine.size() );
-
-    for( int i = 0; i < size; i++ )
+    for( int i = 0; i < size - 1; i++ )
     {
-        printf( "Posicao %d teve %d ocorrências do numero %d\n", i, histogram[ i ], _adjacentInLine[ i ] );
+        pos_min = i;//set pos_min to the current index of array
+
+        for( int j = i + 1; j < size; j++ )
+        {
+            if( histogram[ j ] < histogram[ pos_min ] )
+            {
+                pos_min = j;
+            }
+        }
+
+        if( pos_min != i )
+        {
+            temp = histogram[ i ];
+            histogram[ i ] = histogram[ pos_min ];
+            histogram[ pos_min ] = temp;
+            adjacentSorted[ pos_min ] = _adjacentInLine[ i ];
+        }
+    }
+
+    //std::sort( histogramMap.begin(), histogramMap.end() );
+
+    //for( int i = 0; i < 15; i++ )
+    //{
+        //printf( "Posicao %d teve %d ocorrências do numero %d\n", i, histogram[ size - 1 - i ], histogramMap[ histogram[ size - 1 - i ] ] );
+    //}
+
+    for( auto const& i : histogramMap )
+    {
+        printf("Key: %d - Value: %d\n", i.first, i.second );
     }
 }
 

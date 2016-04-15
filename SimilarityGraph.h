@@ -130,6 +130,8 @@ public:
      */
     bool getNextNodeInLine( int& index );
 
+    bool isStartNodeOnHorizontal( int index );
+
 private:
 
     /**

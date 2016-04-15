@@ -735,11 +735,26 @@ int SimilarityGraph::calcVal2PathSize(int index, int edge, int result)
 }
 
 
+bool SimilarityGraph::isStartNodeOnHorizontal( int index )
+{
+    int edge = _graph[ index ].value;
+    if( !CHECK_BIT( edge, 7 ) && CHECK_BIT( edge, 3 ) )
+    {
+        return true;
+    }
+    else
+    {
+        false;
+    }
+}
+
+
 bool SimilarityGraph::getNextNodeInLine( int& index )
 {
     int edge = _graph[ index ].value;
 
-    if( !CHECK_BIT( edge, 0 ) && !CHECK_BIT( edge, 1 ) && !CHECK_BIT( edge, 2 ) && CHECK_BIT( edge, 3 ) )
+    //if( !CHECK_BIT( edge, 0 ) && !CHECK_BIT( edge, 1 ) && !CHECK_BIT( edge, 2 ) && CHECK_BIT( edge, 3 ) )
+    if( CHECK_BIT( edge, 3 ) )
     {
         index++;
         return true;
