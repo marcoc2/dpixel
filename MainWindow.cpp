@@ -26,9 +26,9 @@ MainWindow::MainWindow( QWidget* parent ) :
     _graphScene( nullptr )
 {
     #ifdef _WIN32
-        _inputImage = new Image( "../pixel-art-remaster/Samples/metalslug.png" );
+    _inputImage = new Image( "../pixel-art-remaster/Samples/metalslug.png" );
     #else
-        _inputImage = new Image( "../Samples/sonic_3x.png" );
+    _inputImage = new Image( "../Samples/sonic_3x_part.png" );
     #endif
 
 
@@ -48,7 +48,7 @@ MainWindow::MainWindow( QWidget* parent ) :
     connect( _ui->radioButtonCRT, SIGNAL( clicked() ), this, SLOT( applyCRT() ) );
     connect( _ui->radioButtonVector, SIGNAL( clicked() ), this, SLOT( applyVector() ) );
 
-    connect( _ui->spinBoxNearestScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyNearest()) );
+    connect( _ui->spinBoxNearestScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyNearest() ) );
     connect( _ui->spinBoxScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyCRT() ) );
 
     enableFiltersFrame();
@@ -260,7 +260,8 @@ void MainWindow::applyNearest()
         return;
     }
 
-    QImage scaledImage( _inputImage->getQImage()->scaled( _ui->spinBoxNearestScaleFactor->value() * _inputImage->getQImage()->size() ) );
+    QImage scaledImage( _inputImage->getQImage()->scaled(
+                            _ui->spinBoxNearestScaleFactor->value() * _inputImage->getQImage()->size() ) );
 
     if( _resultScene != nullptr )
     {
@@ -407,7 +408,7 @@ void MainWindow::createSimilarityGraph()
             for( unsigned int t = 0; t < lines.size(); t = t + 2 )
             {
                 _graphScene->addLine( QLine( QPoint( lines[ t ].x, lines[ t ].y ), QPoint( lines[ t + 1 ].x,
-                                                                                     lines[ t + 1 ].y ) ), pen );
+                                                                                           lines[ t + 1 ].y ) ), pen );
             }
         }
     }
@@ -503,7 +504,8 @@ void MainWindow::resizeEvent( QResizeEvent* event )
                                   _ui->graphicsViewOriginal->pos().y() + _ui->graphicsViewOriginal->height() + 25 );
 
     _ui->labelSimilarityGraphView->move( _ui->labelSimilarityGraphView->pos().x(),
-                                         _ui->graphicsViewOriginal->pos().y() + _ui->graphicsViewOriginal->height() + 5 );
+                                         _ui->graphicsViewOriginal->pos().y() + _ui->graphicsViewOriginal->height() +
+                                         5 );
 
     _ui->graphicsView->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
                              _ui->graphicsView->pos().y() );
@@ -514,7 +516,7 @@ void MainWindow::resizeEvent( QResizeEvent* event )
     _ui->graphicsView->resize( width() / 1.75,
                                height() - 90 );
 
-    QWidget::resizeEvent(event);
+    QWidget::resizeEvent( event );
 }
 
 
@@ -550,7 +552,7 @@ void MainWindow::checkUpscale()
         }
     }
 
-    delete visited;
+    delete[] visited;
 
     createHistogram();
 }
@@ -558,17 +560,47 @@ void MainWindow::checkUpscale()
 
 void MainWindow::createHistogram()
 {
-    int* histogram = new int[ _adjacentInLine.size() ];
-    std::fill( histogram, histogram + _adjacentInLine.size(), 0 );
+    int size = _adjacentInLine.size();
+    int* histogram = new int[ size ]();
+    //std::fill( histogram, histogram + size, 0 );
+
+    int* adjacentSorted = new int[ size ]();
+
     for( auto const& i : _adjacentInLine )
     {
         histogram[ i ]++;
     }
 
-    std::sort( histogram, histogram + _adjacentInLine.size() );
+    //pos_min is short for position of min
+//    int pos_min, temp;
 
-    for( int i = 0; i < 10; i++ )
+//    for( int i = 0; i < size - 1; i++ )
+//    {
+//        pos_min = i;//set pos_min to the current index of array
+
+//        for( int j = i + 1; j < size; j++ )
+//        {
+//            if( histogram[ j ] < histogram[ pos_min ] )
+//            {
+//                pos_min = j;
+//            }
+//        }
+
+//        if( pos_min != i )
+//        {
+//            temp = histogram[ i ];
+//            histogram[ i ] = histogram[ pos_min ];
+//            histogram[ pos_min ] = temp;
+//            adjacentSorted[ pos_min ] = _adjacentInLine[ i ];
+//        }
+//    }
+
+    //std::sort( histogram, histogram + _adjacentInLine.size() );
+
+    for( int i = 0; i < size; i++ )
     {
-        printf( "%d\n", histogram[ _adjacentInLine.size() - i - 1] );
+        printf( "Posicao %d teve %d ocorrências do numero %d\n", i, histogram[ i ], _adjacentInLine[ i ] );
     }
 }
+
+
