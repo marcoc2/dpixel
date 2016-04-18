@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     Diagram.cpp \
     DiagramCell.cpp \
     Depixel/Vector/Utils.cpp \
-    Widgets/RenderArea.cpp
+    Widgets/RenderArea.cpp \
+    ImageOperations/CheckUpscale.cpp
 
 HEADERS  += MainWindow.h \
     Image.h \
@@ -58,7 +59,9 @@ HEADERS  += MainWindow.h \
     Diagram.h \
     DiagramCell.h \
     Depixel/Vector/Utils.h \
-    Widgets/RenderArea.h
+    Widgets/RenderArea.h \
+    ImageOperations/CheckUpscale.h \
+    gif.h
 
 FORMS    += MainWindow.ui
 

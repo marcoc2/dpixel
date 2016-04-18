@@ -33,6 +33,7 @@ private:
     Ui::MainWindow* _ui;
     Image* _inputImage;
     Image* _outputImage;
+    QString _currentFileName;
     SimilarityGraph* _similarityGraph;
     QAction* _openAct;
     QAction* _saveAct;
@@ -46,16 +47,17 @@ private:
     QGraphicsScene* _originalScene;
     QGraphicsScene* _graphScene;
 
-    std::vector< int > _adjacentInLine;
+    bool _isAnimatedGif;
 
-    //int _graphicsViewOriginalWidth;
-    //int _graphicsViewOriginalWidth;
 
     void createActions();
     void createMenus();
 
     void fillQGraphicsView( QImage& qimage, u_int scaleFactor = 8 );
     void fillQGraphicsViewOriginal( QImage& qimage, u_int scaleFactor = 8 );
+    void applyAndShowOutputImage( Filter& filter );
+    void reloadResizedImage( int resizedFactor );
+    void initialize();
 
 protected:
 
@@ -69,9 +71,7 @@ private Q_SLOTS:
     void loadOriginal();
     void enableFiltersFrame();
     void aboutDialog();
-    void fillLabels( Image image );
-
-    void applyAndShowOutputImage( Filter& filter );
+    void fillLabels( Image* image );
 
     void applyNearest();
     void applyHqx();
@@ -81,8 +81,7 @@ private Q_SLOTS:
     void applyScale2x();
     void applyEagle();
     void createSimilarityGraph();
-    void checkUpscale();
-    void createHistogram();
+    void saveAnimatedGif();
     void applyVector();
 };
 

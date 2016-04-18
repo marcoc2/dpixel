@@ -60,8 +60,8 @@ Image::Image( const char* fileName )
 
 Image::~Image()
 {
-    //delete _buffer;
-    //delete _qImage;
+    delete[] _buffer;
+    delete _qImage;
 }
 
 
@@ -207,9 +207,22 @@ Pixel* Image::getBuffer()
 }
 
 
+void Image::getBufferRGBA8( uint8_t* buffer)
+{
+    for( size_t i = 0; i < ( _width * _height ); i++ )
+    {
+        size_t j = i * 4;
+        buffer[ j ] = _buffer[ i ].red;
+        buffer[ j + 1 ] = _buffer[ i ].green;
+        buffer[ j + 2 ] = _buffer[ i ].blue;
+        buffer[ j + 3 ] = 255;
+    }
+}
+
+
 void Image::fillBufferRGB()
 {
-    #pragma omp for
+    //#pragma omp for
     for( u_int w = 0; w < _width; w++ )
     {
         for( u_int h = 0; h < _height; h++ )

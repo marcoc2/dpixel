@@ -29,6 +29,7 @@ public:
     QImage* getQImage();
     QImage* getQImageFromBuffer();
     Pixel* getBuffer();
+    void getBufferRGBA8( uint8_t* buffer);
     inline u_char pixel( u_int x, u_int y );
     void fillBufferRGB();
     void fillQImageRGB();
@@ -36,7 +37,6 @@ public:
     void getInterpolatedPixel( float i, float j, Pixel& interpolatedPixel );
     void interpolatePixels( const Pixel& a, const Pixel& b, float fraction,
                             Pixel& interpolatedPixel );
-
 
 private:
 

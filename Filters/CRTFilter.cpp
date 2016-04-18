@@ -20,7 +20,7 @@ CRTFilter::~CRTFilter()
 
 void CRTFilter::apply()
 {
-    applyShadowMask();
+    applyAppertureGrill();
     return;
 
 

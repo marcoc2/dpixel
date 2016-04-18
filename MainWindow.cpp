@@ -1,6 +1,12 @@
+#include <stdio.h>
+#include <sstream>
+
+#include "gif.h"
+
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QResizeEvent>
+#include <QImageReader>
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
@@ -14,30 +20,31 @@
 #include "Filters/Scale2xFilter.h"
 #include "Filters/EagleFilter.h"
 #include "Filters/CRTFilter.h"
-
-#include <stdio.h>
-#include <map>
+#include "ImageOperations/CheckUpscale.h"
 
 MainWindow::MainWindow( QWidget* parent ) :
     QMainWindow( parent ),
     _ui( new Ui::MainWindow ),
     _inputImage( nullptr ),
+    _outputImage( nullptr ),
+    _similarityGraph( nullptr ),
     _resultScene( nullptr ),
     _originalScene( nullptr ),
-    _graphScene( nullptr )
+    _graphScene( nullptr ),
+    _isAnimatedGif( false )
 {
     #ifdef _WIN32
     _inputImage = new Image( "../pixel-art-remaster/Samples/metalslug.png" );
     #else
-    _inputImage = new Image( "../Samples/sonic_3x_part.png" );
+    _inputImage = new Image( "../Samples/metalslug.png" );
     #endif
-
 
     _ui->setupUi( this );
 
     connect( _ui->testButton, SIGNAL( clicked() ), this, SLOT( createTest() ) );
     connect( _ui->loadImageButton, SIGNAL( clicked() ), this, SLOT( loadImage() ) );
     connect( _ui->saveImageButton, SIGNAL( clicked() ), this, SLOT( saveImage() ) );
+    connect( _ui->exportGIFButton, SIGNAL( clicked() ), this, SLOT( saveAnimatedGif() ) );
 
     connect( _ui->radioButtonOriginal, SIGNAL( clicked() ), this, SLOT( loadOriginal() ) );
     connect( _ui->radioButtonNearest, SIGNAL( clicked() ), this, SLOT( applyNearest() ) );
@@ -52,17 +59,12 @@ MainWindow::MainWindow( QWidget* parent ) :
     connect( _ui->spinBoxNearestScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyNearest() ) );
     connect( _ui->spinBoxScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyCRT() ) );
 
-    enableFiltersFrame();
-
     createActions();
     createMenus();
 
     if( !_inputImage->getQImage()->isNull() )
     {
-        fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
-        fillQGraphicsViewOriginal( *( _inputImage->getQImage() ), 6 );
-        createSimilarityGraph();
-        checkUpscale();
+        initialize();
     }
 }
 
@@ -116,16 +118,31 @@ void MainWindow::createMenus()
 
 void MainWindow::loadImage()
 {
-    QString fileName = QFileDialog::getOpenFileName( this,
+    _currentFileName = QFileDialog::getOpenFileName( this,
                                                      tr( "Open Image" ), "/home/",
-                                                     tr( "Image Files (*.png *.jpg *.bmp)" ) );
+                                                     tr( "Image Files (*.png *.jpg *.bmp *.gif)" ) );
 
-    if( fileName == 0 )
+    if( _currentFileName == 0 )
     {
         return;
     }
 
-    QImage* qimage = new QImage( fileName );
+    QImageReader qImageReader( _currentFileName );
+    if( qImageReader.supportsAnimation() )
+    {
+        if( qImageReader.imageCount() )
+        {
+            _isAnimatedGif = true;
+        }
+        std::stringstream s;
+        s << "Gif animado com " << qImageReader.imageCount() << " frames";
+        QMessageBox* dialog = new QMessageBox();
+        dialog->setWindowTitle( "Warning!" );
+        dialog->setText( s.str().c_str() );
+        dialog->show();
+    }
+
+    QImage* qimage = new QImage( _currentFileName );
 
     if( qimage->size().width() * qimage->size().height() > 160000 )
     {
@@ -138,17 +155,7 @@ void MainWindow::loadImage()
 
     _inputImage = new Image( qimage );
 
-    fillLabels( *_inputImage );
-
-    fillQGraphicsView( *qimage, 1 );
-
-    fillQGraphicsViewOriginal( *qimage, 6 );
-
-    createSimilarityGraph();
-
-    enableFiltersFrame();
-
-    _ui->radioButtonOriginal->setChecked( true );
+    initialize();
 }
 
 
@@ -245,12 +252,12 @@ void MainWindow::aboutDialog()
 }
 
 
-void MainWindow::fillLabels( Image image )
+void MainWindow::fillLabels( Image* image )
 {
     //_ui->LabelName = image.getName;
-    _ui->labelSize->setText( QString::number( image.getSize() ) );
-    _ui->labelWidth->setText( QString::number( image.getWidth() ) );
-    _ui->labelHeight->setText( QString::number( image.getHeight() ) );
+    _ui->labelSize->setText( QString::number( image->getSize() ) );
+    _ui->labelWidth->setText( QString::number( image->getWidth() ) );
+    _ui->labelHeight->setText( QString::number( image->getHeight() ) );
 }
 
 
@@ -321,7 +328,7 @@ void MainWindow::applyCRT()
         return;
     }
 
-    CRTFilter crtFilter( _inputImage, 900, 900, 1.0f ); //_ui->spinBoxScaleFactor->value() );
+    CRTFilter crtFilter( _inputImage, 10.0f ); //_ui->spinBoxScaleFactor->value() );
 
     applyAndShowOutputImage( crtFilter );
 }
@@ -377,9 +384,10 @@ void MainWindow::applyAndShowOutputImage( Filter& filter )
 
     if( _outputImage != nullptr )
     {
-        //delete _outputImage;
+        delete _outputImage;
     }
-    _outputImage = new Image( filter.getOutputImage()->getQImage() );
+
+    _outputImage = new Image( new QImage( *(filter.getOutputImage()->getQImage() ) ) );
 
     QImage* qimage = filter.getOutputImage()->getQImage();
     QPixmap pixmap = QPixmap::fromImage( *qimage );
@@ -393,6 +401,11 @@ void MainWindow::createSimilarityGraph()
     if( _inputImage == 0 )
     {
         return;
+    }
+
+    if( _similarityGraph != nullptr )
+    {
+        delete _similarityGraph;
     }
 
     _similarityGraph = new SimilarityGraph( _inputImage );
@@ -521,102 +534,95 @@ void MainWindow::resizeEvent( QResizeEvent* event )
 }
 
 
-void MainWindow::checkUpscale()
+void MainWindow::reloadResizedImage( int resizedFactor )
 {
-    bool* visited = new bool[ _similarityGraph->getWidth() * _similarityGraph->getHeight() ]();
-//    for(int i = 0; i < _similarityGraph->getWidth() * _similarityGraph->getHeight(); i++) {
-//        visited[i] = 0;
-//    }
-    //std::fill( visited, visited + ( _similarityGraph->getWidth() * _similarityGraph->getHeight() ), 0 );
-    int numberOfAdjacentNeighbors;
-
-    for( unsigned int i = 0; i < _similarityGraph->getHeight(); i++ )
+    if( resizedFactor <= 1 )
     {
-        for( unsigned int j = 0; j < _similarityGraph->getWidth(); j++ )
-        {
-            numberOfAdjacentNeighbors = 0;
-            if( !visited[ i * _similarityGraph->getWidth() + j ] )
-            {
-                visited[ i * _similarityGraph->getWidth() + j ] = true;
-                int index = i * _similarityGraph->getWidth() + j;
-
-                if( _similarityGraph->isStartNodeOnHorizontal( index ) )
-                {
-
-                    numberOfAdjacentNeighbors++;
-
-                    while( _similarityGraph->getNextNodeInLine( index ) )
-                    {
-                        visited[ index ] = true;
-                        numberOfAdjacentNeighbors++;
-                    }
-                    visited[ index ] = true;
-
-                    if( numberOfAdjacentNeighbors > 2 )
-                    {
-                        _adjacentInLine.push_back( numberOfAdjacentNeighbors );
-                    }
-                }
-            }
-        }
+        return;
     }
 
-    delete[] visited;
+    QImage* scaledImage = new QImage ( _inputImage->getQImage()->scaled(
+                                      1.0f / ( float ) resizedFactor * _inputImage->getQImage()->size() ) );
 
-    createHistogram();
+    delete _inputImage;
+
+    _inputImage = new Image( scaledImage );
 }
 
 
-void MainWindow::createHistogram()
+void MainWindow::initialize()
 {
-    int size = _adjacentInLine.size();
-    int* histogram = new int[ size ]();
-    std::map< int, int > histogramMap;
-    //std::fill( histogram, histogram + size, 0 );
+    createSimilarityGraph();
 
-    int* adjacentSorted = new int[ size ]();
-
-    for( auto const& i : _adjacentInLine )
+    int resizedFactor = CheckUpscale::checkUpscale( _similarityGraph );
+    if( resizedFactor > 1 )
     {
-        histogram[ i ]++;
-        histogramMap[ i ] = histogram[ i ];
+        reloadResizedImage( resizedFactor );
+        createSimilarityGraph();
+
+        QMessageBox* dialog = new QMessageBox();
+        dialog->setWindowTitle( "Warning!" );
+        std::stringstream s;
+        s << "The loaded image seems to be upscaled " << resizedFactor << " times.\nImage auto downscaled";
+        dialog->setText( s.str().c_str() );
+        dialog->show();
     }
 
-    //pos_min is short for position of min
-    int pos_min, temp;
+    fillLabels( _inputImage );
+    fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
+    fillQGraphicsViewOriginal( *( _inputImage->getQImage() ), 6 );
+    enableFiltersFrame();
 
-    for( int i = 0; i < size - 1; i++ )
+    _ui->radioButtonOriginal->setChecked( true );
+
+    if( _isAnimatedGif )
     {
-        pos_min = i;//set pos_min to the current index of array
-
-        for( int j = i + 1; j < size; j++ )
-        {
-            if( histogram[ j ] < histogram[ pos_min ] )
-            {
-                pos_min = j;
-            }
-        }
-
-        if( pos_min != i )
-        {
-            temp = histogram[ i ];
-            histogram[ i ] = histogram[ pos_min ];
-            histogram[ pos_min ] = temp;
-            adjacentSorted[ pos_min ] = _adjacentInLine[ i ];
-        }
+        _ui->exportGIFButton->setVisible( true );
     }
-
-    //std::sort( histogramMap.begin(), histogramMap.end() );
-
-    //for( int i = 0; i < 15; i++ )
-    //{
-        //printf( "Posicao %d teve %d ocorrências do numero %d\n", i, histogram[ size - 1 - i ], histogramMap[ histogram[ size - 1 - i ] ] );
-    //}
-
-    for( auto const& i : histogramMap )
+    else
     {
-        printf("Key: %d - Value: %d\n", i.first, i.second );
+        _ui->exportGIFButton->setVisible( false );
     }
 }
 
 
+void MainWindow::saveAnimatedGif()
+{
+    QString fileName = QFileDialog::getSaveFileName( this,
+                                                     tr( "Save Image" ), "/home/",
+                                                     tr( "Image Files (*.gif)" ) );
+
+    QImageReader qImageReader( _currentFileName );
+
+    std::vector< uint8_t* > bufferVector;
+    GifWriter gifWriter;
+    GifBegin( &gifWriter, fileName.toStdString().c_str(),
+              _inputImage->getWidth() * 4,
+              _inputImage->getHeight() * 4,
+              10 );
+
+    for( int i = 0; i < qImageReader.imageCount(); i++)
+    {
+        qImageReader.jumpToImage( i );
+        QImage* qFrame = new QImage( qImageReader.read() );
+        Image* originalFrame = new Image( qFrame );
+        XbrZFilter xbrZFilter( originalFrame, 4.0f );
+        xbrZFilter.apply();
+        Image* outputFrame = new Image( new QImage( *( xbrZFilter.getOutputImage()->getQImage() ) ) );
+
+        uint8_t* outputFrameBuffer = new uint8_t[ outputFrame->getWidth() * outputFrame->getHeight() * 4 ];
+        outputFrame->getBufferRGBA8( outputFrameBuffer );
+        bufferVector.push_back( outputFrameBuffer );
+        GifWriteFrame( &gifWriter,
+                       outputFrameBuffer,
+                       outputFrame->getWidth(),
+                       outputFrame->getHeight(), 10 );
+
+        delete originalFrame;
+    }
+
+    for( auto const& buffer : bufferVector )
+    {
+        delete[] buffer;
+    }
+}

@@ -456,6 +456,20 @@
     </property>
     <layout class="QGridLayout" name="gridLayout"/>
    </widget>
+   <widget class="QPushButton" name="exportGIFButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>460</y>
+      <width>121</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Export 
+Animated GIF</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -463,7 +477,7 @@
      <x>0</x>
      <y>0</y>
      <width>1223</width>
-     <height>21</height>
+     <height>29</height>
     </rect>
    </property>
   </widget>
