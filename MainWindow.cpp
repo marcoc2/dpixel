@@ -28,6 +28,7 @@ MainWindow::MainWindow( QWidget* parent ) :
     _inputImage( nullptr ),
     _outputImage( nullptr ),
     _similarityGraph( nullptr ),
+    _currentFilter( nullptr ),
     _resultScene( nullptr ),
     _originalScene( nullptr ),
     _graphScene( nullptr ),
@@ -72,6 +73,42 @@ MainWindow::MainWindow( QWidget* parent ) :
 MainWindow::~MainWindow()
 {
     delete _ui;
+}
+
+
+void MainWindow::initialize()
+{
+    createSimilarityGraph();
+
+    int resizedFactor = CheckUpscale::checkUpscale( _similarityGraph );
+    if( resizedFactor > 1 )
+    {
+        reloadResizedImage( resizedFactor );
+        createSimilarityGraph();
+
+        QMessageBox* dialog = new QMessageBox();
+        dialog->setWindowTitle( "Warning!" );
+        std::stringstream s;
+        s << "The loaded image seems to be upscaled " << resizedFactor << " times.\nImage auto downscaled";
+        dialog->setText( s.str().c_str() );
+        dialog->show();
+    }
+
+    fillLabels( _inputImage );
+    fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
+    fillQGraphicsViewOriginal( *( _inputImage->getQImage() ), 6 );
+    enableFiltersFrame();
+
+    _ui->radioButtonOriginal->setChecked( true );
+
+    if( _isAnimatedGif )
+    {
+        _ui->exportGIFButton->setVisible( true );
+    }
+    else
+    {
+        _ui->exportGIFButton->setVisible( false );
+    }
 }
 
 
@@ -127,30 +164,34 @@ void MainWindow::loadImage()
         return;
     }
 
-    QImageReader qImageReader( _currentFileName );
-    if( qImageReader.supportsAnimation() )
-    {
-        if( qImageReader.imageCount() )
-        {
-            _isAnimatedGif = true;
-        }
-        std::stringstream s;
-        s << "Gif animado com " << qImageReader.imageCount() << " frames";
-        QMessageBox* dialog = new QMessageBox();
-        dialog->setWindowTitle( "Warning!" );
-        dialog->setText( s.str().c_str() );
-        dialog->show();
-    }
-
     QImage* qimage = new QImage( _currentFileName );
 
-    if( qimage->size().width() * qimage->size().height() > 160000 )
+    if( qimage->size().width() * qimage->size().height() > 1500 * 1500 )
     {
         QMessageBox* dialog = new QMessageBox();
         dialog->setWindowTitle( "Warning!" );
         dialog->setText( "Image size too big! (Remember, it must be pixel art)" );
         dialog->show();
+
+        delete qimage;
         return;
+    }
+
+    QImageReader qImageReader( _currentFileName );
+    if( qImageReader.supportsAnimation() && ( qImageReader.imageCount() > 1 ) )
+    {
+        _isAnimatedGif = true;
+        std::stringstream s;
+        s << "Animated gif containing " << qImageReader.imageCount() << " frames" << std::endl;
+        s << "You can only preview the first frame, but can export the filtered animated gif";
+        QMessageBox* dialog = new QMessageBox();
+        dialog->setWindowTitle( "Warning!" );
+        dialog->setText( s.str().c_str() );
+        dialog->show();
+    }
+    else
+    {
+        _isAnimatedGif = false;
     }
 
     _inputImage = new Image( qimage );
@@ -223,6 +264,49 @@ void MainWindow::saveImage()
 }
 
 
+void MainWindow::saveAnimatedGif()
+{
+    QString fileName = QFileDialog::getSaveFileName( this,
+                                                     tr( "Save Image" ), "/home/",
+                                                     tr( "Image Files (*.gif)" ) );
+
+    QImageReader qImageReader( _currentFileName );
+
+    std::vector< uint8_t* > bufferVector;
+    GifWriter gifWriter;
+    GifBegin( &gifWriter, fileName.toStdString().c_str(),
+              _inputImage->getWidth() * _currentFilter->getScaleFactor(),
+              _inputImage->getHeight() * _currentFilter->getScaleFactor(),
+              10 );
+
+    for( int i = 0; i < qImageReader.imageCount(); i++)
+    {
+        qImageReader.jumpToImage( i );
+        QImage* qFrame = new QImage( qImageReader.read() );
+        Image* originalFrame = new Image( qFrame );
+        _currentFilter->setNewInputImage( originalFrame );
+        _currentFilter->apply();
+        Image* outputFrame = new Image( new QImage( *( _currentFilter->getOutputImage()->getQImage() ) ) );
+
+        const int rgbaSize = 4;
+        uint8_t* outputFrameBuffer = new uint8_t[ outputFrame->getWidth() * outputFrame->getHeight() * rgbaSize ];
+        outputFrame->getBufferRGBA8( outputFrameBuffer );
+        bufferVector.push_back( outputFrameBuffer );
+        GifWriteFrame( &gifWriter,
+                       outputFrameBuffer,
+                       outputFrame->getWidth(),
+                       outputFrame->getHeight(), 10 );
+
+        delete originalFrame;
+    }
+
+    for( auto const& buffer : bufferVector )
+    {
+        delete[] buffer;
+    }
+}
+
+
 void MainWindow::loadOriginal()
 {
     fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
@@ -289,7 +373,7 @@ void MainWindow::applyHqx()
         return;
     }
 
-    HqxFilter hqxFilter( _inputImage, 4.0f );
+    HqxFilter* hqxFilter = new HqxFilter( _inputImage, 4.0f );
 
     applyAndShowOutputImage( hqxFilter );
 }
@@ -302,7 +386,7 @@ void MainWindow::applyXbr()
         return;
     }
 
-    XbrFilter xbrFilter( _inputImage, 4.0f );
+    XbrFilter* xbrFilter = new XbrFilter( _inputImage, 4.0f );
 
     applyAndShowOutputImage( xbrFilter );
 }
@@ -315,7 +399,7 @@ void MainWindow::applyXbrZ()
         return;
     }
 
-    XbrZFilter xbrZFilter( _inputImage, 4.0f );
+    XbrZFilter* xbrZFilter = new XbrZFilter( _inputImage, 4.0f );
 
     applyAndShowOutputImage( xbrZFilter );
 }
@@ -328,7 +412,7 @@ void MainWindow::applyCRT()
         return;
     }
 
-    CRTFilter crtFilter( _inputImage, 10.0f ); //_ui->spinBoxScaleFactor->value() );
+    CRTFilter* crtFilter = new CRTFilter( _inputImage, 10.0f ); //_ui->spinBoxScaleFactor->value() );
 
     applyAndShowOutputImage( crtFilter );
 }
@@ -345,8 +429,8 @@ void MainWindow::applyScale2x()
 
     Image* output4xImage = new Image( _inputImage->getWidth() * 4, _inputImage->getHeight() * 4 );
 
-    Scale2xFilter* scale2xFilter = new Scale2xFilter( _inputImage, _outputImage );
-    scale2xFilter->apply2x( output4xImage );
+    _currentFilter = new Scale2xFilter( _inputImage, _outputImage );
+    static_cast< Scale2xFilter* >( _currentFilter )->apply2x( output4xImage );
 
     if( _resultScene != nullptr )
     {
@@ -367,15 +451,16 @@ void MainWindow::applyEagle()
         return;
     }
 
-    EagleFilter eagleFilter( _inputImage, 2.0f );
+    EagleFilter* eagleFilter = new EagleFilter( _inputImage, 2.0f );
 
     applyAndShowOutputImage( eagleFilter );
 }
 
 
-void MainWindow::applyAndShowOutputImage( Filter& filter )
+void MainWindow::applyAndShowOutputImage( Filter* filter )
 {
-    filter.apply();
+    _currentFilter = filter;
+    _currentFilter->apply();
 
     if( _resultScene != nullptr )
     {
@@ -387,9 +472,9 @@ void MainWindow::applyAndShowOutputImage( Filter& filter )
         delete _outputImage;
     }
 
-    _outputImage = new Image( new QImage( *(filter.getOutputImage()->getQImage() ) ) );
+    _outputImage = new Image( new QImage( *(filter->getOutputImage()->getQImage() ) ) );
 
-    QImage* qimage = filter.getOutputImage()->getQImage();
+    QImage* qimage = filter->getOutputImage()->getQImage();
     QPixmap pixmap = QPixmap::fromImage( *qimage );
     _resultScene->addPixmap( pixmap );
     _ui->graphicsView->setScene( _resultScene );
@@ -411,24 +496,31 @@ void MainWindow::createSimilarityGraph()
     _similarityGraph = new SimilarityGraph( _inputImage );
     _similarityGraph->createGraph();
 
-    _graphScene = new QGraphicsScene( this );
-    QPen pen( QBrush( Qt::SolidPattern ), 1.5 );
-
-    for( unsigned int i = 0; i < _inputImage->getHeight(); i++ )
+    // Limit graph size cause drawing a QScene is very costly
+    if( _similarityGraph->getWidth() * _similarityGraph->getHeight() < 160000 )
     {
-        for( unsigned int j = 0; j < _inputImage->getWidth(); j++ )
+        _graphScene = new QGraphicsScene( this );
+        QPen pen( QBrush( Qt::SolidPattern ), 1.5 );
+
+        for( unsigned int i = 0; i < _inputImage->getHeight(); i++ )
         {
-            std::vector< SimilarityGraph::Point2D > lines = _similarityGraph->getNodeLines( j, i );
-            for( unsigned int t = 0; t < lines.size(); t = t + 2 )
+            for( unsigned int j = 0; j < _inputImage->getWidth(); j++ )
             {
-                _graphScene->addLine( QLine( QPoint( lines[ t ].x, lines[ t ].y ), QPoint( lines[ t + 1 ].x,
-                                                                                           lines[ t + 1 ].y ) ), pen );
+                std::vector< SimilarityGraph::Point2D > lines = _similarityGraph->getNodeLines( j, i );
+                for( unsigned int t = 0; t < lines.size(); t = t + 2 )
+                {
+                    _graphScene->addLine( QLine( QPoint( lines[ t ].x, lines[ t ].y ), QPoint( lines[ t + 1 ].x,
+                                                                                               lines[ t + 1 ].y ) ), pen );
+                }
             }
         }
+        _ui->graphicsViewGraph->setScene( _graphScene );
     }
-
-
-    _ui->graphicsViewGraph->setScene( _graphScene );
+    else
+    {
+        _graphScene->clear();
+        _ui->graphicsViewGraph->items().clear();
+    }
 }
 
 
@@ -549,80 +641,3 @@ void MainWindow::reloadResizedImage( int resizedFactor )
     _inputImage = new Image( scaledImage );
 }
 
-
-void MainWindow::initialize()
-{
-    createSimilarityGraph();
-
-    int resizedFactor = CheckUpscale::checkUpscale( _similarityGraph );
-    if( resizedFactor > 1 )
-    {
-        reloadResizedImage( resizedFactor );
-        createSimilarityGraph();
-
-        QMessageBox* dialog = new QMessageBox();
-        dialog->setWindowTitle( "Warning!" );
-        std::stringstream s;
-        s << "The loaded image seems to be upscaled " << resizedFactor << " times.\nImage auto downscaled";
-        dialog->setText( s.str().c_str() );
-        dialog->show();
-    }
-
-    fillLabels( _inputImage );
-    fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
-    fillQGraphicsViewOriginal( *( _inputImage->getQImage() ), 6 );
-    enableFiltersFrame();
-
-    _ui->radioButtonOriginal->setChecked( true );
-
-    if( _isAnimatedGif )
-    {
-        _ui->exportGIFButton->setVisible( true );
-    }
-    else
-    {
-        _ui->exportGIFButton->setVisible( false );
-    }
-}
-
-
-void MainWindow::saveAnimatedGif()
-{
-    QString fileName = QFileDialog::getSaveFileName( this,
-                                                     tr( "Save Image" ), "/home/",
-                                                     tr( "Image Files (*.gif)" ) );
-
-    QImageReader qImageReader( _currentFileName );
-
-    std::vector< uint8_t* > bufferVector;
-    GifWriter gifWriter;
-    GifBegin( &gifWriter, fileName.toStdString().c_str(),
-              _inputImage->getWidth() * 4,
-              _inputImage->getHeight() * 4,
-              10 );
-
-    for( int i = 0; i < qImageReader.imageCount(); i++)
-    {
-        qImageReader.jumpToImage( i );
-        QImage* qFrame = new QImage( qImageReader.read() );
-        Image* originalFrame = new Image( qFrame );
-        XbrZFilter xbrZFilter( originalFrame, 4.0f );
-        xbrZFilter.apply();
-        Image* outputFrame = new Image( new QImage( *( xbrZFilter.getOutputImage()->getQImage() ) ) );
-
-        uint8_t* outputFrameBuffer = new uint8_t[ outputFrame->getWidth() * outputFrame->getHeight() * 4 ];
-        outputFrame->getBufferRGBA8( outputFrameBuffer );
-        bufferVector.push_back( outputFrameBuffer );
-        GifWriteFrame( &gifWriter,
-                       outputFrameBuffer,
-                       outputFrame->getWidth(),
-                       outputFrame->getHeight(), 10 );
-
-        delete originalFrame;
-    }
-
-    for( auto const& buffer : bufferVector )
-    {
-        delete[] buffer;
-    }
-}

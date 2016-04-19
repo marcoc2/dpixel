@@ -15,6 +15,8 @@ public:
     virtual void apply() = 0;
 
     Image* getOutputImage();
+    int getScaleFactor();
+    void setNewInputImage( Image* image );
 
 protected:
 

@@ -8,6 +8,7 @@
 #include <QGraphicsView>
 
 class SimilarityGraph;
+class Filter;
 
 namespace Ui
 {
@@ -35,6 +36,7 @@ private:
     Image* _outputImage;
     QString _currentFileName;
     SimilarityGraph* _similarityGraph;
+    Filter* _currentFilter;
     QAction* _openAct;
     QAction* _saveAct;
     QAction* _exitAct;
@@ -55,7 +57,7 @@ private:
 
     void fillQGraphicsView( QImage& qimage, u_int scaleFactor = 8 );
     void fillQGraphicsViewOriginal( QImage& qimage, u_int scaleFactor = 8 );
-    void applyAndShowOutputImage( Filter& filter );
+    void applyAndShowOutputImage( Filter *filter );
     void reloadResizedImage( int resizedFactor );
     void initialize();
 

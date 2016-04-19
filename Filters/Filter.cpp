@@ -90,7 +90,7 @@ void Filter::fillBufferRGB( u_char* inputBuffer )
     u_int width = _inputImage->getWidth();
     u_int height = _inputImage->getHeight();
 
-    #pragma omp for
+    #pragma omp parallel for
     for( u_int w = 0; w < width; w++ )
     {
         for( u_int h = 0; h < height; h++ )
@@ -126,3 +126,13 @@ void Filter::fillImageRGB( u_char* outputBuffer )
 }
 
 
+int Filter::getScaleFactor()
+{
+    return _scaleFactor;
+}
+
+
+void Filter::setNewInputImage( Image* image )
+{
+    _inputImage = image;
+}
