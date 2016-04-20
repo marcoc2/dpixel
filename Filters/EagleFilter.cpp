@@ -13,7 +13,7 @@ EagleFilter::~EagleFilter()
 
 void EagleFilter::apply()
 {
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for( u_int w = 0; w < _inputImage->getWidth(); w++ )
     {
         for( u_int h = 0; h < _inputImage->getHeight(); h++ )
@@ -38,8 +38,8 @@ void EagleFilter::apply()
             E2 = ( D == G ) && ( G == H ) ? G : E;
             E3 = ( H == I ) && ( I == F ) ? I : E;
 
-            u_char w_index = ( w ) * 2;
-            u_char h_index = ( h ) * 2;
+            int w_index = ( w ) * 2;
+            int h_index = ( h ) * 2;
             _outputImage->setPixel( w_index, h_index, E0 );
             _outputImage->setPixel( w_index + 1, h_index, E1 );
             _outputImage->setPixel( w_index, h_index + 1, E2 );

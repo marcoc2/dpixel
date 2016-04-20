@@ -47,8 +47,8 @@ void Scale2xFilter::apply()
                 E3 = E;
             }
 
-            u_char w_index = (w) * 2;
-            u_char h_index = (h) * 2;
+            int w_index = (w) * 2;
+            int h_index = (h) * 2;
             _outputImage->setPixel( w_index, h_index, E0 );
             _outputImage->setPixel( w_index + 1, h_index, E1 );
             _outputImage->setPixel( w_index, h_index + 1, E2 );
@@ -97,8 +97,8 @@ void Scale2xFilter::apply2x( Image* output4xImage )
                 E3 = E;
             }
 
-            u_char w_index = (w) * 2;
-            u_char h_index = (h) * 2;
+            int w_index = (w) * 2;
+            int h_index = (h) * 2;
             output4xImage->setPixel( w_index, h_index, E0 );
             output4xImage->setPixel( w_index + 1, h_index, E1 );
             output4xImage->setPixel( w_index, h_index + 1, E2 );

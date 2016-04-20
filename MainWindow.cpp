@@ -96,7 +96,7 @@ void MainWindow::initialize()
 
     fillLabels( _inputImage );
     fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
-    fillQGraphicsViewOriginal( *( _inputImage->getQImage() ), 6 );
+    fillQGraphicsViewOriginal( *( _inputImage->getQImage() ) );
     enableFiltersFrame();
 
     _ui->radioButtonOriginal->setChecked( true );
@@ -231,7 +231,7 @@ void MainWindow::fillQGraphicsView( QImage& qimage, u_int scaleFactor )
 }
 
 
-void MainWindow::fillQGraphicsViewOriginal( QImage& qimage, u_int scaleFactor )
+void MainWindow::fillQGraphicsViewOriginal( QImage& qimage )
 {
     if( &qimage == 0 )
     {
@@ -241,6 +241,11 @@ void MainWindow::fillQGraphicsViewOriginal( QImage& qimage, u_int scaleFactor )
     if( _originalScene != nullptr )
     {
         delete _originalScene;
+    }
+    int scaleFactor = 4;
+    if( qimage.width() * qimage.height() > 128 * 128 )
+    {
+        scaleFactor = 2;
     }
     _originalScene = new QGraphicsScene( this );
     QPixmap pixmap = QPixmap::fromImage( qimage.scaled( scaleFactor * qimage.size() ) );

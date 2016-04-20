@@ -56,7 +56,7 @@ private:
     void createMenus();
 
     void fillQGraphicsView( QImage& qimage, u_int scaleFactor = 8 );
-    void fillQGraphicsViewOriginal( QImage& qimage, u_int scaleFactor = 8 );
+    void fillQGraphicsViewOriginal(QImage& qimage );
     void applyAndShowOutputImage( Filter *filter );
     void reloadResizedImage( int resizedFactor );
     void initialize();
