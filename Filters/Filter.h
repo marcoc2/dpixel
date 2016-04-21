@@ -8,6 +8,7 @@ class Filter
 public:
     Filter( Image* inputImage, Image* outputImage );
     Filter( Image* inputImage, float scaleFactor );
+    Filter( Image* inputImage, float scaleFactor, int numberOfPasses );
     Filter( Image* inputImage, int outputWidth, int outputHeight );
     Filter( Image* inputImage );
     ~Filter();

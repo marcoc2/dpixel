@@ -7,9 +7,14 @@ class Scale2xFilter : public Filter
 {
 public:
     Scale2xFilter( Image* inputImage, Image* outputImage );
+    Scale2xFilter( Image* inputImage, int numberOfPasses );
     ~Scale2xFilter();
     void apply();
-    void apply2x( Image* ouput4xImage );
+    Image* pass( int step, Image* inputImage );
+
+private:
+
+    int _numberOfPasses;
 };
 
 #endif // SCALE2XFILTER_H

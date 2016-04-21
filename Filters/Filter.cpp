@@ -17,6 +17,13 @@ Filter::Filter( Image* inputImage, float scaleFactor ) :
 }
 
 
+Filter::Filter( Image* inputImage, float scaleFactor, int numberOfPasses ) :
+    _inputImage( inputImage ),
+    _scaleFactor( scaleFactor * numberOfPasses )
+{
+    // Multipass filter need to create the _outputImage
+}
+
 Filter::Filter( Image* inputImage, int outputWidth, int outputHeight ) :
     _inputImage( inputImage )
 {

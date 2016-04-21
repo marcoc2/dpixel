@@ -6,6 +6,14 @@ EagleFilter::EagleFilter( Image* inputImage, float scaleFactor ) :
 }
 
 
+EagleFilter::EagleFilter( Image* inputImage, int numberOfPasses ) :
+    Filter( inputImage, 2.0f,  numberOfPasses ),
+    _numberOfPasses( numberOfPasses )
+{
+
+}
+
+
 EagleFilter::~EagleFilter()
 {
 }
@@ -13,20 +21,36 @@ EagleFilter::~EagleFilter()
 
 void EagleFilter::apply()
 {
-    //#pragma omp parallel for
-    for( u_int w = 0; w < _inputImage->getWidth(); w++ )
+    Image* passOutput = _inputImage;
+    for( int i = 0; i < _numberOfPasses; i++ )
     {
-        for( u_int h = 0; h < _inputImage->getHeight(); h++ )
+        passOutput = pass( i, passOutput );
+    }
+
+    _outputImage = passOutput;
+    _outputImage->fillQImageRGB();
+}
+
+
+Image* EagleFilter::pass( int step, Image* inputImage )
+{
+    Image* outputImage = new Image( inputImage->getWidth() * 2,
+                                    inputImage->getHeight() * 2 );
+
+    #pragma omp parallel for
+    for( u_int w = 0; w < inputImage->getWidth(); w++ )
+    {
+        for( u_int h = 0; h < inputImage->getHeight(); h++ )
         {
-            const Pixel& A = _inputImage->getPixel( w - 1, h - 1 );
-            const Pixel& B = _inputImage->getPixel( w, h - 1 );
-            const Pixel& C = _inputImage->getPixel( w + 1, h - 1 );
-            const Pixel& D = _inputImage->getPixel( w - 1, h );
-            const Pixel& E = _inputImage->getPixel( w, h );
-            const Pixel& F = _inputImage->getPixel( w + 1, h );
-            const Pixel& G = _inputImage->getPixel( w - 1, h + 1 );
-            const Pixel& H = _inputImage->getPixel( w, h + 1 );
-            const Pixel& I = _inputImage->getPixel( w + 1, h + 1 );
+            const Pixel& A = inputImage->getPixel( w - 1, h - 1 );
+            const Pixel& B = inputImage->getPixel( w, h - 1 );
+            const Pixel& C = inputImage->getPixel( w + 1, h - 1 );
+            const Pixel& D = inputImage->getPixel( w - 1, h );
+            const Pixel& E = inputImage->getPixel( w, h );
+            const Pixel& F = inputImage->getPixel( w + 1, h );
+            const Pixel& G = inputImage->getPixel( w - 1, h + 1 );
+            const Pixel& H = inputImage->getPixel( w, h + 1 );
+            const Pixel& I = inputImage->getPixel( w + 1, h + 1 );
 
             Pixel E0;
             Pixel E1;
@@ -40,14 +64,19 @@ void EagleFilter::apply()
 
             int w_index = ( w ) * 2;
             int h_index = ( h ) * 2;
-            _outputImage->setPixel( w_index, h_index, E0 );
-            _outputImage->setPixel( w_index + 1, h_index, E1 );
-            _outputImage->setPixel( w_index, h_index + 1, E2 );
-            _outputImage->setPixel( w_index + 1, h_index + 1, E3 );
+            outputImage->setPixel( w_index, h_index, E0 );
+            outputImage->setPixel( w_index + 1, h_index, E1 );
+            outputImage->setPixel( w_index, h_index + 1, E2 );
+            outputImage->setPixel( w_index + 1, h_index + 1, E3 );
         }
     }
 
-    _outputImage->fillQImageRGB();
+    if( step > 0 )
+    {
+        delete inputImage;
+    }
+
+    return outputImage;
 }
 
 

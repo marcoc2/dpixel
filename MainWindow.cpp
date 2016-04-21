@@ -59,6 +59,8 @@ MainWindow::MainWindow( QWidget* parent ) :
 
     connect( _ui->spinBoxNearestScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyNearest() ) );
     connect( _ui->spinBoxScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyCRT() ) );
+    connect( _ui->scale2xSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyScale2x() ) );
+    connect( _ui->eagleSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyEagle() ) );
 
     createActions();
     createMenus();
@@ -425,38 +427,25 @@ void MainWindow::applyCRT()
 
 void MainWindow::applyScale2x()
 {
-    if( _inputImage == 0 )
+    if( _inputImage == 0 || !_ui->radioButtonScale2x->isChecked() )
     {
         return;
     }
 
-    _outputImage = new Image( _inputImage->getWidth() * 2, _inputImage->getHeight() * 2 );
+    Scale2xFilter* scale2xFilter = new Scale2xFilter( _inputImage, ( int ) _ui->scale2xSpinBox->value() );
 
-    Image* output4xImage = new Image( _inputImage->getWidth() * 4, _inputImage->getHeight() * 4 );
-
-    _currentFilter = new Scale2xFilter( _inputImage, _outputImage );
-    static_cast< Scale2xFilter* >( _currentFilter )->apply2x( output4xImage );
-
-    if( _resultScene != nullptr )
-    {
-        _resultScene = new QGraphicsScene( this );
-    }
-    _resultScene = new QGraphicsScene( this );
-    QImage* qimage = output4xImage->getQImage();
-    QPixmap pixmap = QPixmap::fromImage( *qimage );
-    _resultScene->addPixmap( pixmap );
-    _ui->graphicsView->setScene( _resultScene );
+    applyAndShowOutputImage( scale2xFilter );
 }
 
 
 void MainWindow::applyEagle()
 {
-    if( _inputImage == 0 )
+    if( _inputImage == 0 || !_ui->radioButtonEagle->isChecked() )
     {
         return;
     }
 
-    EagleFilter* eagleFilter = new EagleFilter( _inputImage, 2.0f );
+    EagleFilter* eagleFilter = new EagleFilter( _inputImage, ( int ) _ui->eagleSpinBox->value() );
 
     applyAndShowOutputImage( eagleFilter );
 }
