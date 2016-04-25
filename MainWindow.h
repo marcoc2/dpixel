@@ -78,6 +78,7 @@ private Q_SLOTS:
     void applyNearest();
     void applyHqx();
     void applyXbrZ();
+    void applyXbr();
     void applyCRT();
     void applyScale2x();
     void applyEagle();

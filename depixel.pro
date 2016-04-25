@@ -20,7 +20,7 @@ SOURCES += main.cpp\
     Image.cpp \
     Filters/Filter.cpp \
     Filters/hqx/HqxFilter.cpp \
-    Filters/xBR/xbr.cpp \
+    #Filters/xBR/xbr.cpp \
     Filters/xBR/XbrFilter.cpp \
     Filters/xBRZ/xbrz.cpp \
     Filters/xBRZ/XbrZFilter.cpp \
@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     Depixel/Vector/Utils.cpp \
     Widgets/RenderArea.cpp \
     ImageOperations/CheckUpscale.cpp \
-    Filters/Super2xSal.cpp
+    Filters/Super2xSal.cpp \
+    Filters/xBR/xbr.c
 
 HEADERS  += MainWindow.h \
     Image.h \
@@ -44,7 +45,7 @@ HEADERS  += MainWindow.h \
     Filters/hqx/hq4x.h \
     Filters/hqx/HqxCommon.h \
     Filters/hqx/HqxFilter.h \
-    Filters/hqx/xbr.h \
+    #Filters/hqx/xbr.h \
     Filters/xBR/XbrFilter.h \
     Filters/xBRZ/config.h \
     Filters/xBRZ/xbrz.h \
@@ -63,7 +64,8 @@ HEADERS  += MainWindow.h \
     Widgets/RenderArea.h \
     ImageOperations/CheckUpscale.h \
     gif.h \
-    Filters/Super2xSal.h
+    Filters/Super2xSal.h \
+    Filters/xBR/filters.h
 
 FORMS    += MainWindow.ui
 

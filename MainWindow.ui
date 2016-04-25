@@ -34,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>520</y>
+      <y>540</y>
       <width>96</width>
       <height>31</height>
      </rect>
@@ -47,7 +47,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>440</y>
+      <y>460</y>
       <width>96</width>
       <height>31</height>
      </rect>
@@ -60,7 +60,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>480</y>
+      <y>500</y>
       <width>96</width>
       <height>31</height>
      </rect>
@@ -211,7 +211,7 @@
       <x>10</x>
       <y>0</y>
       <width>151</width>
-      <height>421</height>
+      <height>451</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -282,7 +282,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>150</y>
+       <y>195</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -295,7 +295,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>200</y>
+       <y>240</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -308,7 +308,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>247</y>
+       <y>287</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -321,7 +321,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>350</y>
+       <y>390</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -334,7 +334,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>299</y>
+       <y>339</y>
        <width>61</width>
        <height>22</height>
       </rect>
@@ -347,7 +347,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>322</y>
+       <y>362</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -373,7 +373,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>223</y>
+       <y>263</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -401,7 +401,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>272</y>
+       <y>312</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -420,7 +420,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>272</y>
+       <y>312</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -456,7 +456,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>223</y>
+       <y>263</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -474,7 +474,7 @@
      <property name="geometry">
       <rect>
        <x>41</x>
-       <y>322</y>
+       <y>362</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -492,7 +492,7 @@
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>175</y>
+       <y>220</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -510,7 +510,7 @@
      <property name="geometry">
       <rect>
        <x>98</x>
-       <y>175</y>
+       <y>220</y>
        <width>42</width>
        <height>21</height>
       </rect>
@@ -529,7 +529,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>380</y>
+       <y>420</y>
        <width>135</width>
        <height>25</height>
       </rect>
@@ -538,6 +538,80 @@
       <string>SuperSaI2x</string>
      </property>
     </widget>
+    <widget class="QSpinBox" name="xBRSpinBox">
+     <property name="geometry">
+      <rect>
+       <x>98</x>
+       <y>174</y>
+       <width>42</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>2</number>
+     </property>
+     <property name="maximum">
+      <number>4</number>
+     </property>
+     <property name="value">
+      <number>4</number>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButtonXbr">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>149</y>
+       <width>113</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>xBR</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>174</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Factor:</string>
+     </property>
+    </widget>
+    <zorder>labelFilter</zorder>
+    <zorder>radioButtonHqx</zorder>
+    <zorder>radioButtonOriginal</zorder>
+    <zorder>radioButtonNearest</zorder>
+    <zorder>radioButtonXbrZ</zorder>
+    <zorder>radioButtonScale2x</zorder>
+    <zorder>radioButtonEagle</zorder>
+    <zorder>radioButtonVector</zorder>
+    <zorder>radioButtonCRT</zorder>
+    <zorder>spinBoxScaleFactor</zorder>
+    <zorder>spinBoxNearestScaleFactor</zorder>
+    <zorder>scale2xSpinBox</zorder>
+    <zorder>eagleSpinBox</zorder>
+    <zorder>label_2</zorder>
+    <zorder>label_4</zorder>
+    <zorder>label</zorder>
+    <zorder>label_3</zorder>
+    <zorder>label_5</zorder>
+    <zorder>xBRZSpinBox</zorder>
+    <zorder>radioButtonSuperSaI2x</zorder>
+    <zorder>graphicsViewOriginal</zorder>
+    <zorder>xBRSpinBox</zorder>
+    <zorder>radioButtonXbr</zorder>
+    <zorder>label_6</zorder>
    </widget>
    <widget class="QGraphicsView" name="graphicsViewOriginal">
     <property name="geometry">
@@ -613,9 +687,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>560</y>
+      <y>580</y>
       <width>121</width>
-      <height>51</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -630,7 +704,7 @@ Animated GIF</string>
      <x>0</x>
      <y>0</y>
      <width>1223</width>
-     <height>28</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

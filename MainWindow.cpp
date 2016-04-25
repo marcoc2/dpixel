@@ -51,6 +51,7 @@ MainWindow::MainWindow( QWidget* parent ) :
     connect( _ui->radioButtonOriginal, SIGNAL( clicked() ), this, SLOT( loadOriginal() ) );
     connect( _ui->radioButtonNearest, SIGNAL( clicked() ), this, SLOT( applyNearest() ) );
     connect( _ui->radioButtonHqx, SIGNAL( clicked() ), this, SLOT( applyHqx() ) );
+    connect( _ui->radioButtonXbr, SIGNAL( clicked() ), this, SLOT( applyXbr() ) );
     connect( _ui->radioButtonXbrZ, SIGNAL( clicked() ), this, SLOT( applyXbrZ() ) );
     connect( _ui->radioButtonScale2x, SIGNAL( clicked() ), this, SLOT( applyScale2x() ) );
     connect( _ui->radioButtonEagle, SIGNAL( clicked() ), this, SLOT( applyEagle() ) );
@@ -63,6 +64,7 @@ MainWindow::MainWindow( QWidget* parent ) :
     connect( _ui->scale2xSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyScale2x() ) );
     connect( _ui->eagleSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyEagle() ) );
     connect( _ui->xBRZSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbrZ() ) );
+    connect( _ui->xBRSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbr() ) );
 
     createActions();
     createMenus();
@@ -400,6 +402,19 @@ void MainWindow::applyXbrZ()
     XbrZFilter* xbrZFilter = new XbrZFilter( _inputImage, _ui->xBRZSpinBox->value() );
 
     applyAndShowOutputImage( xbrZFilter );
+}
+
+
+void MainWindow::applyXbr()
+{
+    if( _inputImage == 0 || !_ui->radioButtonXbr->isChecked() )
+    {
+        return;
+    }
+
+    XbrFilter* xbrFilter = new XbrFilter( _inputImage, _ui->xBRSpinBox->value() );
+
+    applyAndShowOutputImage( xbrFilter );
 }
 
 
