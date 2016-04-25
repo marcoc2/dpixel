@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     DiagramCell.cpp \
     Depixel/Vector/Utils.cpp \
     Widgets/RenderArea.cpp \
-    ImageOperations/CheckUpscale.cpp
+    ImageOperations/CheckUpscale.cpp \
+    Filters/Super2xSal.cpp
 
 HEADERS  += MainWindow.h \
     Image.h \
@@ -61,7 +62,8 @@ HEADERS  += MainWindow.h \
     Depixel/Vector/Utils.h \
     Widgets/RenderArea.h \
     ImageOperations/CheckUpscale.h \
-    gif.h
+    gif.h \
+    Filters/Super2xSal.h
 
 FORMS    += MainWindow.ui
 

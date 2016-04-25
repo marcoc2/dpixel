@@ -22,6 +22,7 @@ public:
     bool load();
     Pixel& getPixel( u_int x, u_int y );
     void setPixel( u_int x, u_int y, Pixel pixel );
+    void setPixel( u_int index, Pixel pixel );
     u_int getSize();
     u_int getWidth();
     u_int getHeight();
@@ -33,6 +34,7 @@ public:
     inline u_char pixel( u_int x, u_int y );
     void fillBufferRGB();
     void fillQImageRGB();
+    void convertBufferToRGB565( uint16_t* outputBuffer );
     void createTest();
     void getInterpolatedPixel( float i, float j, Pixel& interpolatedPixel );
     void interpolatePixels( const Pixel& a, const Pixel& b, float fraction,

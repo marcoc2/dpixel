@@ -93,9 +93,17 @@ void Image::setPixel( u_int x, u_int y, Pixel pixel )
     }
 
     _buffer[ ( y * _widthStep ) + ( x ) ] = pixel;
-//    _buffer[ index ].red = 255;
-//    _buffer[ index ].green = 0;
-//    _buffer[ index ].blue = 0;
+}
+
+
+void Image::setPixel( u_int index, Pixel pixel )
+{
+    if( index < 0 || index > _size )
+    {
+        return;
+    }
+
+    _buffer[ index ] = pixel;
 }
 
 
@@ -251,6 +259,27 @@ void Image::fillQImageRGB()
                 _buffer[ index ].blue );
 
             _qImage->setPixel( w, h, pixelRGB );
+        }
+    }
+}
+
+
+void Image::convertBufferToRGB565( uint16_t* outputBuffer )
+{
+    for( u_int w = 0; w < _width; w++ )
+    {
+        for( u_int h = 0; h < _height; h++ )
+        {
+            unsigned int index = ( h * _widthStep ) + ( w );
+            int red = _buffer[ index ].red & 0xFF;
+            int green = _buffer[ index ].green & 0xFF;
+            int blue =  _buffer[ index ].blue & 0xFF;
+
+            uint16_t  B = (blue >> 3) & 0x001F;
+            uint16_t  G = ((green >> 2) < 5) & 0x07E0;
+            uint16_t  R = ((red >> 3) < 11) & 0xF800;
+
+            outputBuffer[ index ] = ( R | G | B );
         }
     }
 }

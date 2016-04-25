@@ -211,7 +211,7 @@
       <x>10</x>
       <y>0</y>
       <width>151</width>
-      <height>391</height>
+      <height>421</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -278,10 +278,7 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QRadioButton" name="radioButtonXbr">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QRadioButton" name="radioButtonXbrZ">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -291,27 +288,14 @@
       </rect>
      </property>
      <property name="text">
-      <string>xBR 4x</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonXbrZ">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>180</y>
-       <width>113</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>xBRZ 4x</string>
+      <string>xBRZ</string>
      </property>
     </widget>
     <widget class="QRadioButton" name="radioButtonScale2x">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>210</y>
+       <y>200</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -324,7 +308,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>257</y>
+       <y>247</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -337,7 +321,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>360</y>
+       <y>350</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -350,7 +334,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>309</y>
+       <y>299</y>
        <width>61</width>
        <height>22</height>
       </rect>
@@ -363,7 +347,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>332</y>
+       <y>322</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -389,7 +373,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>233</y>
+       <y>223</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -417,7 +401,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>282</y>
+       <y>272</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -436,7 +420,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>282</y>
+       <y>272</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -472,7 +456,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>233</y>
+       <y>223</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -490,7 +474,7 @@
      <property name="geometry">
       <rect>
        <x>41</x>
-       <y>332</y>
+       <y>322</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -502,6 +486,56 @@
      </property>
      <property name="text">
       <string>Factor:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>175</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Factor:</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="xBRZSpinBox">
+     <property name="geometry">
+      <rect>
+       <x>98</x>
+       <y>175</y>
+       <width>42</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>4</number>
+     </property>
+     <property name="maximum">
+      <number>5</number>
+     </property>
+     <property name="value">
+      <number>4</number>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButtonSuperSaI2x">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>380</y>
+       <width>135</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>SuperSaI2x</string>
      </property>
     </widget>
    </widget>
@@ -596,7 +630,7 @@ Animated GIF</string>
      <x>0</x>
      <y>0</y>
      <width>1223</width>
-     <height>29</height>
+     <height>28</height>
     </rect>
    </property>
   </widget>

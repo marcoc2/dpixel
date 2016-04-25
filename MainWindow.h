@@ -77,11 +77,11 @@ private Q_SLOTS:
 
     void applyNearest();
     void applyHqx();
-    void applyXbr();
     void applyXbrZ();
     void applyCRT();
     void applyScale2x();
     void applyEagle();
+    void applySuperSaI2x();
     void createSimilarityGraph();
     void saveAnimatedGif();
     void applyVector();

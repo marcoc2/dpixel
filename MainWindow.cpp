@@ -20,6 +20,7 @@
 #include "Filters/Scale2xFilter.h"
 #include "Filters/EagleFilter.h"
 #include "Filters/CRTFilter.h"
+#include "Filters/Super2xSal.h"
 #include "ImageOperations/CheckUpscale.h"
 
 MainWindow::MainWindow( QWidget* parent ) :
@@ -50,17 +51,18 @@ MainWindow::MainWindow( QWidget* parent ) :
     connect( _ui->radioButtonOriginal, SIGNAL( clicked() ), this, SLOT( loadOriginal() ) );
     connect( _ui->radioButtonNearest, SIGNAL( clicked() ), this, SLOT( applyNearest() ) );
     connect( _ui->radioButtonHqx, SIGNAL( clicked() ), this, SLOT( applyHqx() ) );
-    connect( _ui->radioButtonXbr, SIGNAL( clicked() ), this, SLOT( applyXbr() ) );
     connect( _ui->radioButtonXbrZ, SIGNAL( clicked() ), this, SLOT( applyXbrZ() ) );
     connect( _ui->radioButtonScale2x, SIGNAL( clicked() ), this, SLOT( applyScale2x() ) );
     connect( _ui->radioButtonEagle, SIGNAL( clicked() ), this, SLOT( applyEagle() ) );
     connect( _ui->radioButtonCRT, SIGNAL( clicked() ), this, SLOT( applyCRT() ) );
     connect( _ui->radioButtonVector, SIGNAL( clicked() ), this, SLOT( applyVector() ) );
+    connect( _ui->radioButtonSuperSaI2x, SIGNAL( clicked() ), this, SLOT( applySuperSaI2x() ) );
 
     connect( _ui->spinBoxNearestScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyNearest() ) );
     connect( _ui->spinBoxScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyCRT() ) );
     connect( _ui->scale2xSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyScale2x() ) );
     connect( _ui->eagleSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyEagle() ) );
+    connect( _ui->xBRZSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbrZ() ) );
 
     createActions();
     createMenus();
@@ -307,6 +309,8 @@ void MainWindow::saveAnimatedGif()
         delete originalFrame;
     }
 
+    GifEnd( &gifWriter );
+
     for( auto const& buffer : bufferVector )
     {
         delete[] buffer;
@@ -386,27 +390,14 @@ void MainWindow::applyHqx()
 }
 
 
-void MainWindow::applyXbr()
-{
-    if( _inputImage == 0 )
-    {
-        return;
-    }
-
-    XbrFilter* xbrFilter = new XbrFilter( _inputImage, 4.0f );
-
-    applyAndShowOutputImage( xbrFilter );
-}
-
-
 void MainWindow::applyXbrZ()
 {
-    if( _inputImage == 0 )
+    if( _inputImage == 0 || !_ui->radioButtonXbrZ->isChecked() )
     {
         return;
     }
 
-    XbrZFilter* xbrZFilter = new XbrZFilter( _inputImage, 4.0f );
+    XbrZFilter* xbrZFilter = new XbrZFilter( _inputImage, _ui->xBRZSpinBox->value() );
 
     applyAndShowOutputImage( xbrZFilter );
 }
@@ -515,6 +506,19 @@ void MainWindow::createSimilarityGraph()
         _graphScene->clear();
         _ui->graphicsViewGraph->items().clear();
     }
+}
+
+
+void MainWindow::applySuperSaI2x()
+{
+    if( _inputImage == 0 )
+    {
+        return;
+    }
+
+    Super2xSal* super2xSal = new Super2xSal( _inputImage, 1 );
+
+    applyAndShowOutputImage( super2xSal );
 }
 
 
