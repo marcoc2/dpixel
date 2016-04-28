@@ -15,11 +15,14 @@ class CheckUpscaleWindow : public QDialog
     Q_OBJECT
 public:
     CheckUpscaleWindow( QWidget *parent, Image* image );
+    ~CheckUpscaleWindow();
 
 private:
 
+    void drawGridOnImage( int resizedFactor );
+
     Ui::CheckUpscaleWindow* _ui;
-    Image* _image;
+    Image* _copiedImage;
     Image* _resizedImage;
     QGraphicsScene* _imageScene;
 

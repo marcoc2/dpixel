@@ -102,7 +102,29 @@ void MainWindow::initialize()
     }
     else
     {
-        new CheckUpscaleWindow( this, _inputImage );
+        const int limit = 100;
+        if( _inputImage->getSize() < limit * limit )
+        {
+            new CheckUpscaleWindow( this, new Image( _inputImage->getQImage() ) );
+        }
+        else
+        {
+            int midX = _inputImage->getWidth() / 2;
+            int midY = _inputImage->getHeight() / 2;
+            Image* cropedImage = new Image( limit, limit );
+            for( size_t j = 0; j < limit; j++ )
+            {
+                for( size_t i = 0; i < limit; i++ )
+                {
+                    int i_ = i + midX - limit / 2;
+                    int j_ = j + midY - limit / 2;
+                    const Pixel& pixel = _inputImage->getPixel( i_, j_ );
+                    cropedImage->setPixel( i, j, pixel );
+                }
+            }
+            cropedImage->fillQImageRGB();
+            new CheckUpscaleWindow( this, cropedImage );
+        }
     }
 
     fillLabels( _inputImage );

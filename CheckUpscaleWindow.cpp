@@ -10,7 +10,7 @@
 CheckUpscaleWindow::CheckUpscaleWindow( QWidget *parent, Image* image ) :
     QDialog( parent ),
     _ui( new Ui::CheckUpscaleWindow ),
-    _image( image ),
+    _copiedImage( image ),
     _resizedImage( nullptr ),
     _imageScene( nullptr )
 {
@@ -19,12 +19,23 @@ CheckUpscaleWindow::CheckUpscaleWindow( QWidget *parent, Image* image ) :
     connect( _ui->okPushButton, SIGNAL( clicked() ), this, SLOT( okButtonCallback() ) );
     connect( _ui->downscaleSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( downscaleImage() ) );
 
+    QImage* scaledImage = new QImage ( _copiedImage->getQImage()->scaled( SCALE_FACTOR * _copiedImage->getQImage()->size() ) );
+    _resizedImage = new Image( scaledImage );
+    drawGridOnImage( 1 );
+
     _imageScene = new QGraphicsScene( this );
-    QPixmap pixmap = QPixmap::fromImage( _image->getQImage()->scaled( _image->getQImage()->size() * SCALE_FACTOR ) );
+    QPixmap pixmap = QPixmap::fromImage( *( _resizedImage->getQImage() ) );
     _imageScene->addPixmap( pixmap );
     _ui->graphicsView->setScene( _imageScene );
 
     show();
+}
+
+
+CheckUpscaleWindow::~CheckUpscaleWindow()
+{
+    delete _resizedImage;
+    delete _copiedImage;
 }
 
 
@@ -42,15 +53,19 @@ void CheckUpscaleWindow::okButtonCallback()
 void CheckUpscaleWindow::downscaleImage()
 {
     int resizedFactor = _ui->downscaleSpinBox->value();
-    QImage* scaledImage = new QImage ( _image->getQImage()->scaled(
-                                      1.0f / ( float ) resizedFactor * _image->getQImage()->size() ) );
+    QImage* scaledImage = new QImage ( _copiedImage->getQImage()->scaled(
+                                      1.0f / ( float ) resizedFactor * _copiedImage->getQImage()->size() ) );
 
     if( _resizedImage )
     {
         delete _resizedImage;
     }
 
+    scaledImage = new QImage( scaledImage->scaled( scaledImage->size() * SCALE_FACTOR * resizedFactor ) );
+
     _resizedImage = new Image( scaledImage );
+
+    drawGridOnImage( resizedFactor );
 
     if( _imageScene != nullptr )
     {
@@ -58,8 +73,29 @@ void CheckUpscaleWindow::downscaleImage()
     }
 
     _imageScene = new QGraphicsScene( this );
-    QPixmap pixmap = QPixmap::fromImage(
-                _resizedImage->getQImage()->scaled( _resizedImage->getQImage()->size() * SCALE_FACTOR * resizedFactor ) );
+    QPixmap pixmap = QPixmap::fromImage( *( _resizedImage->getQImage() ) );
     _imageScene->addPixmap( pixmap );
     _ui->graphicsView->setScene( _imageScene );
+}
+
+
+void CheckUpscaleWindow::drawGridOnImage( int resizedFactor )
+{
+    for( size_t i = 0; i < _resizedImage->getWidth(); i = i + ( SCALE_FACTOR * resizedFactor ) )
+    {
+        for( size_t j = 0; j < _resizedImage->getHeight(); j++ )
+        {
+            _resizedImage->setPixel( i, j, Pixel( 0, 0, 0 ) );
+        }
+    }
+
+    for( size_t j = 0; j < _resizedImage->getHeight(); j = j + SCALE_FACTOR * resizedFactor )
+    {
+        for( size_t i = 0; i < _resizedImage->getWidth(); i++ )
+        {
+            _resizedImage->setPixel( i, j, Pixel( 0, 0, 0 ) );
+        }
+    }
+
+    _resizedImage->fillQImageRGB();
 }

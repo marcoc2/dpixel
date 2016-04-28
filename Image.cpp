@@ -20,7 +20,7 @@ Image::Image( u_int width, u_int height ) :
     _widthStep( width )
 {
     _qImage = new QImage( width, height, QImage::Format_RGB888 ),
-    _nChannels = _qImage->depth() / sizeof( uchar );
+    _nChannels = _qImage->depth() / 8; //sizeof(uchar);
     _buffer = new Pixel[ _size ];
 }
 
@@ -85,20 +85,20 @@ bool Image::load()
 
 void Image::setPixel( u_int x, u_int y, Pixel pixel )
 {
-    int index = ( y * _widthStep ) + x;
+    uint index = ( y * _widthStep ) + x;
 
-    if( index < 0 || index > static_cast< int >( _size ) )
+    if( index > _size )
     {
         return;
     }
 
-    _buffer[ ( y * _widthStep ) + ( x ) ] = pixel;
+    _buffer[ index ] = pixel;
 }
 
 
 void Image::setPixel( u_int index, Pixel pixel )
 {
-    if( index < 0 || index > _size )
+    if( index > _size )
     {
         return;
     }
@@ -109,14 +109,14 @@ void Image::setPixel( u_int index, Pixel pixel )
 
 Pixel& Image::getPixel( u_int x, u_int y )
 {
-    int index = ( y * _widthStep ) + x;
+    uint index = ( y * _widthStep ) + x;
 
-    if( index < 0 || index > static_cast< int >( _size ) )
+    if( index >  _size )
     {
         return _buffer[ 0 ];
     }
 
-    return ( _buffer[ index ] );
+    return _buffer[ index ];
 }
 
 
