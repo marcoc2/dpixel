@@ -27,7 +27,7 @@ Image* Super2xSal::pass( int step, Image* inputImage )
 
     uint16* bufferRGB565 = new uint16[ inputImage->getWidth() * inputImage->getHeight() ];
     inputImage->convertBufferToRGB565( bufferRGB565 );
-    uint8* srcPtr = reinterpret_cast< uint8* >( bufferRGB565 );
+    uint8* srcPtr = ( uint8* )( bufferRGB565 );
     uint32 srcPitch = inputImage->getWidthStep();
     uint8* deltaPtr;
     int width = inputImage->getWidth();

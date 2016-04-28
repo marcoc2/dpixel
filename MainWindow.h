@@ -29,6 +29,8 @@ public:
     explicit MainWindow( QWidget* parent = 0 );
     ~MainWindow();
 
+    void downscaleInputImage( int factor );
+
 private:
 
     Ui::MainWindow* _ui;

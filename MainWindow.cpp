@@ -9,6 +9,7 @@
 #include <QImageReader>
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
+#include "CheckUpscaleWindow.h"
 
 #include "Widgets/RenderArea.h"
 
@@ -84,9 +85,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::initialize()
 {
-    createSimilarityGraph();
+    //createSimilarityGraph();
 
-    int resizedFactor = CheckUpscale::checkUpscale( _similarityGraph );
+    int resizedFactor = 1;//CheckUpscale::checkUpscale( _similarityGraph );
     if( resizedFactor > 1 )
     {
         reloadResizedImage( resizedFactor );
@@ -98,6 +99,10 @@ void MainWindow::initialize()
         s << "The loaded image seems to be upscaled " << resizedFactor << " times.\nImage auto downscaled";
         dialog->setText( s.str().c_str() );
         dialog->show();
+    }
+    else
+    {
+        new CheckUpscaleWindow( this, _inputImage );
     }
 
     fillLabels( _inputImage );
@@ -654,3 +659,11 @@ void MainWindow::reloadResizedImage( int resizedFactor )
     _inputImage = new Image( scaledImage );
 }
 
+
+void MainWindow::downscaleInputImage( int factor )
+{
+    reloadResizedImage( factor );
+
+    fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
+    fillQGraphicsViewOriginal( *( _inputImage->getQImage() ) );
+}

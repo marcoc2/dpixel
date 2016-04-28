@@ -318,6 +318,9 @@
      </property>
     </widget>
     <widget class="QRadioButton" name="radioButtonVector">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -588,30 +591,6 @@
       <string>Factor:</string>
      </property>
     </widget>
-    <zorder>labelFilter</zorder>
-    <zorder>radioButtonHqx</zorder>
-    <zorder>radioButtonOriginal</zorder>
-    <zorder>radioButtonNearest</zorder>
-    <zorder>radioButtonXbrZ</zorder>
-    <zorder>radioButtonScale2x</zorder>
-    <zorder>radioButtonEagle</zorder>
-    <zorder>radioButtonVector</zorder>
-    <zorder>radioButtonCRT</zorder>
-    <zorder>spinBoxScaleFactor</zorder>
-    <zorder>spinBoxNearestScaleFactor</zorder>
-    <zorder>scale2xSpinBox</zorder>
-    <zorder>eagleSpinBox</zorder>
-    <zorder>label_2</zorder>
-    <zorder>label_4</zorder>
-    <zorder>label</zorder>
-    <zorder>label_3</zorder>
-    <zorder>label_5</zorder>
-    <zorder>xBRZSpinBox</zorder>
-    <zorder>radioButtonSuperSaI2x</zorder>
-    <zorder>graphicsViewOriginal</zorder>
-    <zorder>xBRSpinBox</zorder>
-    <zorder>radioButtonXbr</zorder>
-    <zorder>label_6</zorder>
    </widget>
    <widget class="QGraphicsView" name="graphicsViewOriginal">
     <property name="geometry">

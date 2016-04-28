@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     Widgets/RenderArea.cpp \
     ImageOperations/CheckUpscale.cpp \
     Filters/Super2xSal.cpp \
-    Filters/xBR/xbr.c
+    Filters/xBR/xbr.c \
+    CheckUpscaleWindow.cpp
 
 HEADERS  += MainWindow.h \
     Image.h \
@@ -65,9 +66,11 @@ HEADERS  += MainWindow.h \
     ImageOperations/CheckUpscale.h \
     gif.h \
     Filters/Super2xSal.h \
-    Filters/xBR/filters.h
+    Filters/xBR/filters.h \
+    CheckUpscaleWindow.h
 
-FORMS    += MainWindow.ui
+FORMS    += MainWindow.ui \
+    CheckUpscaleWindow.ui
 
 DISTFILES += \
     Doc/uncrustify.cfg \
