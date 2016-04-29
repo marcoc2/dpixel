@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     ImageOperations/CheckUpscale.cpp \
     Filters/Super2xSal.cpp \
     Filters/xBR/xbr.c \
-    CheckUpscaleWindow.cpp
+    CheckUpscaleWindow.cpp \
+    GifSaver.cpp
 
 HEADERS  += MainWindow.h \
     Image.h \
@@ -67,7 +68,8 @@ HEADERS  += MainWindow.h \
     gif.h \
     Filters/Super2xSal.h \
     Filters/xBR/filters.h \
-    CheckUpscaleWindow.h
+    CheckUpscaleWindow.h \
+    GifSaver.h
 
 FORMS    += MainWindow.ui \
     CheckUpscaleWindow.ui

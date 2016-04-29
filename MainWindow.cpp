@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <sstream>
 
-#include "gif.h"
-
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QResizeEvent>
@@ -24,6 +22,7 @@
 #include "Filters/CRTFilter.h"
 #include "Filters/Super2xSal.h"
 #include "ImageOperations/CheckUpscale.h"
+#include "GifSaver.h"
 
 MainWindow::MainWindow( QWidget* parent ) :
     QMainWindow( parent ),
@@ -311,46 +310,21 @@ void MainWindow::saveImage()
 
 void MainWindow::saveAnimatedGif()
 {
-    QString fileName = QFileDialog::getSaveFileName( this,
+    if( _currentFilter == nullptr )
+    {
+        QMessageBox* dialog = new QMessageBox();
+        dialog->setWindowTitle( "Warning!" );
+        dialog->setText( "Select a filter first" );
+        dialog->show();
+        return;
+    }
+
+    QString outputFileName = QFileDialog::getSaveFileName( this,
                                                      tr( "Save Image" ), "/home/",
                                                      tr( "Image Files (*.gif)" ) );
 
-    QImageReader qImageReader( _currentFileName );
-
-    std::vector< uint8_t* > bufferVector;
-    GifWriter gifWriter;
-    GifBegin( &gifWriter, fileName.toStdString().c_str(),
-              _inputImage->getWidth() * _currentFilter->getScaleFactor(),
-              _inputImage->getHeight() * _currentFilter->getScaleFactor(),
-              10 );
-
-    for( int i = 0; i < qImageReader.imageCount(); i++)
-    {
-        qImageReader.jumpToImage( i );
-        QImage* qFrame = new QImage( qImageReader.read() );
-        Image* originalFrame = new Image( qFrame );
-        _currentFilter->setNewInputImage( originalFrame );
-        _currentFilter->apply();
-        Image* outputFrame = new Image( new QImage( *( _currentFilter->getOutputImage()->getQImage() ) ) );
-
-        const int rgbaSize = 4;
-        uint8_t* outputFrameBuffer = new uint8_t[ outputFrame->getWidth() * outputFrame->getHeight() * rgbaSize ];
-        outputFrame->getBufferRGBA8( outputFrameBuffer );
-        bufferVector.push_back( outputFrameBuffer );
-        GifWriteFrame( &gifWriter,
-                       outputFrameBuffer,
-                       outputFrame->getWidth(),
-                       outputFrame->getHeight(), 10 );
-
-        delete originalFrame;
-    }
-
-    GifEnd( &gifWriter );
-
-    for( auto const& buffer : bufferVector )
-    {
-        delete[] buffer;
-    }
+    GifSaver::save( _currentFileName, outputFileName,
+                    _currentFilter, _currentFilter->getScaleFactor() );
 }
 
 
