@@ -9,18 +9,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>527</width>
-    <height>366</height>
+    <width>1280</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Check Upscale</string>
   </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
+  </property>
   <widget class="QPushButton" name="okPushButton">
    <property name="geometry">
     <rect>
-     <x>430</x>
-     <y>330</y>
+     <x>1180</x>
+     <y>687</y>
      <width>91</width>
      <height>27</height>
     </rect>
@@ -34,12 +40,12 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>511</width>
-     <height>311</height>
+     <width>1261</width>
+     <height>671</height>
     </rect>
    </property>
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -51,8 +57,8 @@
   <widget class="QSpinBox" name="downscaleSpinBox">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>330</y>
+     <x>1090</x>
+     <y>687</y>
      <width>71</width>
      <height>27</height>
     </rect>
@@ -67,9 +73,9 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>250</x>
-     <y>333</y>
-     <width>81</width>
+     <x>980</x>
+     <y>690</y>
+     <width>101</width>
      <height>20</height>
     </rect>
    </property>

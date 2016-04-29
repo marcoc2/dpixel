@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QResizeEvent>
 #include <QImageReader>
+#include <QDesktopWidget>
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "CheckUpscaleWindow.h"
@@ -74,6 +75,12 @@ MainWindow::MainWindow( QWidget* parent ) :
     {
         initialize();
     }
+
+    QRect screenGeometry = QApplication::desktop()->screenGeometry();
+    int x = (screenGeometry.width() - this->width()) / 2;
+    int y = (screenGeometry.height() - this->height()) / 2;
+    this->move(x, y);
+    this->show();
 }
 
 
@@ -105,7 +112,7 @@ void MainWindow::initialize()
         const int limit = 100;
         if( _inputImage->getSize() < limit * limit )
         {
-            new CheckUpscaleWindow( this, new Image( _inputImage->getQImage() ) );
+            new CheckUpscaleWindow( this, new Image( new QImage( *( _inputImage->getQImage() ) ) ) );
         }
         else
         {

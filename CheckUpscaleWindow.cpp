@@ -1,4 +1,5 @@
 #include <QImageReader>
+#include <QDesktopWidget>
 
 #include "Image.h"
 #include "CheckUpscaleWindow.h"
@@ -27,6 +28,16 @@ CheckUpscaleWindow::CheckUpscaleWindow( QWidget *parent, Image* image ) :
     QPixmap pixmap = QPixmap::fromImage( *( _resizedImage->getQImage() ) );
     _imageScene->addPixmap( pixmap );
     _ui->graphicsView->setScene( _imageScene );
+
+    setWindowFlags( Qt::Window | Qt::CustomizeWindowHint );
+    //setWindowFlags(Qt::FramelessWindowHint);
+    //setWindowFlags( Qt::X11BypassWindowManagerHint );
+
+    QRect screenGeometry = QApplication::desktop()->screenGeometry();
+    int x = (screenGeometry.width() - this->width()) / 2;
+    int y = (screenGeometry.height() - this->height()) / 2;
+    this->move(x, y);
+    this->show();
 
     show();
 }
