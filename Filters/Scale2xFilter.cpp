@@ -19,6 +19,12 @@ Scale2xFilter::~Scale2xFilter()
 }
 
 
+void Scale2xFilter::run()
+{
+    apply();
+}
+
+
 void Scale2xFilter::apply()
 {
     Image* passOutput = _inputImage;

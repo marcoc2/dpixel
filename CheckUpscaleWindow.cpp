@@ -8,7 +8,7 @@
 
 #define SCALE_FACTOR 10
 
-CheckUpscaleWindow::CheckUpscaleWindow( QWidget *parent, Image* image ) :
+CheckUpscaleWindow::CheckUpscaleWindow( QWidget* parent, Image* image ) :
     QDialog( parent ),
     _ui( new Ui::CheckUpscaleWindow ),
     _copiedImage( image ),
@@ -20,7 +20,8 @@ CheckUpscaleWindow::CheckUpscaleWindow( QWidget *parent, Image* image ) :
     connect( _ui->okPushButton, SIGNAL( clicked() ), this, SLOT( okButtonCallback() ) );
     connect( _ui->downscaleSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( downscaleImage() ) );
 
-    QImage* scaledImage = new QImage ( _copiedImage->getQImage()->scaled( SCALE_FACTOR * _copiedImage->getQImage()->size() ) );
+    QImage* scaledImage =
+            new QImage( _copiedImage->getQImage()->scaled( SCALE_FACTOR * _copiedImage->getQImage()->size() ) );
     _resizedImage = new Image( scaledImage );
     drawGridOnImage( 1 );
 
@@ -34,9 +35,9 @@ CheckUpscaleWindow::CheckUpscaleWindow( QWidget *parent, Image* image ) :
     //setWindowFlags( Qt::X11BypassWindowManagerHint );
 
     QRect screenGeometry = QApplication::desktop()->screenGeometry();
-    int x = (screenGeometry.width() - this->width()) / 2;
-    int y = (screenGeometry.height() - this->height()) / 2;
-    this->move(x, y);
+    int x = ( screenGeometry.width() - this->width() ) / 2;
+    int y = ( screenGeometry.height() - this->height() ) / 2;
+    this->move( x, y );
     this->show();
 
     show();
@@ -64,8 +65,8 @@ void CheckUpscaleWindow::okButtonCallback()
 void CheckUpscaleWindow::downscaleImage()
 {
     int resizedFactor = _ui->downscaleSpinBox->value();
-    QImage* scaledImage = new QImage ( _copiedImage->getQImage()->scaled(
-                                      1.0f / ( float ) resizedFactor * _copiedImage->getQImage()->size() ) );
+    QImage* scaledImage = new QImage( _copiedImage->getQImage()->scaled(
+                                          1.0f / ( float ) resizedFactor * _copiedImage->getQImage()->size() ) );
 
     if( _resizedImage )
     {
@@ -110,3 +111,5 @@ void CheckUpscaleWindow::drawGridOnImage( int resizedFactor )
 
     _resizedImage->fillQImageRGB();
 }
+
+

@@ -54,6 +54,7 @@ private:
     bool _isAnimatedGif;
 
 
+    void connectSignals();
     void createActions();
     void createMenus();
 

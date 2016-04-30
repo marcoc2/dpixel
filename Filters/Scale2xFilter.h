@@ -9,6 +9,7 @@ public:
     Scale2xFilter( Image* inputImage, Image* outputImage );
     Scale2xFilter( Image* inputImage, int numberOfPasses );
     ~Scale2xFilter();
+    void run();
     void apply();
     Image* pass( int step, Image* inputImage );
 

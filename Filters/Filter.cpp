@@ -143,3 +143,10 @@ void Filter::setNewInputImage( Image* image )
 {
     _inputImage = image;
 }
+
+
+void Filter::run()
+{
+    apply();
+    emit resultReady();
+}

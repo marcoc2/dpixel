@@ -1,10 +1,12 @@
 #ifndef FILTER_H
 #define FILTER_H
 
+#include <QThread>
 #include "Image.h"
 
-class Filter
+class Filter : public QThread
 {
+    Q_OBJECT
 public:
     Filter( Image* inputImage, Image* outputImage );
     Filter( Image* inputImage, float scaleFactor );
@@ -14,6 +16,7 @@ public:
     ~Filter();
 
     virtual void apply() = 0;
+    virtual void run() Q_DECL_OVERRIDE;
 
     Image* getOutputImage();
     int getScaleFactor();
@@ -31,6 +34,10 @@ protected:
     Image* _outputImage;
 
     float _scaleFactor;
+
+signals:
+
+    void resultReady();
 };
 
 #endif // FILTER_H

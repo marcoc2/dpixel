@@ -40,10 +40,31 @@ MainWindow::MainWindow( QWidget* parent ) :
     _inputImage = new Image( "../pixel-art-remaster/Samples/metalslug.png" );
     #else
     _inputImage = new Image( "../Samples/metalslug.png" );
+    _currentFileName = "../Samples/metalslug.png";
     #endif
 
     _ui->setupUi( this );
 
+    connectSignals();
+    createActions();
+    createMenus();
+
+    if( !_inputImage->getQImage()->isNull() )
+    {
+        initialize();
+    }
+
+    // Center window position
+    QRect screenGeometry = QApplication::desktop()->screenGeometry();
+    int x = ( screenGeometry.width() - this->width() ) / 2;
+    int y = ( screenGeometry.height() - this->height() ) / 2;
+    this->move( x, y );
+    this->show();
+}
+
+
+void MainWindow::connectSignals()
+{
     connect( _ui->testButton, SIGNAL( clicked() ), this, SLOT( createTest() ) );
     connect( _ui->loadImageButton, SIGNAL( clicked() ), this, SLOT( loadImage() ) );
     connect( _ui->saveImageButton, SIGNAL( clicked() ), this, SLOT( saveImage() ) );
@@ -66,20 +87,6 @@ MainWindow::MainWindow( QWidget* parent ) :
     connect( _ui->eagleSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyEagle() ) );
     connect( _ui->xBRZSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbrZ() ) );
     connect( _ui->xBRSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbr() ) );
-
-    createActions();
-    createMenus();
-
-    if( !_inputImage->getQImage()->isNull() )
-    {
-        initialize();
-    }
-
-    QRect screenGeometry = QApplication::desktop()->screenGeometry();
-    int x = (screenGeometry.width() - this->width()) / 2;
-    int y = (screenGeometry.height() - this->height()) / 2;
-    this->move(x, y);
-    this->show();
 }
 
 
@@ -91,9 +98,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::initialize()
 {
-    //createSimilarityGraph();
+    createSimilarityGraph();
 
-    int resizedFactor = 1;//CheckUpscale::checkUpscale( _similarityGraph );
+    int resizedFactor = CheckUpscale::checkUpscale( _similarityGraph );
     if( resizedFactor > 1 )
     {
         reloadResizedImage( resizedFactor );
@@ -359,10 +366,13 @@ void MainWindow::aboutDialog()
 
 void MainWindow::fillLabels( Image* image )
 {
-    //_ui->LabelName = image.getName;
+    QFileInfo fileInfo( _currentFileName );
+    _ui->LabelName->setText( fileInfo.fileName() );
     _ui->labelSize->setText( QString::number( image->getSize() ) );
     _ui->labelWidth->setText( QString::number( image->getWidth() ) );
     _ui->labelHeight->setText( QString::number( image->getHeight() ) );
+
+    _ui->statusBar->showMessage( _currentFileName );
 }
 
 
@@ -468,7 +478,14 @@ void MainWindow::applyEagle()
 void MainWindow::applyAndShowOutputImage( Filter* filter )
 {
     _currentFilter = filter;
-    _currentFilter->apply();
+    if( dynamic_cast<Scale2xFilter*>( _currentFilter ) )
+    {
+        _currentFilter->start( QThread::NormalPriority );
+    }
+    else
+    {
+        _currentFilter->apply();
+    }
 
     if( _resultScene != nullptr )
     {
@@ -609,7 +626,7 @@ void MainWindow::applyVector()
     int i = 0;
     for( QList< RenderArea* >::iterator it = renderAreas.begin(); it != renderAreas.end(); it++, i++ )
     {
-        _ui->gridLayout->addWidget( *it, 0, 0 );
+        //_ui->gridLayout->addWidget( *it, 0, 0 );
     }
 }
 
@@ -637,7 +654,10 @@ void MainWindow::resizeEvent( QResizeEvent* event )
     _ui->graphicsView->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
                              _ui->graphicsView->pos().y() );
 
-    _ui->labelFilteredView->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
+    _ui->fileInfoFrame->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
+                              _ui->graphicsView->pos().y() );
+
+    _ui->labelFilteredView->move( _ui->graphicsViewOriginal->pos().x()+ 5,
                                   _ui->labelFilteredView->pos().y() );
 
     _ui->graphicsView->resize( width() / 1.75,
