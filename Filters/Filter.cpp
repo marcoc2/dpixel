@@ -18,6 +18,7 @@ Filter::Filter( Image* inputImage, float scaleFactor ) :
 
 
 Filter::Filter( Image* inputImage, float scaleFactor, int numberOfPasses ) :
+    QThread(),
     _inputImage( inputImage ),
     _scaleFactor( scaleFactor * numberOfPasses )
 {
@@ -148,5 +149,5 @@ void Filter::setNewInputImage( Image* image )
 void Filter::run()
 {
     apply();
-    emit resultReady();
+    //emit resultReady();
 }

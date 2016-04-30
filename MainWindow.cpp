@@ -480,7 +480,9 @@ void MainWindow::applyAndShowOutputImage( Filter* filter )
     _currentFilter = filter;
     if( dynamic_cast<Scale2xFilter*>( _currentFilter ) )
     {
+        connect( _currentFilter, SIGNAL( finished()) , this, SLOT( finishFilter() ) );
         _currentFilter->start( QThread::NormalPriority );
+        return;
     }
     else
     {
@@ -689,4 +691,25 @@ void MainWindow::downscaleInputImage( int factor )
 
     fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
     fillQGraphicsViewOriginal( *( _inputImage->getQImage() ) );
+}
+
+
+void MainWindow::finishFilter()
+{
+    if( _resultScene != nullptr )
+    {
+        _resultScene = new QGraphicsScene( this );
+    }
+
+    if( _outputImage != nullptr )
+    {
+        delete _outputImage;
+    }
+
+    _outputImage = new Image( new QImage( *( _currentFilter->getOutputImage()->getQImage() ) ) );
+
+    QImage* qimage = _currentFilter->getOutputImage()->getQImage();
+    QPixmap pixmap = QPixmap::fromImage( *qimage );
+    _resultScene->addPixmap( pixmap );
+    _ui->graphicsView->setScene( _resultScene );
 }

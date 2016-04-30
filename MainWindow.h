@@ -89,6 +89,8 @@ private Q_SLOTS:
     void createSimilarityGraph();
     void saveAnimatedGif();
     void applyVector();
+
+    void finishFilter();
 };
 
 #endif // MAINWINDOW_H

@@ -37,7 +37,7 @@ protected:
 
 signals:
 
-    void resultReady();
+    //void resultReady();
 };
 
 #endif // FILTER_H
