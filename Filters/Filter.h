@@ -38,6 +38,7 @@ protected:
 signals:
 
     //void resultReady();
+    virtual void setProgress( int percentage );
 };
 
 #endif // FILTER_H

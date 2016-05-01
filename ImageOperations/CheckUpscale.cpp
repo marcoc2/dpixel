@@ -89,10 +89,10 @@ int CheckUpscale::createHistogram( std::vector<int>& adjacentInLine )
     //    }
     //}
 
-    printf( "Graph histogram:\n" );
+    //printf( "Graph histogram:\n" );
     for( auto const& i : histogramMap )
     {
-        printf("Key: %d - Value: %d\n", i.first, i.second );
+        //printf("Key: %d - Value: %d\n", i.first, i.second );
     }
 
     return histogramMap.begin()->first;

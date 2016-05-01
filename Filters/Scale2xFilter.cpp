@@ -43,9 +43,9 @@ Image* Scale2xFilter::pass( int step, Image* inputImage )
     Image* outputImage = new Image( inputImage->getWidth() * 2,
                                     inputImage->getHeight() * 2 );
 
-    #pragma omp parallel for
     for(u_int w = 0; w < inputImage->getWidth(); w++)
     {
+        #pragma omp parallel for
         for(u_int h = 0; h < inputImage->getHeight(); h++)
         {
             const Pixel& B = inputImage->getPixel( w, h - 1 );
@@ -83,6 +83,9 @@ Image* Scale2xFilter::pass( int step, Image* inputImage )
             outputImage->setPixel( w_index, h_index + 1, E2 );
             outputImage->setPixel( w_index + 1, h_index + 1, E3 );
         }
+
+        emit setProgress( ( ( (float) w /(float) inputImage->getWidth() ) / (float)_numberOfPasses +
+                          (float)step / (float)_numberOfPasses ) * 100 );
     }
 
     if( step > 0 )

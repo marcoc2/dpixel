@@ -91,6 +91,7 @@ private Q_SLOTS:
     void applyVector();
 
     void finishFilter();
+    void setProgress( int percentage );
 };
 
 #endif // MAINWINDOW_H

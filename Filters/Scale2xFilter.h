@@ -5,6 +5,7 @@
 
 class Scale2xFilter : public Filter
 {
+    Q_OBJECT
 public:
     Scale2xFilter( Image* inputImage, Image* outputImage );
     Scale2xFilter( Image* inputImage, int numberOfPasses );
@@ -16,6 +17,10 @@ public:
 private:
 
     int _numberOfPasses;
+
+signals:
+
+    virtual void setProgress( int percentage );
 };
 
 #endif // SCALE2XFILTER_H

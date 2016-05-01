@@ -48,6 +48,7 @@ MainWindow::MainWindow( QWidget* parent ) :
     connectSignals();
     createActions();
     createMenus();
+    _ui->filterProgressBar->setVisible( false );
 
     if( !_inputImage->getQImage()->isNull() )
     {
@@ -478,9 +479,11 @@ void MainWindow::applyEagle()
 void MainWindow::applyAndShowOutputImage( Filter* filter )
 {
     _currentFilter = filter;
+    _ui->filterProgressBar->setVisible( true );
     if( dynamic_cast<Scale2xFilter*>( _currentFilter ) )
     {
         connect( _currentFilter, SIGNAL( finished()) , this, SLOT( finishFilter() ) );
+        connect( _currentFilter, SIGNAL( setProgress( int ) ), this, SLOT( setProgress( int ) ) );
         _currentFilter->start( QThread::NormalPriority );
         return;
     }
@@ -696,6 +699,11 @@ void MainWindow::downscaleInputImage( int factor )
 
 void MainWindow::finishFilter()
 {
+    // Indicates busy status bar to wait for the qt scene be filled
+    _ui->filterProgressBar->setMaximum( 0 );
+    _ui->filterProgressBar->setMinimum( 0 );
+    _ui->filterProgressBar->setValue( 0 );
+
     if( _resultScene != nullptr )
     {
         _resultScene = new QGraphicsScene( this );
@@ -712,4 +720,15 @@ void MainWindow::finishFilter()
     QPixmap pixmap = QPixmap::fromImage( *qimage );
     _resultScene->addPixmap( pixmap );
     _ui->graphicsView->setScene( _resultScene );
+
+    _ui->filterProgressBar->setMaximum( 100 );
+    _ui->filterProgressBar->setMinimum( 0 );
+    _ui->filterProgressBar->setValue( 0 );
+    _ui->filterProgressBar->setVisible( false );
+}
+
+
+void MainWindow::setProgress( int percentage )
+{
+    _ui->filterProgressBar->setValue( percentage );
 }
