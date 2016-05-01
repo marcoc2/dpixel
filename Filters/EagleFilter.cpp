@@ -19,6 +19,12 @@ EagleFilter::~EagleFilter()
 }
 
 
+void EagleFilter::run()
+{
+    apply();
+}
+
+
 void EagleFilter::apply()
 {
     Image* passOutput = _inputImage;

@@ -478,36 +478,12 @@ void MainWindow::applyEagle()
 
 void MainWindow::applyAndShowOutputImage( Filter* filter )
 {
-    _currentFilter = filter;
     _ui->filterProgressBar->setVisible( true );
-    if( dynamic_cast<Scale2xFilter*>( _currentFilter ) )
-    {
-        connect( _currentFilter, SIGNAL( finished()) , this, SLOT( finishFilter() ) );
-        connect( _currentFilter, SIGNAL( setProgress( int ) ), this, SLOT( setProgress( int ) ) );
-        _currentFilter->start( QThread::NormalPriority );
-        return;
-    }
-    else
-    {
-        _currentFilter->apply();
-    }
 
-    if( _resultScene != nullptr )
-    {
-        _resultScene = new QGraphicsScene( this );
-    }
-
-    if( _outputImage != nullptr )
-    {
-        delete _outputImage;
-    }
-
-    _outputImage = new Image( new QImage( *(filter->getOutputImage()->getQImage() ) ) );
-
-    QImage* qimage = filter->getOutputImage()->getQImage();
-    QPixmap pixmap = QPixmap::fromImage( *qimage );
-    _resultScene->addPixmap( pixmap );
-    _ui->graphicsView->setScene( _resultScene );
+    _currentFilter = filter;
+    connect( _currentFilter, SIGNAL( finished()) , this, SLOT( finishFilter() ) );
+    connect( _currentFilter, SIGNAL( setProgress( int ) ), this, SLOT( setProgress( int ) ) );
+    _currentFilter->start( QThread::NormalPriority );
 }
 
 
@@ -662,11 +638,16 @@ void MainWindow::resizeEvent( QResizeEvent* event )
     _ui->fileInfoFrame->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
                               _ui->graphicsView->pos().y() );
 
-    _ui->labelFilteredView->move( _ui->graphicsViewOriginal->pos().x()+ 5,
+    _ui->labelFilteredView->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
                                   _ui->labelFilteredView->pos().y() );
 
     _ui->graphicsView->resize( width() / 1.75,
-                               height() - 90 );
+                               height() - 100 );
+
+    _ui->filterProgressBar->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
+                                  _ui->graphicsView->pos().y() + _ui->graphicsView->height() + 2 );
+
+    _ui->filterProgressBar->resize( _ui->graphicsView->width(), _ui->filterProgressBar->height() );
 
     QWidget::resizeEvent( event );
 }
@@ -699,7 +680,7 @@ void MainWindow::downscaleInputImage( int factor )
 
 void MainWindow::finishFilter()
 {
-    // Indicates busy status bar to wait for the qt scene be filled
+    // Indicates busy status bar to wait for the qt scene to be filled
     _ui->filterProgressBar->setMaximum( 0 );
     _ui->filterProgressBar->setMinimum( 0 );
     _ui->filterProgressBar->setValue( 0 );

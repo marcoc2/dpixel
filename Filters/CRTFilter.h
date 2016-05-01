@@ -9,7 +9,10 @@ public:
     CRTFilter( Image* inputImage, float scaleFactor );
     CRTFilter( Image* inputImage, int outputWidth, int outputHeight, float scaleFactor );
     ~CRTFilter();
+
     void apply();
+    void run();
+
     void applyAppertureGrill();
     void applyShadowMask();
 };

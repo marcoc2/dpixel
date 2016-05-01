@@ -84,9 +84,9 @@ Image* Scale2xFilter::pass( int step, Image* inputImage )
             outputImage->setPixel( w_index + 1, h_index + 1, E3 );
         }
 
-        emit setProgress( ( ( (float) w /(float) inputImage->getWidth() ) / (float)_numberOfPasses +
-                          (float)step / (float)_numberOfPasses ) * 100 );
-    }
+        emit setProgress( ( ( ( float ) w / ( float ) inputImage->getWidth() ) / ( float )_numberOfPasses +
+                            ( float )step / ( float )_numberOfPasses ) * 100 );
+        }
 
     if( step > 0 )
     {

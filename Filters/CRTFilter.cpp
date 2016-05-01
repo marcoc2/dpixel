@@ -18,6 +18,12 @@ CRTFilter::~CRTFilter()
 }
 
 
+void CRTFilter::run()
+{
+    apply();
+}
+
+
 void CRTFilter::apply()
 {
     applyAppertureGrill();
@@ -65,9 +71,9 @@ void CRTFilter::apply()
 
 void CRTFilter::applyAppertureGrill()
 {
-    #pragma omp parallel for
     for(u_int w = 0; w < _inputImage->getWidth(); w++)
     {
+        #pragma omp parallel for
         for(u_int h = 0; h < _inputImage->getHeight(); h++)
         {
             const Pixel& pixel = _inputImage->getPixel( w, h );
@@ -151,6 +157,7 @@ void CRTFilter::applyAppertureGrill()
                 }
             }
         }
+        emit setProgress( ( float ) w * 100 / ( float ) _inputImage->getWidth() );
     }
 
     _outputImage->fillQImageRGB();

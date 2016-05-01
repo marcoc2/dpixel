@@ -19,6 +19,8 @@ class Super2xSal : public Filter
 {
 public:
     Super2xSal( Image* inputImage, int numberOfPasses );
+
+    void run();
     void apply();
 
 private:

@@ -8,6 +8,8 @@ class XbrFilter : public Filter
 public:
     XbrFilter( Image *inputImage, float scaleFactor );
     ~XbrFilter();
+
+    void run();
     void apply();
 };
 

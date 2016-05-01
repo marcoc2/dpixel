@@ -20,6 +20,12 @@ void Super2xSal::apply()
 }
 
 
+void Super2xSal::run()
+{
+    apply();
+}
+
+
 Image* Super2xSal::pass( int step, Image* inputImage )
 {
     Image* outputImage = new Image( inputImage->getWidth() * 2,

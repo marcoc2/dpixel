@@ -13,6 +13,10 @@ HqxFilter::~HqxFilter()
 }
 
 
+void HqxFilter::run()
+{
+    apply();
+}
 
 void HqxFilter::apply()
 {

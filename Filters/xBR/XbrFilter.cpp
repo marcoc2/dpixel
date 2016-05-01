@@ -14,6 +14,11 @@ XbrFilter::~XbrFilter()
 }
 
 
+void XbrFilter::run()
+{
+    apply();
+}
+
 
 void XbrFilter::apply()
 {

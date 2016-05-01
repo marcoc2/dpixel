@@ -13,6 +13,12 @@ XbrZFilter::~XbrZFilter()
 }
 
 
+void XbrZFilter::run()
+{
+    apply();
+}
+
+
 void XbrZFilter::apply()
 {
     u_char* inputBuffer = new u_char[ _inputImage->getSize() * ( int ) _scaleFactor ];

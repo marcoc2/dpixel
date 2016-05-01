@@ -16,7 +16,7 @@ public:
     ~Filter();
 
     virtual void apply() = 0;
-    virtual void run() Q_DECL_OVERRIDE;
+    virtual void run() Q_DECL_OVERRIDE = 0;
 
     Image* getOutputImage();
     int getScaleFactor();
@@ -37,8 +37,7 @@ protected:
 
 signals:
 
-    //void resultReady();
-    virtual void setProgress( int percentage );
+    void setProgress( int percentage );
 };
 
 #endif // FILTER_H

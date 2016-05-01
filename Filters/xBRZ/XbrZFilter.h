@@ -9,6 +9,8 @@ class XbrZFilter : public Filter
 public:
     XbrZFilter( Image *inputImage, float scaleFactor );
     ~XbrZFilter();
+
+    void run();
     void apply();
 };
 

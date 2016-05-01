@@ -9,6 +9,8 @@ class HqxFilter : public Filter
 public:
     HqxFilter(Image *inputImage, float scaleFactor );
     ~HqxFilter();
+
+    void run();
     void apply();
 };
 
