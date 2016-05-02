@@ -30,6 +30,10 @@ CheckUpscaleWindow::CheckUpscaleWindow( QWidget* parent, Image* image ) :
     _imageScene->addPixmap( pixmap );
     _ui->graphicsView->setScene( _imageScene );
 
+    _fitGraphicsScene = new QGraphicsScene( this );
+    _fitGraphicsScene->addPixmap( QPixmap::fromImage( QImage( "../Doc/fit.png" ) ) );
+    _ui->fitGraphicsView->setScene( _fitGraphicsScene );
+
     setWindowFlags( Qt::Window | Qt::CustomizeWindowHint );
     //setWindowFlags(Qt::FramelessWindowHint);
     //setWindowFlags( Qt::X11BypassWindowManagerHint );
@@ -48,6 +52,8 @@ CheckUpscaleWindow::~CheckUpscaleWindow()
 {
     delete _resizedImage;
     delete _copiedImage;
+    delete _imageScene;
+    delete _fitGraphicsScene;
 }
 
 

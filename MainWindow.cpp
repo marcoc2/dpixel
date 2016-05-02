@@ -101,8 +101,8 @@ void MainWindow::initialize()
 {
     createSimilarityGraph();
 
-    int resizedFactor = CheckUpscale::checkUpscale( _similarityGraph );
-    if( resizedFactor > 1 )
+    int resizedFactor = 1; //CheckUpscale::checkUpscale( _similarityGraph );
+    if( resizedFactor < 1 )
     {
         reloadResizedImage( resizedFactor );
         createSimilarityGraph();
@@ -331,8 +331,14 @@ void MainWindow::saveAnimatedGif()
                                                      tr( "Save Image" ), "/home/",
                                                      tr( "Image Files (*.gif)" ) );
 
-    GifSaver::save( _currentFileName, outputFileName,
-                    _currentFilter, _currentFilter->getScaleFactor() );
+    GifSaver* gifSaver = new GifSaver( _currentFileName, outputFileName,
+                                       _currentFilter, _currentFilter->getScaleFactor() );
+    connect( gifSaver, SIGNAL( finished()) , this, SLOT( finishSaveGif() ) );
+    connect( gifSaver, SIGNAL( setProgress( int ) ), this, SLOT( setProgress( int ) ) );
+    gifSaver->start( QThread::NormalPriority );
+
+    _ui->filterProgressBar->setVisible( true );
+    setEnabled( false );
 }
 
 
@@ -705,6 +711,13 @@ void MainWindow::finishFilter()
     _ui->filterProgressBar->setMaximum( 100 );
     _ui->filterProgressBar->setMinimum( 0 );
     _ui->filterProgressBar->setValue( 0 );
+    _ui->filterProgressBar->setVisible( false );
+}
+
+
+void MainWindow::finishSaveGif()
+{
+    setEnabled( true );
     _ui->filterProgressBar->setVisible( false );
 }
 

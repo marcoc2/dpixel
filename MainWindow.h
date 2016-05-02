@@ -92,6 +92,7 @@ private Q_SLOTS:
 
     void finishFilter();
     void setProgress( int percentage );
+    void finishSaveGif();
 };
 
 #endif // MAINWINDOW_H

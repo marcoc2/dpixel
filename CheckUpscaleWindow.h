@@ -25,6 +25,7 @@ private:
     Image* _copiedImage;
     Image* _resizedImage;
     QGraphicsScene* _imageScene;
+    QGraphicsScene* _fitGraphicsScene;
 
 private Q_SLOTS:
 
