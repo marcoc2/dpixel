@@ -684,6 +684,16 @@ Animated GIF</string>
      <string/>
     </property>
    </widget>
+   <widget class="OpenGLCanvas" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>340</y>
+      <width>371</width>
+      <height>261</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -709,6 +719,14 @@ Animated GIF</string>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>OpenGLCanvas</class>
+   <extends>QWidget</extends>
+   <header location="global">OpenGLCanvas.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
