@@ -13,11 +13,12 @@
 OpenGLCanvas::OpenGLCanvas( QWidget* parent ) :
     QOpenGLWidget( parent ),
     m_program( 0 ),
+    _vbo( new QOpenGLBuffer( QOpenGLBuffer::VertexBuffer ) ),
+    _vao( new QOpenGLVertexArrayObject() ),
+    _colorTexture( nullptr ),
     _width( parent->width() ),
     _height( parent->height() )
 {
-    _vbo = new QOpenGLBuffer( QOpenGLBuffer::VertexBuffer );
-    _vao = new QOpenGLVertexArrayObject();
     _time = QTime( 0, 0, 0, 0 );
     QSurfaceFormat format;
     format.setDepthBufferSize( 24 );
@@ -33,12 +34,31 @@ OpenGLCanvas::~OpenGLCanvas()
 }
 
 
+float OpenGLCanvas::getOpenGLVersion()
+{
+    return _version;
+}
+
+
 void OpenGLCanvas::initializeGL()
 {
     //initBasicExample();
     //initBasicDeprecatedOpenGL();
     //initSphereRayTrace();
     initShaderToyCanvas();
+    QOpenGLFunctions glFuncs( QOpenGLContext::currentContext() );
+    printf( "OpenGl information: VENDOR:       %s\n" , (const char*)glFuncs.glGetString(GL_VENDOR) );
+    printf( "                    RENDERDER:    %s\n" , (const char*)glFuncs.glGetString(GL_RENDERER) );
+    printf( "                    VERSION:      %s\n" , (const char*)glFuncs.glGetString(GL_VERSION ));
+    printf( "                    GLSL VERSION: %s\n" , (const char*)glFuncs.glGetString(GL_SHADING_LANGUAGE_VERSION) );
+
+    QString version = reinterpret_cast<const char*>( glFuncs.glGetString(GL_SHADING_LANGUAGE_VERSION) );
+    _version = version.toFloat();
+
+    if( _version < 4.0f )
+    {
+        initBasicDeprecatedOpenGL();
+    }
 }
 
 
@@ -71,7 +91,14 @@ void OpenGLCanvas::paintGL()
     //paintBasicExample();
     //paintBasicDeprecatedOpenGL();
     //paintSphereRayTrace();
-    paintShaderToyCanvas();
+    if( _version >= 4.0f )
+    {
+        paintShaderToyCanvas();
+    }
+    else
+    {
+        paintBasicDeprecatedOpenGL();
+    }
     update();
 }
 
@@ -99,12 +126,32 @@ void OpenGLCanvas::paintBasicDeprecatedOpenGL()
     m_program->bind();
     //_vao->bind();
 
-    glColor3f(1.0f,0.0f,0.0f);
+    //GLuint t;
+    //glGenTextures(1, &t);
+    //glBindTexture(GL_TEXTURE_2D, t);   // 2d texture (x and y size)
+    //
+    //glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // scale linearly when image bigger than texture
+    //glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); // scale linearly when image smalled than
+    //
+    //glActiveTextureARB(GL_TEXTURE0_ARB);
+    //glEnable(GL_TEXTURE_2D);
+    //GLuint texLoc = m_program->uniformLocation("tex");
+    //glUniform1i(texLoc,0);
+
+    _colorTexture->bind();
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, _texels);
+
+    //glColor3f(1.0f,0.0f,0.0f);
     glBegin(GL_QUADS);
         glVertex3f(-0.8f,  0.8f, 0.0f);
+        glTexCoord2f(-0.8f,  0.8f);
         glVertex3f( 0.8f,  0.8f, 0.0f);
+        glTexCoord2f( 0.8f,  0.8f);
         glVertex3f( 0.8f, -0.8f, 0.0f);
+        glTexCoord2f(0.8f, -0.8f);
         glVertex3f(-0.8f, -0.8f, 0.0f);
+        glTexCoord2f(-0.8f, -0.8f);
     glEnd();
 
     //_vao->release();
@@ -185,6 +232,8 @@ void OpenGLCanvas::initBasicDeprecatedOpenGL()
         delete m_program;
         m_program = 0;
     }
+
+    glEnable(GL_COLOR_MATERIAL);
 
     glBegin(GL_TRIANGLES);
         glVertex3f(-0.8, -0.8, 0.0);
@@ -366,3 +415,7 @@ void OpenGLCanvas::initShaderToyCanvas()
 }
 
 
+void OpenGLCanvas::setTexture( QImage& image )
+{
+    _colorTexture = new QOpenGLTexture( image.mirrored() );
+}

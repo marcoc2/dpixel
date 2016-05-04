@@ -30,6 +30,9 @@ public:
     void initShaderToyCanvas();
     void paintShaderToyCanvas();
 
+    float getOpenGLVersion();
+    void setTexture( QImage& image );
+
 private:
     QMatrix4x4 m_modelView;
     QMatrix4x4 m_projection;
@@ -37,7 +40,6 @@ private:
     QOpenGLBuffer* _vbo;
     QOpenGLVertexArrayObject* _vao;
     QOpenGLTexture* _colorTexture;
-    QOpenGLTexture* _sliceTexture;
     int _width;
     int _height;
 
@@ -45,6 +47,9 @@ private:
     QPoint _lastPos;
 
     QTime _time;
+
+    float _version;
+    uchar* _texels;
 
 protected:
     void mousePressEvent(QMouseEvent *event);

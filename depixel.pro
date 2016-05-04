@@ -78,4 +78,10 @@ FORMS    += MainWindow.ui \
 
 DISTFILES += \
     Doc/uncrustify.cfg \
-    Samples/metalslug.png
+    Samples/metalslug.png \
+    Shaders/basicDeprecatedFragment.frag \
+    Shaders/basicFragment.frag \
+    Shaders/rayTraceSphere.frag \
+    Shaders/basicDeprecatedVertex.vert \
+    Shaders/basicVertex.vert \
+    Shaders/rayTraceSphere.vert
