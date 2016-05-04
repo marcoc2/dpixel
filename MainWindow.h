@@ -71,6 +71,7 @@ protected:
 private Q_SLOTS:
 
     void createTest();
+    void enableOpenGLFrontEnd();
     void loadImage();
     void saveImage();
     void loadOriginal();

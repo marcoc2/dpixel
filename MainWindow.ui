@@ -35,12 +35,12 @@
      <rect>
       <x>30</x>
       <y>540</y>
-      <width>96</width>
+      <width>41</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Teste!</string>
+     <string>Teste</string>
     </property>
    </widget>
    <widget class="QPushButton" name="loadImageButton">
@@ -684,7 +684,7 @@ Animated GIF</string>
      <string/>
     </property>
    </widget>
-   <widget class="OpenGLCanvas" name="widget" native="true">
+   <widget class="OpenGLCanvas" name="filteredGLWidget" native="true">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -694,6 +694,19 @@ Animated GIF</string>
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="glButton">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>540</y>
+      <width>41</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>GL</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -701,7 +714,7 @@ Animated GIF</string>
      <x>0</x>
      <y>0</y>
      <width>1223</width>
-     <height>28</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

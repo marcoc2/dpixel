@@ -49,6 +49,7 @@ MainWindow::MainWindow( QWidget* parent ) :
     createActions();
     createMenus();
     _ui->filterProgressBar->setVisible( false );
+    _ui->filteredGLWidget->setVisible( false );
 
     if( !_inputImage->getQImage()->isNull() )
     {
@@ -67,6 +68,7 @@ MainWindow::MainWindow( QWidget* parent ) :
 void MainWindow::connectSignals()
 {
     connect( _ui->testButton, SIGNAL( clicked() ), this, SLOT( createTest() ) );
+    connect( _ui->glButton, SIGNAL( clicked() ), this, SLOT( enableOpenGLFrontEnd() ) );
     connect( _ui->loadImageButton, SIGNAL( clicked() ), this, SLOT( loadImage() ) );
     connect( _ui->saveImageButton, SIGNAL( clicked() ), this, SLOT( saveImage() ) );
     connect( _ui->exportGIFButton, SIGNAL( clicked() ), this, SLOT( saveAnimatedGif() ) );
@@ -197,6 +199,21 @@ void MainWindow::createMenus()
 
     _helpMenu = _ui->menuBar->addMenu( tr( "&Help" ) );
     _helpMenu->addAction( _aboutAct );
+}
+
+
+void MainWindow::enableOpenGLFrontEnd()
+{
+    if( !(_ui->filteredGLWidget->isVisible()) )
+    {
+    _ui->filteredGLWidget->setVisible( true );
+    _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
+    _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
+    }
+    else
+    {
+        _ui->filteredGLWidget->setVisible( false );
+    }
 }
 
 
@@ -508,6 +525,7 @@ void MainWindow::createSimilarityGraph()
     _similarityGraph = new SimilarityGraph( _inputImage );
     _similarityGraph->createGraph();
 
+    /*
     // Limit graph size cause drawing a QScene is very costly
     if( _similarityGraph->getWidth() * _similarityGraph->getHeight() < 160000 )
     {
@@ -533,6 +551,7 @@ void MainWindow::createSimilarityGraph()
         _graphScene->clear();
         _ui->graphicsViewGraph->items().clear();
     }
+    */
 }
 
 
@@ -654,6 +673,9 @@ void MainWindow::resizeEvent( QResizeEvent* event )
                                   _ui->graphicsView->pos().y() + _ui->graphicsView->height() + 2 );
 
     _ui->filterProgressBar->resize( _ui->graphicsView->width(), _ui->filterProgressBar->height() );
+
+    _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
+    _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
 
     QWidget::resizeEvent( event );
 }

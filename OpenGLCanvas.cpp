@@ -36,9 +36,9 @@ OpenGLCanvas::~OpenGLCanvas()
 void OpenGLCanvas::initializeGL()
 {
     //initBasicExample();
-    initBasicDeprecatedOpenGL();
+    //initBasicDeprecatedOpenGL();
     //initSphereRayTrace();
-    //initShaderToyCanvas();
+    initShaderToyCanvas();
 }
 
 
@@ -69,9 +69,9 @@ void OpenGLCanvas::resizeGL( int w, int h )
 void OpenGLCanvas::paintGL()
 {
     //paintBasicExample();
-    paintBasicDeprecatedOpenGL();
+    //paintBasicDeprecatedOpenGL();
     //paintSphereRayTrace();
-    //paintShaderToyCanvas();
+    paintShaderToyCanvas();
     update();
 }
 

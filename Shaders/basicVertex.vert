@@ -1,9 +1,11 @@
-#version 120
+#version 400
 
-void main()
-{
-	vec4 v = vec4(gl_Vertex);
-	v.z = 0.0;
+layout(location = 0) in vec3 vertex_position;
+layout(location = 1) in vec3 vertex_color;
 
-	gl_Position = gl_ModelViewProjectionMatrix * v;
+out vec3 color;
+
+void main() {
+        color = vertex_color;
+        gl_Position = vec4(vertex_position, 1.0);
 }
