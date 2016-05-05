@@ -89,7 +89,7 @@
       <rect>
        <x>30</x>
        <y>10</y>
-       <width>81</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -134,6 +134,9 @@
        <width>91</width>
        <height>26</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>Scale without any interpolation (pixelated)</string>
      </property>
      <property name="text">
       <string>Nearest</string>
@@ -714,7 +717,7 @@ Animated GIF</string>
      <x>0</x>
      <y>0</y>
      <width>1223</width>
-     <height>25</height>
+     <height>28</height>
     </rect>
    </property>
   </widget>

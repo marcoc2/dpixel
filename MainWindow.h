@@ -1,3 +1,7 @@
+/*
+ * 2016 Marco Aurélio G. da Silva ( marcoc2@gmail.com )
+ */
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -63,6 +67,7 @@ private:
     void applyAndShowOutputImage( Filter *filter );
     void reloadResizedImage( int resizedFactor );
     void initialize();
+    bool checkCurrentFilter( bool showWarning = false );
 
 protected:
 

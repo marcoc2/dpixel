@@ -1,3 +1,7 @@
+/*
+ * 2016 Marco Aurélio G. da Silva ( marcoc2@gmail.com )
+ */
+
 #include <stdio.h>
 #include <sstream>
 
@@ -204,6 +208,11 @@ void MainWindow::createMenus()
 
 void MainWindow::enableOpenGLFrontEnd()
 {
+    if( !checkCurrentFilter( true ) )
+    {
+        return;
+    }
+
     if( !(_ui->filteredGLWidget->isVisible()) )
     {
         _ui->filteredGLWidget->setTexture( *( _outputImage->getQImage() ) );
@@ -330,6 +339,11 @@ void MainWindow::fillQGraphicsViewOriginal( QImage& qimage )
 
 void MainWindow::saveImage()
 {
+    if( !checkCurrentFilter( true ) )
+    {
+        return;
+    }
+
     QString fileName = QFileDialog::getSaveFileName( this,
                                                      tr( "Save Image" ), "/home/",
                                                      tr( "Image Files (*.png *.jpg *.bmp)" ) );
@@ -345,12 +359,8 @@ void MainWindow::saveImage()
 
 void MainWindow::saveAnimatedGif()
 {
-    if( _currentFilter == nullptr )
+    if( !checkCurrentFilter( true ) )
     {
-        QMessageBox* dialog = new QMessageBox();
-        dialog->setWindowTitle( "Warning!" );
-        dialog->setText( "Select a filter first" );
-        dialog->show();
         return;
     }
 
@@ -366,6 +376,37 @@ void MainWindow::saveAnimatedGif()
 
     _ui->filterProgressBar->setVisible( true );
     setEnabled( false );
+}
+
+
+bool MainWindow::checkCurrentFilter( bool showWarning )
+{
+    if( _currentFilter == nullptr )
+    {
+        if( showWarning )
+        {
+            QMessageBox* dialog = new QMessageBox();
+            dialog->setWindowTitle( "Warning!" );
+            dialog->setText( "Select a filter first" );
+            dialog->show();
+        }
+        return false;
+    }
+    else
+    {
+        if( !_currentFilter->isFinished() )
+        {
+            if( showWarning )
+            {
+                QMessageBox* dialog = new QMessageBox();
+                dialog->setWindowTitle( "Warning!" );
+                dialog->setText( "Still processing previous filter" );
+                dialog->show();
+            }
+            return false;
+        }
+        return true;
+    }
 }
 
 

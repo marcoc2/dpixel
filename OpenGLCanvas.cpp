@@ -52,7 +52,6 @@ void OpenGLCanvas::initializeGL()
     printf( "                    GLSL VERSION: %s\n" , (const char*)glFuncs.glGetString(GL_SHADING_LANGUAGE_VERSION) );
 
     QString version = reinterpret_cast<const char*>( glFuncs.glGetString(GL_SHADING_LANGUAGE_VERSION) );
-    _version = version.toFloat();
 
     int major = version.left(version.indexOf(".")).toInt();
     int minor = version.mid(version.indexOf(".") + 1, 1).toInt();
@@ -146,7 +145,7 @@ void OpenGLCanvas::paintBasicDeprecatedOpenGL()
 
     _colorTexture->bind();
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, _texels);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, _texels);
 
     //glColor3f(1.0f,0.0f,0.0f);
     glBegin(GL_QUADS);
