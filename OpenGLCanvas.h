@@ -51,6 +51,8 @@ private:
     float _version;
     uchar* _texels;
 
+    GLint _texLocation;
+
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);

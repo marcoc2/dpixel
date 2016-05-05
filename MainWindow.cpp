@@ -206,11 +206,10 @@ void MainWindow::enableOpenGLFrontEnd()
 {
     if( !(_ui->filteredGLWidget->isVisible()) )
     {
+        _ui->filteredGLWidget->setTexture( *( _outputImage->getQImage() ) );
         _ui->filteredGLWidget->setVisible( true );
         _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
         _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
-
-        _ui->filteredGLWidget->setTexture( *( _outputImage->getQImage() ) );
     }
     else
     {

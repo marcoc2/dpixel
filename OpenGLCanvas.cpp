@@ -42,10 +42,9 @@ float OpenGLCanvas::getOpenGLVersion()
 
 void OpenGLCanvas::initializeGL()
 {
-    //initBasicExample();
-    //initBasicDeprecatedOpenGL();
+    initBasicExample();
     //initSphereRayTrace();
-    initShaderToyCanvas();
+    //initShaderToyCanvas();
     QOpenGLFunctions glFuncs( QOpenGLContext::currentContext() );
     printf( "OpenGl information: VENDOR:       %s\n" , (const char*)glFuncs.glGetString(GL_VENDOR) );
     printf( "                    RENDERDER:    %s\n" , (const char*)glFuncs.glGetString(GL_RENDERER) );
@@ -55,7 +54,11 @@ void OpenGLCanvas::initializeGL()
     QString version = reinterpret_cast<const char*>( glFuncs.glGetString(GL_SHADING_LANGUAGE_VERSION) );
     _version = version.toFloat();
 
-    if( _version < 4.0f )
+    int major = version.left(version.indexOf(".")).toInt();
+    int minor = version.mid(version.indexOf(".") + 1, 1).toInt();
+    _version = ( float ) major + ( ( float ) minor / 10 );
+
+    if(!(major >= 4 && minor >= 0))
     {
         initBasicDeprecatedOpenGL();
     }
@@ -88,12 +91,11 @@ void OpenGLCanvas::resizeGL( int w, int h )
 
 void OpenGLCanvas::paintGL()
 {
-    //paintBasicExample();
-    //paintBasicDeprecatedOpenGL();
     //paintSphereRayTrace();
     if( _version >= 4.0f )
     {
-        paintShaderToyCanvas();
+        //paintShaderToyCanvas();
+        paintBasicExample();
     }
     else
     {
@@ -109,10 +111,14 @@ void OpenGLCanvas::paintBasicExample()
     glClearColor( 0.2, 0.2, 0.2, 1.0 );
 
     m_program->bind();
+    m_program->setUniformValue( _texLocation, 1 );
     _vao->bind();
+    _colorTexture->bind(0);
 
     glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+    //glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, 0);
 
+    _colorTexture->bind(0);
     _vao->release();
     m_program->release();
 }
@@ -178,6 +184,9 @@ void OpenGLCanvas::initBasicExample()
         m_program = 0;
     }
 
+    _texLocation = m_program->uniformLocation("tex");
+    m_program->setUniformValue( _texLocation, 1 );
+
     GLfloat plane[ 12 ] = {
         -0.8, -0.8, 0.0,
         -0.8, 0.8, 0.0,
@@ -192,16 +201,24 @@ void OpenGLCanvas::initBasicExample()
         1.0, 1.0, 0.0
     };
 
+    GLfloat texCoords[ 8 ] = {
+        -0.8, -0.8,
+        -0.8, 0.8,
+        0.8, -0.8,
+        0.8, 0.8
+    };
+
     _vao->create();
     _vao->bind();
 
     _vbo->create();
     _vbo->setUsagePattern( QOpenGLBuffer::StaticDraw );
     _vbo->bind();
-    _vbo->allocate( 2 * 12 * sizeof( GLfloat ) );
+    _vbo->allocate( 2 * 12 * sizeof( GLfloat ) + ( 1 * 8 * sizeof( GLfloat ) ) );
     _vbo->bind();
     _vbo->write( 0, plane, 12 * sizeof( GLfloat ) );
     _vbo->write( 12 * sizeof( GLfloat ), colors, 12 * sizeof( GLfloat ) );
+    _vbo->write( 24 * sizeof( GLfloat ), texCoords, 8 * sizeof( GLfloat ) );
 
     m_program->setAttributeBuffer( "vertex_position", GL_FLOAT, 0, 3, 0 );
     m_program->enableAttributeArray( "vertex_position" );
@@ -417,5 +434,11 @@ void OpenGLCanvas::initShaderToyCanvas()
 
 void OpenGLCanvas::setTexture( QImage& image )
 {
-    _colorTexture = new QOpenGLTexture( image.mirrored() );
+    _colorTexture = new QOpenGLTexture( image.mirrored().mirrored().convertToFormat(QImage::Format_RGBA8888) );
+    _colorTexture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+    _colorTexture->setMagnificationFilter(QOpenGLTexture::LinearMipMapLinear);
+    _colorTexture->setWrapMode(QOpenGLTexture::DirectionS,
+                              QOpenGLTexture::ClampToEdge);
+    _colorTexture->setWrapMode(QOpenGLTexture::DirectionT,
+                              QOpenGLTexture::ClampToEdge);
 }
