@@ -1,5 +1,5 @@
 /*
- * 2016 Marco Aurélio G. da Silva ( marcoc2@gmail.com )
+ * 2016 - Marco Aurélio G. da Silva ( marcoc2@gmail.com )
  */
 
 #include <stdio.h>

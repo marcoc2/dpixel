@@ -1,3 +1,7 @@
+/*
+ * 2016 - Marco Aurélio G. da Silva ( marcoc2@gmail.com )
+ */
+
 #ifndef UTILS_H
 #define UTILS_H
 

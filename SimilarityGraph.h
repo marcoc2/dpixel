@@ -1,3 +1,7 @@
+/*
+ * 2016 - Marco Aurélio G. da Silva ( marcoc2@gmail.com )
+ */
+
 #ifndef SIMILARITYGRAPH_H
 #define SIMILARITYGRAPH_H
 

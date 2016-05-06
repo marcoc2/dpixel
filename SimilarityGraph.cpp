@@ -1,3 +1,7 @@
+/*
+ * 2016 - Marco Aurélio G. da Silva ( marcoc2@gmail.com )
+ */
+
 #include "SimilarityGraph.h"
 #include "Image.h"
 #include "Depixel/Vector/Utils.h"
