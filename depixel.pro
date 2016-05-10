@@ -85,3 +85,6 @@ DISTFILES += \
     Shaders/basicDeprecatedVertex.vert \
     Shaders/basicVertex.vert \
     Shaders/rayTraceSphere.vert
+
+RESOURCES += \
+    gui.qrc

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/dpixel_icon_alpha.png</file>
+    </qresource>
+</RCC>

@@ -11,7 +11,17 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>dpixel - Pixel Art Remaster</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="gui.qrc">
+    <normaloff>:/Resources/dpixel_icon_alpha.png</normaloff>:/Resources/dpixel_icon_alpha.png</iconset>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>48</width>
+    <height>48</height>
+   </size>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QGraphicsView" name="graphicsView">
@@ -717,7 +727,7 @@ Animated GIF</string>
      <x>0</x>
      <y>0</y>
      <width>1223</width>
-     <height>28</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -743,6 +753,8 @@ Animated GIF</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="gui.qrc"/>
+ </resources>
  <connections/>
 </ui>

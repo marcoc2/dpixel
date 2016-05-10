@@ -434,7 +434,7 @@ void MainWindow::aboutDialog()
 {
     QMessageBox* dialog = new QMessageBox();
     dialog->setWindowTitle( "About" );
-    dialog->setText( "  Depixelator - @marcoc2" );
+    dialog->setText( "dpixel - A Pixel Art Remaster Tool\n\nhttps://github.com/marcoc2/dpixel\n\nmarcoc2@gmail.com" );
     dialog->show();
 }
 
@@ -576,7 +576,7 @@ void MainWindow::createSimilarityGraph()
     _similarityGraph = new SimilarityGraph( _inputImage );
     _similarityGraph->createGraph();
 
-    /*
+
     // Limit graph size cause drawing a QScene is very costly
     if( _similarityGraph->getWidth() * _similarityGraph->getHeight() < 160000 )
     {
@@ -602,7 +602,7 @@ void MainWindow::createSimilarityGraph()
         _graphScene->clear();
         _ui->graphicsViewGraph->items().clear();
     }
-    */
+
 }
 
 
