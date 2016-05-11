@@ -1,18 +1,17 @@
 #include <QFileDialog>
-#include <QImageReader>
 #include "GifSaver.h"
 #include "Image.h"
 #include "Filters/Filter.h"
 #include "gif.h"
 
-GifSaver::GifSaver( const QString& originalFilePath,
-                    const QString& outputFilePath,
+GifSaver::GifSaver( const QString& outputFilePath,
                     Filter* filter,
-                    float scaleFactor ) :
-    _originalFilePath( originalFilePath ),
+                    float scaleFactor,
+                    const std::vector< Image* >& inputAnimatedGif ) :
     _outputFilePath( outputFilePath ),
     _filter( filter ),
-    _scaleFactor( scaleFactor )
+    _scaleFactor( scaleFactor ),
+    _inputAnimatedGif( inputAnimatedGif )
 {
 
 }
@@ -26,23 +25,17 @@ void GifSaver::run()
 
 void GifSaver::save()
 {
-    QImageReader qImageReader( _originalFilePath );
-
     std::vector< uint8_t* > bufferVector;
     GifWriter gifWriter;
     GifBegin( &gifWriter, _outputFilePath.toStdString().c_str(),
-              qImageReader.size().width() * _scaleFactor,
-              qImageReader.size().height() * _scaleFactor,
+              _inputAnimatedGif[ 0 ]->getWidth() * _scaleFactor,
+              _inputAnimatedGif[ 0 ]->getHeight() * _scaleFactor,
               10 );
 
-    for( int i = 0; i < qImageReader.imageCount(); i++ )
+    int i = 0;
+    for( const auto& frame : _inputAnimatedGif )
     {
-        qImageReader.jumpToImage( i );
-
-        QImage* qFrame = new QImage( qImageReader.read() );
-        Image* originalFrame = new Image( qFrame );
-
-        _filter->setNewInputImage( originalFrame );
+        _filter->setNewInputImage( frame );
         _filter->apply();
 
         Image* outputFrame = new Image( new QImage( *( _filter->getOutputImage()->getQImage() ) ) );
@@ -59,9 +52,7 @@ void GifSaver::save()
                        outputFrame->getWidth(),
                        outputFrame->getHeight(), 10 );
 
-        delete originalFrame;
-
-        emit setProgress( ( float ) i * 100 / qImageReader.imageCount() );
+        emit setProgress( ( float ) i++ * 100 / _inputAnimatedGif.size() );
     }
 
     GifEnd( &gifWriter );

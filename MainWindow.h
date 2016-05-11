@@ -40,6 +40,7 @@ private:
     Ui::MainWindow* _ui;
     Image* _inputImage;
     Image* _outputImage;
+    std::vector< Image* > _inputAnimatedGif;
     QString _currentFileName;
     SimilarityGraph* _similarityGraph;
     Filter* _currentFilter;
@@ -94,6 +95,7 @@ private Q_SLOTS:
     void applySuperSaI2x();
     void createSimilarityGraph();
     void saveAnimatedGif();
+    void loadAnimatedGifHolder( QImageReader& qImageReader );
     void applyVector();
 
     void finishFilter();

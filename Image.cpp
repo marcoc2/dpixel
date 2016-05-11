@@ -83,6 +83,29 @@ bool Image::load()
 }
 
 
+void Image::resize( float factor )
+{
+    _width /= factor;
+    _height /= factor;
+    _size = _width * _height;
+    _widthStep = _width;
+
+    QImage* scaledImage = new QImage ( _qImage->scaled( 1.0f / ( float ) factor * _qImage->size() ) );
+
+    if( _qImage )
+    {
+        delete _qImage;
+    }
+
+    delete[] _buffer;
+
+    _qImage = scaledImage;
+    _nChannels = _qImage->depth() / 8; //sizeof(uchar);
+    _buffer = new Pixel[ _size ];
+    fillBufferRGB();
+}
+
+
 void Image::setPixel( u_int x, u_int y, Pixel pixel )
 {
     uint index = ( y * _widthStep ) + x;

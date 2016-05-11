@@ -20,6 +20,7 @@ public:
     ~Image();
     bool save();
     bool load();
+    void resize( float factor );
     Pixel& getPixel( u_int x, u_int y );
     void setPixel( u_int x, u_int y, Pixel pixel );
     void setPixel( u_int index, Pixel pixel );

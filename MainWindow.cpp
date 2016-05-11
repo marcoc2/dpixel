@@ -264,6 +264,7 @@ void MainWindow::loadImage()
     if( qImageReader.supportsAnimation() && ( qImageReader.imageCount() > 1 ) )
     {
         _isAnimatedGif = true;
+        loadAnimatedGifHolder( qImageReader );
         std::stringstream s;
         s << "Animated gif containing " << qImageReader.imageCount() << " frames" << std::endl;
         s << "You can only preview the first frame, but can export the filtered animated gif";
@@ -368,8 +369,9 @@ void MainWindow::saveAnimatedGif()
                                                      tr( "Save Image" ), "/home/",
                                                      tr( "Image Files (*.gif)" ) );
 
-    GifSaver* gifSaver = new GifSaver( _currentFileName, outputFileName,
-                                       _currentFilter, _currentFilter->getScaleFactor() );
+    GifSaver* gifSaver = new GifSaver( outputFileName,_currentFilter,
+                                       _currentFilter->getScaleFactor(),
+                                       _inputAnimatedGif );
     connect( gifSaver, SIGNAL( finished()) , this, SLOT( finishSaveGif() ) );
     connect( gifSaver, SIGNAL( setProgress( int ) ), this, SLOT( setProgress( int ) ) );
     gifSaver->start( QThread::NormalPriority );
@@ -739,12 +741,15 @@ void MainWindow::reloadResizedImage( int resizedFactor )
         return;
     }
 
-    QImage* scaledImage = new QImage ( _inputImage->getQImage()->scaled(
-                                      1.0f / ( float ) resizedFactor * _inputImage->getQImage()->size() ) );
+    _inputImage->resize( resizedFactor );
 
-    delete _inputImage;
-
-    _inputImage = new Image( scaledImage );
+    if( _isAnimatedGif )
+    {
+        for( const auto& image : _inputAnimatedGif )
+        {
+            image->resize( resizedFactor );
+        }
+    }
 }
 
 
@@ -798,4 +803,16 @@ void MainWindow::finishSaveGif()
 void MainWindow::setProgress( int percentage )
 {
     _ui->filterProgressBar->setValue( percentage );
+}
+
+
+void MainWindow::loadAnimatedGifHolder( QImageReader& qImageReader )
+{
+    for( int i = 0; i < qImageReader.imageCount(); i++ )
+    {
+        qImageReader.jumpToImage( i );
+        QImage* qFrame = new QImage( qImageReader.read() );
+        Image* image = new Image( qFrame );
+        _inputAnimatedGif.push_back( image );
+    }
 }
