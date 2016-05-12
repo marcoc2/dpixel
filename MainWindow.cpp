@@ -16,8 +16,8 @@
 
 #include "Widgets/RenderArea.h"
 
-#include "SimilarityGraph.h"
-#include "Diagram.h"
+#include "Depixel/SimilarityGraph.h"
+#include "Depixel/Diagram.h"
 #include "Filters/hqx/HqxFilter.h"
 #include "Filters/xBR/XbrFilter.h"
 #include "Filters/xBRZ/XbrZFilter.h"

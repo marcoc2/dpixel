@@ -1,7 +1,7 @@
 #include <map>
 
 #include "CheckUpscale.h"
-#include "SimilarityGraph.h"
+#include "Depixel/SimilarityGraph.h"
 
 CheckUpscale::CheckUpscale()
 {
