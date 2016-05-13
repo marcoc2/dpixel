@@ -177,6 +177,10 @@ void MainWindow::createActions()
     _saveAct->setStatusTip( tr( "Export Depixelized Image" ) );
     connect( _saveAct, SIGNAL( triggered() ), this, SLOT( saveImage() ) );
 
+    _exportSimilarityGraphAct = new QAction( tr( "Export Similarity &Graph" ), this );
+    _exportSimilarityGraphAct->setStatusTip( tr( "Export Similatity Graph" ) );
+    connect( _exportSimilarityGraphAct, SIGNAL( triggered() ), this, SLOT( exportSimilarityGraph() ) );
+
     _exitAct = new QAction( tr( "&Exit" ), this );
     _exitAct->setShortcuts( QKeySequence::Save );
     _exitAct->setStatusTip( tr( "Exit" ) );
@@ -194,6 +198,7 @@ void MainWindow::createMenus()
     _fileMenu = _ui->menuBar->addMenu( tr( "&File" ) );
     _fileMenu->addAction( _openAct );
     _fileMenu->addAction( _saveAct );
+    _fileMenu->addAction( _exportSimilarityGraphAct );
 
     _fileMenu->addSeparator();
 
@@ -378,6 +383,17 @@ void MainWindow::saveAnimatedGif()
 
     _ui->filterProgressBar->setVisible( true );
     setEnabled( false );
+}
+
+
+void MainWindow::exportSimilarityGraph()
+{
+    QString outputFileName = QFileDialog::getSaveFileName( this,
+                                                     tr( "Save Image" ), "/home/",
+                                                     tr( "Image Files (*.png)" ) );
+
+    QPixmap pixmap = _ui->graphicsViewGraph->grab();
+    pixmap.save( outputFileName );
 }
 
 

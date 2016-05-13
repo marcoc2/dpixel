@@ -46,6 +46,7 @@ private:
     Filter* _currentFilter;
     QAction* _openAct;
     QAction* _saveAct;
+    QAction* _exportSimilarityGraphAct;
     QAction* _exitAct;
     QAction* _aboutAct;
     QMenu* _fileMenu;
@@ -80,6 +81,7 @@ private Q_SLOTS:
     void enableOpenGLFrontEnd();
     void loadImage();
     void saveImage();
+    void exportSimilarityGraph();
     void loadOriginal();
     void enableFiltersFrame();
     void aboutDialog();

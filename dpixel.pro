@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     Filters/xBR/xbr.c \
     CheckUpscaleWindow.cpp \
     GifSaver.cpp \
-    OpenGLCanvas.cpp
+    OpenGLCanvas.cpp \
+    Depixel/SimilarityGraphExportToImage.cpp
 
 HEADERS  += MainWindow.h \
     Image.h \
@@ -71,7 +72,8 @@ HEADERS  += MainWindow.h \
     Filters/xBR/filters.h \
     CheckUpscaleWindow.h \
     GifSaver.h \
-    OpenGLCanvas.h
+    OpenGLCanvas.h \
+    Depixel/SimilarityGraphExportToImage.h
 
 FORMS    += MainWindow.ui \
     CheckUpscaleWindow.ui
