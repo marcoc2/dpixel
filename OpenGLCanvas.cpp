@@ -42,9 +42,9 @@ float OpenGLCanvas::getOpenGLVersion()
 
 void OpenGLCanvas::initializeGL()
 {
-    initBasicExample();
+    //initBasicExample();
     //initSphereRayTrace();
-    //initShaderToyCanvas();
+    initShaderToyCanvas();
     QOpenGLFunctions glFuncs( QOpenGLContext::currentContext() );
     printf( "OpenGl information: VENDOR:       %s\n" , (const char*)glFuncs.glGetString(GL_VENDOR) );
     printf( "                    RENDERDER:    %s\n" , (const char*)glFuncs.glGetString(GL_RENDERER) );
@@ -93,8 +93,8 @@ void OpenGLCanvas::paintGL()
     //paintSphereRayTrace();
     if( _version >= 4.0f )
     {
-        //paintShaderToyCanvas();
-        paintBasicExample();
+        paintShaderToyCanvas();
+        //paintBasicExample();
     }
     else
     {
@@ -148,16 +148,16 @@ void OpenGLCanvas::paintBasicDeprecatedOpenGL()
     //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, _texels);
 
     //glColor3f(1.0f,0.0f,0.0f);
-    glBegin(GL_QUADS);
-        glVertex3f(-0.8f,  0.8f, 0.0f);
-        glTexCoord2f(-0.8f,  0.8f);
-        glVertex3f( 0.8f,  0.8f, 0.0f);
-        glTexCoord2f( 0.8f,  0.8f);
-        glVertex3f( 0.8f, -0.8f, 0.0f);
-        glTexCoord2f(0.8f, -0.8f);
-        glVertex3f(-0.8f, -0.8f, 0.0f);
-        glTexCoord2f(-0.8f, -0.8f);
-    glEnd();
+    //glBegin(GL_QUADS);
+    //    glVertex3f(-0.8f,  0.8f, 0.0f);
+    //    glTexCoord2f(-0.8f,  0.8f);
+    //    glVertex3f( 0.8f,  0.8f, 0.0f);
+    //    glTexCoord2f( 0.8f,  0.8f);
+    //    glVertex3f( 0.8f, -0.8f, 0.0f);
+    //    glTexCoord2f(0.8f, -0.8f);
+    //    glVertex3f(-0.8f, -0.8f, 0.0f);
+    //    glTexCoord2f(-0.8f, -0.8f);
+    //glEnd();
 
     //_vao->release();
     m_program->release();
@@ -251,12 +251,12 @@ void OpenGLCanvas::initBasicDeprecatedOpenGL()
 
     glEnable(GL_COLOR_MATERIAL);
 
-    glBegin(GL_TRIANGLES);
-        glVertex3f(-0.8, -0.8, 0.0);
-        glVertex3f(-0.8, 0.8, 0.0);
-        glVertex3f(0.8, -0.8, 0.0);
-        glVertex3f(0.8, 0.8, 0.0);
-    glEnd();
+    //glBegin(GL_TRIANGLES);
+    //    glVertex3f(-0.8, -0.8, 0.0);
+    //    glVertex3f(-0.8, 0.8, 0.0);
+    //    glVertex3f(0.8, -0.8, 0.0);
+    //    glVertex3f(0.8, 0.8, 0.0);
+    //glEnd();
 
     m_program->release();
 }
@@ -267,18 +267,18 @@ void OpenGLCanvas::paintSphereRayTrace()
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glClearColor( 0.2, 0.2, 0.2, 1.0 );
 
-    glPushAttrib( GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TRANSFORM_BIT | GL_POLYGON_BIT | GL_POINT_BIT );
-    glPushClientAttrib( GL_CLIENT_ALL_ATTRIB_BITS );
+    //glPushAttrib( GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TRANSFORM_BIT | GL_POLYGON_BIT | GL_POINT_BIT );
+    //glPushClientAttrib( GL_CLIENT_ALL_ATTRIB_BITS );
     glEnable( GL_DEPTH_TEST );
     glEnable( GL_COLOR_MATERIAL );
 
-    glMatrixMode( GL_MODELVIEW );
+    //glMatrixMode( GL_MODELVIEW );
 
     glEnable( GL_VERTEX_PROGRAM_POINT_SIZE_ARB );
     glEnable( GL_POINT_SPRITE_ARB );
-    glEnableClientState( GL_VERTEX_ARRAY );
-    glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-    glEnableClientState( GL_FOG_COORD_ARRAY );
+    //glEnableClientState( GL_VERTEX_ARRAY );
+    //glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+    //glEnableClientState( GL_FOG_COORD_ARRAY );
 
     // passa tamanho da tela
     QVector2D size( ( float ) _width, ( float ) _height );

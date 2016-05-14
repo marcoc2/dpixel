@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui opengl
 LIBS     += -fopenmp
 
 QMAKE_CXXFLAGS += -fopenmp -std=c++11
