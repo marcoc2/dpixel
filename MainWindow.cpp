@@ -79,6 +79,7 @@ void MainWindow::connectSignals()
 
     connect( _ui->radioButtonOriginal, SIGNAL( clicked() ), this, SLOT( loadOriginal() ) );
     connect( _ui->radioButtonNearest, SIGNAL( clicked() ), this, SLOT( applyNearest() ) );
+    connect( _ui->radioButtonBilinear, SIGNAL( clicked() ), this, SLOT( applyBilinear() ) );
     connect( _ui->radioButtonHqx, SIGNAL( clicked() ), this, SLOT( applyHqx() ) );
     connect( _ui->radioButtonXbr, SIGNAL( clicked() ), this, SLOT( applyXbr() ) );
     connect( _ui->radioButtonXbrZ, SIGNAL( clicked() ), this, SLOT( applyXbrZ() ) );
@@ -89,6 +90,7 @@ void MainWindow::connectSignals()
     connect( _ui->radioButtonSuperSaI2x, SIGNAL( clicked() ), this, SLOT( applySuperSaI2x() ) );
 
     connect( _ui->spinBoxNearestScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyNearest() ) );
+    connect( _ui->spinBoxBilinearScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyBilinear() ) );
     connect( _ui->spinBoxScaleFactor, SIGNAL( valueChanged( int ) ), this, SLOT( applyCRT() ) );
     connect( _ui->scale2xSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyScale2x() ) );
     connect( _ui->eagleSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyEagle() ) );
@@ -392,7 +394,13 @@ void MainWindow::exportSimilarityGraph()
                                                      tr( "Save Image" ), "/home/",
                                                      tr( "Image Files (*.png)" ) );
 
-    QPixmap pixmap = _ui->graphicsViewGraph->grab();
+    QSize originalSize = _ui->graphicsViewGraph->size();
+    QSize graphSize = _inputImage->getQImage()->size() * 10;
+    _ui->graphicsViewGraph->resize( graphSize );
+    QPixmap pixmap = _ui->graphicsViewGraph->grab( QRect( QPoint( 0,0 ),
+                                                          QSize( graphSize.width() - 15,
+                                                                 graphSize.height() - 15 ) ) );
+    _ui->graphicsViewGraph->resize( originalSize );
     pixmap.save( outputFileName );
 }
 
@@ -478,6 +486,29 @@ void MainWindow::applyNearest()
 
     QImage scaledImage( _inputImage->getQImage()->scaled(
                             _ui->spinBoxNearestScaleFactor->value() * _inputImage->getQImage()->size() ) );
+
+    if( _resultScene != nullptr )
+    {
+        delete _resultScene;
+    }
+    _resultScene = new QGraphicsScene( this );
+    QPixmap pixmap = QPixmap::fromImage( scaledImage );
+    _resultScene->addPixmap( pixmap );
+    _ui->graphicsView->setScene( _resultScene );
+}
+
+
+void MainWindow::applyBilinear()
+{
+    if( _inputImage == 0 || !_ui->radioButtonBilinear->isChecked() )
+    {
+        return;
+    }
+
+    QImage scaledImage( _inputImage->getQImage()->scaled(
+                            _ui->spinBoxBilinearScaleFactor->value() * _inputImage->getQImage()->size(),
+                            Qt::IgnoreAspectRatio,
+                            Qt::SmoothTransformation ) );
 
     if( _resultScene != nullptr )
     {

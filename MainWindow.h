@@ -88,6 +88,7 @@ private Q_SLOTS:
     void fillLabels( Image* image );
 
     void applyNearest();
+    void applyBilinear();
     void applyHqx();
     void applyXbrZ();
     void applyXbr();

@@ -44,8 +44,8 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>540</y>
-      <width>41</width>
+      <y>560</y>
+      <width>51</width>
       <height>31</height>
      </rect>
     </property>
@@ -57,7 +57,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>460</y>
+      <y>500</y>
       <width>96</width>
       <height>31</height>
      </rect>
@@ -70,7 +70,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>500</y>
+      <y>530</y>
       <width>96</width>
       <height>31</height>
      </rect>
@@ -85,7 +85,7 @@
       <x>10</x>
       <y>0</y>
       <width>151</width>
-      <height>451</height>
+      <height>491</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -111,7 +111,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>120</y>
+       <y>166</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -159,7 +159,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>195</y>
+       <y>241</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -172,7 +172,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>240</y>
+       <y>286</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -185,7 +185,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>287</y>
+       <y>333</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -201,7 +201,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>390</y>
+       <y>428</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -214,7 +214,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>339</y>
+       <y>385</y>
        <width>61</width>
        <height>22</height>
       </rect>
@@ -227,7 +227,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>362</y>
+       <y>408</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -246,14 +246,14 @@
       </rect>
      </property>
      <property name="value">
-      <number>6</number>
+      <number>4</number>
      </property>
     </widget>
     <widget class="QSpinBox" name="scale2xSpinBox">
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>263</y>
+       <y>309</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -274,14 +274,14 @@
       <number>1</number>
      </property>
      <property name="value">
-      <number>1</number>
+      <number>2</number>
      </property>
     </widget>
     <widget class="QSpinBox" name="eagleSpinBox">
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>312</y>
+       <y>358</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -293,14 +293,14 @@
       <number>5</number>
      </property>
      <property name="value">
-      <number>1</number>
+      <number>2</number>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>312</y>
+       <y>358</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -336,7 +336,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>263</y>
+       <y>309</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -354,7 +354,7 @@
      <property name="geometry">
       <rect>
        <x>41</x>
-       <y>362</y>
+       <y>408</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -372,7 +372,7 @@
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>220</y>
+       <y>266</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -390,7 +390,7 @@
      <property name="geometry">
       <rect>
        <x>98</x>
-       <y>220</y>
+       <y>266</y>
        <width>42</width>
        <height>21</height>
       </rect>
@@ -409,7 +409,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>420</y>
+       <y>458</y>
        <width>135</width>
        <height>25</height>
       </rect>
@@ -422,7 +422,7 @@
      <property name="geometry">
       <rect>
        <x>98</x>
-       <y>174</y>
+       <y>220</y>
        <width>42</width>
        <height>21</height>
       </rect>
@@ -441,7 +441,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>149</y>
+       <y>195</y>
        <width>113</width>
        <height>26</height>
       </rect>
@@ -454,7 +454,57 @@
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>174</y>
+       <y>220</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Factor:</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBoxBilinearScaleFactor">
+     <property name="geometry">
+      <rect>
+       <x>98</x>
+       <y>143</y>
+       <width>42</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="value">
+      <number>4</number>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButtonBilinear">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>118</y>
+       <width>91</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Scale without any interpolation (pixelated)</string>
+     </property>
+     <property name="text">
+      <string>Bilinear</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>143</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -531,11 +581,16 @@
    <widget class="QPushButton" name="exportGIFButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>580</y>
-      <width>121</width>
-      <height>41</height>
+      <x>30</x>
+      <y>590</y>
+      <width>96</width>
+      <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Export 
@@ -711,8 +766,8 @@ Animated GIF</string>
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>540</y>
-      <width>41</width>
+      <y>560</y>
+      <width>46</width>
       <height>31</height>
      </rect>
     </property>

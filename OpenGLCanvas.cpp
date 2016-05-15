@@ -143,7 +143,7 @@ void OpenGLCanvas::paintBasicDeprecatedOpenGL()
     //GLuint texLoc = m_program->uniformLocation("tex");
     //glUniform1i(texLoc,0);
 
-    _colorTexture->bind();
+    //_colorTexture->bind();
 
     //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, _texels);
 
