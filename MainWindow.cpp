@@ -41,7 +41,7 @@ MainWindow::MainWindow( QWidget* parent ) :
     _isAnimatedGif( false )
 {
     #ifdef _WIN32
-    _inputImage = new Image( "../pixel-art-remaster/Samples/metalslug.png" );
+    _inputImage = new Image( "../Samples/metalslug.png" );
     #else
     _inputImage = new Image( "../Samples/metalslug.png" );
     _currentFileName = "../Samples/metalslug.png";
