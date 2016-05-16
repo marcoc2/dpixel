@@ -648,8 +648,11 @@ void MainWindow::createSimilarityGraph()
     }
     else
     {
-        _graphScene->clear();
-        _ui->graphicsViewGraph->items().clear();
+        if( _graphScene )
+        {
+            _graphScene->clear();
+            _ui->graphicsViewGraph->items().clear();
+        }
     }
 
 }

@@ -41,6 +41,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="testButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -763,6 +766,9 @@ Animated GIF</string>
     </property>
    </widget>
    <widget class="QPushButton" name="glButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -782,7 +788,7 @@ Animated GIF</string>
      <x>0</x>
      <y>0</y>
      <width>1223</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
