@@ -1,8 +1,11 @@
 #include "CRTFilter.h"
 
+#define APPERTURE_SCALE_FACTOR 10
+
 CRTFilter::CRTFilter( Image* inputImage, float scaleFactor ) :
-    Filter( inputImage, scaleFactor )
+    Filter( inputImage, APPERTURE_SCALE_FACTOR )
 {
+    _finalScaleFactor = scaleFactor;
 }
 
 
@@ -10,6 +13,7 @@ CRTFilter::CRTFilter( Image* inputImage, int outputWidth, int outputHeight, floa
     Filter( inputImage, outputWidth, outputHeight )
 {
     _scaleFactor = scaleFactor;
+    _finalScaleFactor = scaleFactor;
 }
 
 
@@ -28,7 +32,6 @@ void CRTFilter::apply()
 {
     applyAppertureGrill();
     return;
-
 
     #pragma omp parallel for
     for(u_int w = 0; w < _inputImage->getWidth(); w++)
@@ -78,8 +81,8 @@ void CRTFilter::applyAppertureGrill()
         {
             const Pixel& pixel = _inputImage->getPixel( w, h );
 
-            u_int w_ = w * 10;
-            u_int h_ = h * 10;
+            u_int w_ = w * APPERTURE_SCALE_FACTOR;
+            u_int h_ = h * APPERTURE_SCALE_FACTOR;
 
             const unsigned char ground = 0;
             Pixel redPixel( pixel.red, ground, ground );
@@ -93,7 +96,7 @@ void CRTFilter::applyAppertureGrill()
             Pixel bluePixel( ground, ground, pixel.blue );
             Pixel blueBorder( ground, ground, pixel.blue / 2 );
 
-            for( u_int j = h_; j < h_ + 10; j++ )
+            for( u_int j = h_; j < h_ + APPERTURE_SCALE_FACTOR; j++ )
             {
                 for( u_int i = w_ + 0; i < w_ + 3; i++ )
                 {
@@ -161,6 +164,10 @@ void CRTFilter::applyAppertureGrill()
     }
 
     _outputImage->fillQImageRGB();
+
+
+    // Resize smoothly as second pass
+    _outputImage->resize( _finalScaleFactor / ( float ) APPERTURE_SCALE_FACTOR, true );
 }
 
 

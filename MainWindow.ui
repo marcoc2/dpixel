@@ -235,8 +235,17 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="minimum">
+      <number>2</number>
+     </property>
+     <property name="maximum">
+      <number>10</number>
+     </property>
+     <property name="singleStep">
+      <number>1</number>
+     </property>
      <property name="value">
-      <number>6</number>
+      <number>4</number>
      </property>
     </widget>
     <widget class="QSpinBox" name="spinBoxNearestScaleFactor">
@@ -788,7 +797,7 @@ Animated GIF</string>
      <x>0</x>
      <y>0</y>
      <width>1223</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

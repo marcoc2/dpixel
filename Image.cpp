@@ -83,14 +83,25 @@ bool Image::load()
 }
 
 
-void Image::resize( float factor )
+void Image::resize( float factor, bool isSmooth )
 {
-    _width /= factor;
-    _height /= factor;
+    _width = _width * factor;
+    _height = _height * factor;
     _size = _width * _height;
     _widthStep = _width;
 
-    QImage* scaledImage = new QImage ( _qImage->scaled( 1.0f / ( float ) factor * _qImage->size() ) );
+    QImage* scaledImage;
+
+    if( isSmooth )
+    {
+        scaledImage = new QImage ( _qImage->scaled( factor * _qImage->size(),
+                                                    Qt::IgnoreAspectRatio,
+                                                    Qt::SmoothTransformation ) );
+    }
+    else
+    {
+        scaledImage = new QImage ( _qImage->scaled( factor * _qImage->size() ) );
+    }
 
     if( _qImage )
     {

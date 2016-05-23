@@ -112,7 +112,7 @@ void MainWindow::initialize()
     int resizedFactor = 1; //CheckUpscale::checkUpscale( _similarityGraph );
     if( resizedFactor < 1 )
     {
-        reloadResizedImage( resizedFactor );
+        reloadResizedImage( 1.0 / ( float ) resizedFactor );
         createSimilarityGraph();
 
         QMessageBox* dialog = new QMessageBox();
@@ -567,7 +567,7 @@ void MainWindow::applyCRT()
         return;
     }
 
-    CRTFilter* crtFilter = new CRTFilter( _inputImage, 10.0f ); //_ui->spinBoxScaleFactor->value() );
+    CRTFilter* crtFilter = new CRTFilter( _inputImage, _ui->spinBoxScaleFactor->value() );
 
     applyAndShowOutputImage( crtFilter );
 }
@@ -784,9 +784,9 @@ void MainWindow::resizeEvent( QResizeEvent* event )
 }
 
 
-void MainWindow::reloadResizedImage( int resizedFactor )
+void MainWindow::reloadResizedImage( float resizedFactor )
 {
-    if( resizedFactor <= 1 )
+    if( ( int ) resizedFactor == 1 )
     {
         return;
     }
@@ -805,7 +805,7 @@ void MainWindow::reloadResizedImage( int resizedFactor )
 
 void MainWindow::downscaleInputImage( int factor )
 {
-    reloadResizedImage( factor );
+    reloadResizedImage( 1.0f / ( float ) factor );
 
     fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
     fillQGraphicsViewOriginal( *( _inputImage->getQImage() ) );

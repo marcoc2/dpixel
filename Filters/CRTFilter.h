@@ -15,6 +15,10 @@ public:
 
     void applyAppertureGrill();
     void applyShadowMask();
+
+private:
+
+    float _finalScaleFactor;
 };
 
 #endif // CRTFILTER_H

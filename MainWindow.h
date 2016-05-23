@@ -67,7 +67,7 @@ private:
     void fillQGraphicsView( QImage& qimage, u_int scaleFactor = 8 );
     void fillQGraphicsViewOriginal(QImage& qimage );
     void applyAndShowOutputImage( Filter *filter );
-    void reloadResizedImage( int resizedFactor );
+    void reloadResizedImage( float resizedFactor );
     void initialize();
     bool checkCurrentFilter( bool showWarning = false );
 
