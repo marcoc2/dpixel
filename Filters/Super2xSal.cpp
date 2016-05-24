@@ -4,6 +4,7 @@ Super2xSal::Super2xSal( Image* inputImage, int numberOfPasses ) :
     Filter( inputImage, 2.0f, numberOfPasses ),
     _numberOfPasses( numberOfPasses )
 {
+    _name = std::string( "super2xsai" );
 }
 
 

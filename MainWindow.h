@@ -72,6 +72,7 @@ private:
     void reloadResizedImage( float resizedFactor );
     void initialize();
     bool checkCurrentFilter( bool showWarning = false );
+    QString getSuggestedFileName( QString format );
 
 protected:
 

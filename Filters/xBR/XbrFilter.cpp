@@ -5,6 +5,7 @@
 XbrFilter::XbrFilter( Image* inputImage, float scaleFactor ) :
     Filter( inputImage, scaleFactor )
 {
+    _name = std::string( "xbr" );
 }
 
 

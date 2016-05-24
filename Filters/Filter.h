@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include "Image.h"
+#include <string>
 
 class Filter : public QThread
 {
@@ -20,6 +21,7 @@ public:
 
     Image* getOutputImage();
     int getScaleFactor();
+    std::string getName();
     void setNewInputImage( Image* image );
 
 protected:
@@ -34,6 +36,8 @@ protected:
     Image* _outputImage;
 
     float _scaleFactor;
+
+    std::string _name;
 
 signals:
 

@@ -3,6 +3,7 @@
 Scale2xFilter::Scale2xFilter( Image* inputImage, Image* outputImage ) :
     Filter( inputImage, outputImage )
 {
+    _name = std::string( "scale2x" );
 }
 
 
@@ -10,7 +11,7 @@ Scale2xFilter::Scale2xFilter( Image* inputImage, int numberOfPasses ) :
     Filter( inputImage, 2.0f,  numberOfPasses ),
     _numberOfPasses( numberOfPasses )
 {
-
+    _name = std::string( "scale2x" );
 }
 
 

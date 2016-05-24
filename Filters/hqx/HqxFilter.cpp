@@ -4,6 +4,8 @@
 HqxFilter::HqxFilter(Image* inputImage, float scaleFactor ) :
     Filter( inputImage, scaleFactor )
 {
+    hqxInit();
+    _name = std::string( "hqx" );
 }
 
 
@@ -25,7 +27,6 @@ void HqxFilter::apply()
 
     fillBufferBGRA( inputBuffer );
 
-    hqxInit();
     hq4x_32( reinterpret_cast<u_int32_t*>( inputBuffer ),
              reinterpret_cast<u_int32_t*>( outputBuffer ),
              _inputImage->getWidth(),

@@ -140,6 +140,12 @@ int Filter::getScaleFactor()
 }
 
 
+std::string Filter::getName()
+{
+    return _name;
+}
+
+
 void Filter::setNewInputImage( Image* image )
 {
     _inputImage = image;

@@ -3,6 +3,7 @@
 EagleFilter::EagleFilter( Image* inputImage, float scaleFactor ) :
     Filter( inputImage, scaleFactor )
 {
+    _name = std::string( "eagle" );
 }
 
 
@@ -10,7 +11,7 @@ EagleFilter::EagleFilter( Image* inputImage, int numberOfPasses ) :
     Filter( inputImage, 2.0f,  numberOfPasses ),
     _numberOfPasses( numberOfPasses )
 {
-
+    _name = std::string( "eagle" );
 }
 
 

@@ -5,6 +5,7 @@
 CRTFilter::CRTFilter( Image* inputImage, float scaleFactor ) :
     Filter( inputImage, scaleFactor )
 {
+    _name = std::string( "crt" );
     _intermediateImage = new Image( inputImage->getWidth() * APPERTURE_SCALE_FACTOR,
                                     inputImage->getHeight() * APPERTURE_SCALE_FACTOR );
 }
@@ -14,6 +15,7 @@ CRTFilter::CRTFilter( Image* inputImage, int outputWidth, int outputHeight, floa
     Filter( inputImage, outputWidth, outputHeight )
 {
     _scaleFactor = scaleFactor;
+    _name = std::string( "crt" );
 }
 
 

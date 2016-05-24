@@ -355,6 +355,16 @@ void MainWindow::fillQGraphicsViewOriginal( QImage& qimage )
 }
 
 
+QString MainWindow::getSuggestedFileName( QString format )
+{
+    return QFileInfo( _currentFileName ).absoluteDir().absolutePath() +
+                QString( "/" ) + QFileInfo( _currentFileName ).baseName() + QString( "_" ) +
+                QString( _currentFilter->getName().c_str() ) + QString( "_" ) +
+                QString::number( _currentFilter->getScaleFactor() ) + QString( "x." ) +
+                format;
+}
+
+
 void MainWindow::saveImage()
 {
     if( !checkCurrentFilter( true ) )
@@ -362,16 +372,18 @@ void MainWindow::saveImage()
         return;
     }
 
-    QString fileName = QFileDialog::getSaveFileName( this,
-                                                     tr( "Save Image" ), "/home/",
-                                                     tr( "Image Files (*.png *.jpg *.bmp)" ) );
+    QString outputFileName =
+            QFileDialog::getSaveFileName( this,
+                                          tr( "Save Image" ),
+                                          getSuggestedFileName( "png" ).toStdString().c_str(),
+                                          tr( "Image Files (*.png *.jpg *.bmp)" ) );
 
-    if( fileName == 0 )
+    if( outputFileName == 0 )
     {
         return;
     }
 
-    _outputImage->getQImage()->save( fileName );
+    _outputImage->getQImage()->save( outputFileName );
 }
 
 
@@ -382,9 +394,16 @@ void MainWindow::saveAnimatedGif()
         return;
     }
 
-    QString outputFileName = QFileDialog::getSaveFileName( this,
-                                                     tr( "Save Image" ), "/home/",
-                                                     tr( "Image Files (*.gif)" ) );
+    QString outputFileName =
+            QFileDialog::getSaveFileName( this,
+                                          tr( "Save Image" ),
+                                          getSuggestedFileName( "gif" ).toStdString().c_str(),
+                                          tr( "Image Files (*.gif)" ) );
+
+    if( outputFileName == 0 )
+    {
+        return;
+    }
 
     _gifSaver = new GifSaver( outputFileName, _currentFilter,
                                        _currentFilter->getScaleFactor(),
@@ -400,9 +419,20 @@ void MainWindow::saveAnimatedGif()
 
 void MainWindow::exportSimilarityGraph()
 {
-    QString outputFileName = QFileDialog::getSaveFileName( this,
-                                                     tr( "Save Image" ), "/home/",
-                                                     tr( "Image Files (*.png)" ) );
+    QString suggestedFileName = QFileInfo( _currentFileName ).absoluteDir().absolutePath() +
+            QString( "/" ) + QFileInfo( _currentFileName ).baseName() + QString( "_" ) +
+            QString( "similarity_graph.png" );
+
+
+    QString outputFileName =
+            QFileDialog::getSaveFileName( this,
+                                          tr( "Save Image" ), suggestedFileName,
+                                          tr( "Image Files (*.png)" ) );
+
+    if( outputFileName == 0 )
+    {
+        return;
+    }
 
     QSize originalSize = _ui->graphicsViewGraph->size();
     QSize graphSize = _inputImage->getQImage()->size() * 10;
