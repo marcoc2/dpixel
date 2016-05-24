@@ -3,9 +3,10 @@
 #define APPERTURE_SCALE_FACTOR 10
 
 CRTFilter::CRTFilter( Image* inputImage, float scaleFactor ) :
-    Filter( inputImage, APPERTURE_SCALE_FACTOR )
+    Filter( inputImage, scaleFactor )
 {
-    _finalScaleFactor = scaleFactor;
+    _intermediateImage = new Image( inputImage->getWidth() * APPERTURE_SCALE_FACTOR,
+                                    inputImage->getHeight() * APPERTURE_SCALE_FACTOR );
 }
 
 
@@ -13,7 +14,6 @@ CRTFilter::CRTFilter( Image* inputImage, int outputWidth, int outputHeight, floa
     Filter( inputImage, outputWidth, outputHeight )
 {
     _scaleFactor = scaleFactor;
-    _finalScaleFactor = scaleFactor;
 }
 
 
@@ -102,11 +102,11 @@ void CRTFilter::applyAppertureGrill()
                 {
                     if( ( j == h_ ) || ( j == ( h_ + 9 ) ) )
                     {
-                        _outputImage->setPixel( i, j, redBorder );
+                        _intermediateImage->setPixel( i, j, redBorder );
                     }
                     else
                     {
-                        _outputImage->setPixel( i, j, redPixel );
+                        _intermediateImage->setPixel( i, j, redPixel );
                     }
                 }
 
@@ -114,11 +114,11 @@ void CRTFilter::applyAppertureGrill()
                 {
                     if( ( j == h_ ) || ( j == ( h_ + 9 ) ) )
                     {
-                        _outputImage->setPixel( i, j, greenBorder );
+                        _intermediateImage->setPixel( i, j, greenBorder );
                     }
                     else
                     {
-                        _outputImage->setPixel( i, j, greenPixel );
+                        _intermediateImage->setPixel( i, j, greenPixel );
                     }
                 }
 
@@ -126,11 +126,11 @@ void CRTFilter::applyAppertureGrill()
                 {
                     if( ( j == h_ ) || ( j == ( h_ + 9 ) ) )
                     {
-                        _outputImage->setPixel( i, j, blueBorder );
+                        _intermediateImage->setPixel( i, j, blueBorder );
                     }
                     else
                     {
-                        _outputImage->setPixel( i, j, bluePixel );
+                        _intermediateImage->setPixel( i, j, bluePixel );
                     }
                 }
 
@@ -139,35 +139,41 @@ void CRTFilter::applyAppertureGrill()
                     if( ( j == h_ || j == h_ + 9 ) &&
                             ( i == w_ || i == w_ + 3 || i == w_ + 6 || i == w_ + 9 ) )
                     {
-                        _outputImage->setPixel( i, j, Pixel( 0, 0, 0 ) );
+                        _intermediateImage->setPixel( i, j, Pixel( 0, 0, 0 ) );
                     }
                     else if( i == w_ )
                     {
-                        _outputImage->setPixel( i, j, redBorder );
+                        _intermediateImage->setPixel( i, j, redBorder );
                     }
                     else if( i == w_ + 3 )
                     {
-                        _outputImage->setPixel( i, j, midRedGreen );
+                        _intermediateImage->setPixel( i, j, midRedGreen );
                     }
                     else if( i == w_ + 6 )
                     {
-                        _outputImage->setPixel( i, j, midGreenBlue );
+                        _intermediateImage->setPixel( i, j, midGreenBlue );
                     }
                     else if( i == w_ + 9 )
                     {
-                        _outputImage->setPixel( i, j, blueBorder );
+                        _intermediateImage->setPixel( i, j, blueBorder );
                     }
                 }
             }
         }
-        emit setProgress( ( float ) w * 100 / ( float ) _inputImage->getWidth() );
+        emit setProgress( ( float ) w * 100 / ( float ) _intermediateImage->getWidth() );
     }
 
-    _outputImage->fillQImageRGB();
-
-
     // Resize smoothly as second pass
-    _outputImage->resize( _finalScaleFactor / ( float ) APPERTURE_SCALE_FACTOR, true );
+    _intermediateImage->fillQImageRGB();
+
+    QImage* intermediateQImage = _intermediateImage->getQImage();
+    QImage* scaledImage = new QImage ( intermediateQImage->scaled(
+                                           _scaleFactor / ( float ) APPERTURE_SCALE_FACTOR * intermediateQImage->size(),
+                                       Qt::IgnoreAspectRatio,
+                                       Qt::SmoothTransformation ) );
+
+    delete _outputImage;
+    _outputImage = new Image( scaledImage );
 }
 
 

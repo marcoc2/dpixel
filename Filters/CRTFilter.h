@@ -18,7 +18,7 @@ public:
 
 private:
 
-    float _finalScaleFactor;
+    Image* _intermediateImage;
 };
 
 #endif // CRTFILTER_H
