@@ -50,6 +50,7 @@ CheckUpscaleWindow::CheckUpscaleWindow( QWidget* parent, Image* image ) :
 
 CheckUpscaleWindow::~CheckUpscaleWindow()
 {
+    delete _ui;
     delete _resizedImage;
     delete _copiedImage;
     delete _imageScene;

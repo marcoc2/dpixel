@@ -13,6 +13,7 @@
 
 class SimilarityGraph;
 class Filter;
+class GifSaver;
 
 namespace Ui
 {
@@ -57,8 +58,9 @@ private:
     QGraphicsScene* _originalScene;
     QGraphicsScene* _graphScene;
 
-    bool _isAnimatedGif;
+    GifSaver* _gifSaver;
 
+    bool _isAnimatedGif;
 
     void connectSignals();
     void createActions();

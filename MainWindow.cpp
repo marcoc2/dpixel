@@ -38,6 +38,7 @@ MainWindow::MainWindow( QWidget* parent ) :
     _resultScene( nullptr ),
     _originalScene( nullptr ),
     _graphScene( nullptr ),
+    _gifSaver( nullptr ),
     _isAnimatedGif( false )
 {
     #ifdef _WIN32
@@ -102,6 +103,15 @@ void MainWindow::connectSignals()
 MainWindow::~MainWindow()
 {
     delete _ui;
+    delete _similarityGraph;
+    delete _inputImage;
+    delete _outputImage;
+    delete _currentFilter;
+
+    for( auto const& frame : _inputAnimatedGif )
+    {
+        delete frame;
+    }
 }
 
 
@@ -275,10 +285,10 @@ void MainWindow::loadImage()
         std::stringstream s;
         s << "Animated gif containing " << qImageReader.imageCount() << " frames" << std::endl;
         s << "You can only preview the first frame, but can export the filtered animated gif";
-        QMessageBox* dialog = new QMessageBox();
-        dialog->setWindowTitle( "Warning!" );
-        dialog->setText( s.str().c_str() );
-        dialog->show();
+        QMessageBox dialog;
+        dialog.setWindowTitle( "Warning!" );
+        dialog.setText( s.str().c_str() );
+        dialog.show();
     }
     else
     {
@@ -376,12 +386,12 @@ void MainWindow::saveAnimatedGif()
                                                      tr( "Save Image" ), "/home/",
                                                      tr( "Image Files (*.gif)" ) );
 
-    GifSaver* gifSaver = new GifSaver( outputFileName,_currentFilter,
+    _gifSaver = new GifSaver( outputFileName, _currentFilter,
                                        _currentFilter->getScaleFactor(),
                                        _inputAnimatedGif );
-    connect( gifSaver, SIGNAL( finished()) , this, SLOT( finishSaveGif() ) );
-    connect( gifSaver, SIGNAL( setProgress( int ) ), this, SLOT( setProgress( int ) ) );
-    gifSaver->start( QThread::NormalPriority );
+    connect( _gifSaver, SIGNAL( finished()) , this, SLOT( finishSaveGif() ) );
+    connect( _gifSaver, SIGNAL( setProgress( int ) ), this, SLOT( setProgress( int ) ) );
+    _gifSaver->start( QThread::NormalPriority );
 
     _ui->filterProgressBar->setVisible( true );
     setEnabled( false );
@@ -847,6 +857,8 @@ void MainWindow::finishSaveGif()
 {
     setEnabled( true );
     _ui->filterProgressBar->setVisible( false );
+
+    delete _gifSaver;
 }
 
 

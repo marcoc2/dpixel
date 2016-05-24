@@ -31,6 +31,9 @@ OpenGLCanvas::~OpenGLCanvas()
     makeCurrent();
 
     doneCurrent();
+
+    delete _vbo;
+    delete _vao;
 }
 
 

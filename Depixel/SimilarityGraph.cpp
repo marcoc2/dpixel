@@ -33,6 +33,7 @@ SimilarityGraph::SimilarityGraph( Image *inputImage ) :
 
 SimilarityGraph::~SimilarityGraph()
 {
+    delete[] _graph;
 }
 
 

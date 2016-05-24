@@ -52,6 +52,8 @@ void GifSaver::save()
                        outputFrame->getWidth(),
                        outputFrame->getHeight(), 10 );
 
+        delete outputFrame;
+
         emit setProgress( ( float ) i++ * 100 / _inputAnimatedGif.size() );
     }
 
