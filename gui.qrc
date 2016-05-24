@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>Resources/dpixel_icon_alpha.png</file>
+        <file>Resources/logo_atp_5x.png</file>
     </qresource>
 </RCC>
