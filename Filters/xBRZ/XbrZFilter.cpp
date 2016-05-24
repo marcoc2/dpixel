@@ -37,6 +37,9 @@ void XbrZFilter::apply()
                  scalerCfg );
 
     fillImageBGRA( outputBuffer );
+
+    delete[] inputBuffer;
+    delete[] outputBuffer;
 }
 
 

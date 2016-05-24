@@ -32,4 +32,7 @@ void HqxFilter::apply()
              _inputImage->getHeight() );
 
     fillImageBGRA( outputBuffer );
+
+    delete[] inputBuffer;
+    delete[] outputBuffer;
 }

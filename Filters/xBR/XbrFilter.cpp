@@ -51,4 +51,8 @@ void XbrFilter::apply()
     //xbr::xbr4x( inputBuffer, outputBuffer, _inputImage->getWidth(), _inputImage->getHeight() );
 
     fillImageBGRA( outputBuffer );
+
+    free( xbrData );
+    delete[] inputBuffer;
+    delete[] outputBuffer;
 }

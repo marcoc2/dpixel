@@ -53,15 +53,11 @@ void GifSaver::save()
                        outputFrame->getHeight(), 10 );
 
         delete outputFrame;
+        delete[] outputFrameBuffer;
 
         emit setProgress( ( float ) i++ * 100 / _inputAnimatedGif.size() );
     }
 
     GifEnd( &gifWriter );
-
-    for( auto const& buffer : bufferVector )
-    {
-        delete[] buffer;
-    }
 }
 
