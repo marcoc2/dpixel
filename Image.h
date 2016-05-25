@@ -7,6 +7,9 @@
 #ifdef _WIN32
 #define u_int uint32_t
 #define u_char uint8_t
+#elif defined __clang__
+typedef uint32_t u_int;
+typedef uint8_t u_char;
 #endif
 
 class Image

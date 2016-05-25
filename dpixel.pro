@@ -5,9 +5,9 @@
 #-------------------------------------------------
 
 QT       += core gui opengl
-LIBS     += -fopenmp
+CONFIG += C++11
 
-QMAKE_CXXFLAGS += -fopenmp -std=c++11
+unix:!macx:LIBS += -fopenmp
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

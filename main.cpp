@@ -33,11 +33,17 @@
 
 #include "MainWindow.h"
 #include <QApplication>
+
+#if defined(__linux__) || defined(_WIN32)
 #include <omp.h>
+#endif
 
 int main( int argc, char* argv[] )
 {
+#if defined(__linux__) || defined(_WIN32)
     omp_set_num_threads( omp_get_max_threads() );
+#endif
+
     QApplication a( argc, argv );
     MainWindow w;
     w.show();

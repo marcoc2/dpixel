@@ -3,6 +3,8 @@
 #include "Depixel/SimilarityGraph.h"
 #include "Image.h"
 
+#include <cmath>
+
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
 
 SimilarityGraphExportToImage::SimilarityGraphExportToImage( SimilarityGraph* similarityGraph ) :
