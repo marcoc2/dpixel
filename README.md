@@ -8,7 +8,7 @@ Binaries Download available on Wiki Tab
 # Requirements
 
 - Qt 5
-- Windows or Linux (not tested on OSX)
+- Windows (MingW or MSVC), Linux  (GCC) and Mac OSX (CLANG)
 
 # Building
 
