@@ -14,8 +14,13 @@
 // ****************************************************************************
 
 #include "xbrz.h"
+#include <cmath>
 #include <cassert>
 #include <algorithm>
+
+#ifdef __clang__
+typedef uint32_t u_int;
+#endif
 
 namespace
 {

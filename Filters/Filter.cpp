@@ -1,5 +1,8 @@
 #include "Filter.h"
+
+#if defined(__linux__) || defined(_WIN32)
 #include <omp.h>
+#endif
 
 Filter::Filter( Image* inputImage, Image* outputImage ) :
     _inputImage( inputImage ),
