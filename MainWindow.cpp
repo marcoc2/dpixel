@@ -97,6 +97,15 @@ void MainWindow::connectSignals()
     connect( _ui->eagleSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyEagle() ) );
     connect( _ui->xBRZSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbrZ() ) );
     connect( _ui->xBRSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbr() ) );
+
+    // Hide filters with issues and resize frame
+    _ui->glButton->setVisible( false );
+    _ui->testButton->setVisible( false );
+    _ui->radioButtonVector->setVisible( false );
+    _ui->radioButtonSuperSaI2x->setVisible( false );
+    _ui->frameFiltersOptions->resize(
+                _ui->frameFiltersOptions->size().width(),
+                _ui->frameFiltersOptions->size().height() - 50 );
 }
 
 
@@ -642,6 +651,7 @@ void MainWindow::applyEagle()
 void MainWindow::applyAndShowOutputImage( Filter* filter )
 {
     _ui->filterProgressBar->setVisible( true );
+    _ui->frameFiltersOptions->setEnabled( false );
 
     _currentFilter = filter;
     connect( _currentFilter, SIGNAL( finished()) , this, SLOT( finishFilter() ) );
@@ -880,6 +890,7 @@ void MainWindow::finishFilter()
     _ui->filterProgressBar->setMinimum( 0 );
     _ui->filterProgressBar->setValue( 0 );
     _ui->filterProgressBar->setVisible( false );
+    _ui->frameFiltersOptions->setEnabled( true );
 }
 
 
