@@ -60,6 +60,10 @@ MainWindow::MainWindow( QWidget* parent ) :
     {
         initialize();
     }
+    else
+    {
+        _inputImage = 0;
+    }
 
     // Center window position
     QRect screenGeometry = QApplication::desktop()->screenGeometry();
