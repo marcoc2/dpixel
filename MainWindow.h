@@ -74,6 +74,9 @@ private:
     bool checkCurrentFilter( bool showWarning = false );
     QString getSuggestedFileName( QString format );
 
+    void clearGifHolder();
+    void loadAnimatedGifHolder( QImageReader& qImageReader );
+
 protected:
 
     void resizeEvent( QResizeEvent *event ) Q_DECL_OVERRIDE;
@@ -101,7 +104,6 @@ private Q_SLOTS:
     void applySuperSaI2x();
     void createSimilarityGraph();
     void saveAnimatedGif();
-    void loadAnimatedGifHolder( QImageReader& qImageReader );
     void applyVector();
 
     void finishFilter();

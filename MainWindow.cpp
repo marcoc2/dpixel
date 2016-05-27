@@ -82,6 +82,8 @@ void MainWindow::connectSignals()
     connect( _ui->saveImageButton, SIGNAL( clicked() ), this, SLOT( saveImage() ) );
     connect( _ui->exportGIFButton, SIGNAL( clicked() ), this, SLOT( saveAnimatedGif() ) );
 
+    _ui->exportGIFButton->setVisible( false );
+
     connect( _ui->radioButtonOriginal, SIGNAL( clicked() ), this, SLOT( loadOriginal() ) );
     connect( _ui->radioButtonNearest, SIGNAL( clicked() ), this, SLOT( applyNearest() ) );
     connect( _ui->radioButtonBilinear, SIGNAL( clicked() ), this, SLOT( applyBilinear() ) );
@@ -120,11 +122,7 @@ MainWindow::~MainWindow()
     delete _inputImage;
     delete _outputImage;
     delete _currentFilter;
-
-    for( auto const& frame : _inputAnimatedGif )
-    {
-        delete frame;
-    }
+    clearGifHolder();
 }
 
 
@@ -294,7 +292,13 @@ void MainWindow::loadImage()
     if( qImageReader.supportsAnimation() && ( qImageReader.imageCount() > 1 ) )
     {
         _isAnimatedGif = true;
+        if( _inputAnimatedGif.size() > 0 )
+        {
+            clearGifHolder();
+        }
+
         loadAnimatedGifHolder( qImageReader );
+
         std::stringstream s;
         s << "Animated gif containing " << qImageReader.imageCount() << " frames" << std::endl;
         s << "You can only preview the first frame, but can export the filtered animated gif";
@@ -847,6 +851,8 @@ void MainWindow::reloadResizedImage( float resizedFactor )
 
     _inputImage->resize( resizedFactor );
 
+    createSimilarityGraph();
+
     if( _isAnimatedGif )
     {
         for( const auto& image : _inputAnimatedGif )
@@ -922,4 +928,14 @@ void MainWindow::loadAnimatedGifHolder( QImageReader& qImageReader )
         Image* image = new Image( qFrame );
         _inputAnimatedGif.push_back( image );
     }
+}
+
+
+void MainWindow::clearGifHolder()
+{
+    for( auto const& frame : _inputAnimatedGif )
+    {
+        delete frame;
+    }
+    _inputAnimatedGif.clear();
 }
