@@ -89,7 +89,7 @@ void MainWindow::connectSignals()
     connect( _ui->saveImageButton, SIGNAL( clicked() ), this, SLOT( saveImage() ) );
     connect( _ui->exportGIFButton, SIGNAL( clicked() ), this, SLOT( saveAnimatedGif() ) );
 
-    _ui->exportGIFButton->setVisible( false );
+    _ui->exportGIFButton->setEnabled( false );
 
     connect( _ui->radioButtonOriginal, SIGNAL( clicked() ), this, SLOT( loadOriginal() ) );
     connect( _ui->radioButtonNearest, SIGNAL( clicked() ), this, SLOT( applyNearest() ) );
@@ -186,11 +186,11 @@ void MainWindow::initialize()
 
     if( _isAnimatedGif )
     {
-        _ui->exportGIFButton->setVisible( true );
+        _ui->exportGIFButton->setEnabled( true );
     }
     else
     {
-        _ui->exportGIFButton->setVisible( false );
+        _ui->exportGIFButton->setEnabled( false );
     }
 }
 
