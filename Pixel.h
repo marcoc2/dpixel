@@ -15,6 +15,8 @@ public:
 
     bool operator==( const Pixel& p ) const;
     bool operator!=( const Pixel& p ) const;
+    Pixel operator*( double m ) const;
+    Pixel& operator+=( const Pixel& p );
 
     unsigned char red;
     unsigned char green;
