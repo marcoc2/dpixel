@@ -30,7 +30,7 @@
       <x>570</x>
       <y>20</y>
       <width>641</width>
-      <height>591</height>
+      <height>601</height>
      </rect>
     </property>
     <property name="font">
@@ -505,7 +505,7 @@
       <x>170</x>
       <y>330</y>
       <width>391</width>
-      <height>281</height>
+      <height>301</height>
      </rect>
     </property>
    </widget>
@@ -557,7 +557,7 @@
       <x>590</x>
       <y>40</y>
       <width>599</width>
-      <height>549</height>
+      <height>571</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -691,7 +691,7 @@
     <property name="geometry">
      <rect>
       <x>574</x>
-      <y>614</y>
+      <y>620</y>
       <width>631</width>
       <height>10</height>
      </rect>
@@ -819,7 +819,7 @@ Animated GIF</string>
      <x>0</x>
      <y>0</y>
      <width>1223</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

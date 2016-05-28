@@ -65,6 +65,13 @@ MainWindow::MainWindow( QWidget* parent ) :
         _inputImage = 0;
     }
 
+    _resultSceneRatio.setX( ( double ) _ui->graphicsView->size().width() / width() );
+    _resultSceneRatio.setY( ( double ) _ui->graphicsView->size().height() / height() );
+    _originalSceneRatio.setX( ( double ) _ui->graphicsViewOriginal->size().width() / width() );
+    _originalSceneRatio.setY( ( double ) _ui->graphicsViewOriginal->size().height() / height() );
+    _graphSceneRatio.setX( ( double ) _ui->graphicsViewGraph->size().width() / width() );
+    _graphSceneRatio.setY( ( double ) _ui->graphicsViewGraph->size().height() / height() );
+
     // Center window position
     QRect screenGeometry = QApplication::desktop()->screenGeometry();
     int x = ( screenGeometry.width() - this->width() ) / 2;
@@ -305,7 +312,7 @@ void MainWindow::loadImage()
         QMessageBox dialog;
         dialog.setWindowTitle( "Warning!" );
         dialog.setText( s.str().c_str() );
-        dialog.show();
+        dialog.exec();
     }
     else
     {
@@ -805,11 +812,11 @@ void MainWindow::resizeEvent( QResizeEvent* event )
         return;
     }
 
-    _ui->graphicsViewOriginal->resize( width() / 3.5,
-                                       height() / 2.35 );
+    _ui->graphicsViewOriginal->resize( _originalSceneRatio.x() * width(),
+                                       _originalSceneRatio.y() * height() );
 
-    _ui->graphicsViewGraph->resize( width() / 3.5,
-                                    height() / 2.35 );
+    _ui->graphicsViewGraph->resize( _graphSceneRatio.x() * width(),
+                                    _graphSceneRatio.y() * height() );
 
     _ui->graphicsViewGraph->move( _ui->graphicsViewGraph->pos().x(),
                                   _ui->graphicsViewOriginal->pos().y() + _ui->graphicsViewOriginal->height() + 25 );
@@ -827,8 +834,9 @@ void MainWindow::resizeEvent( QResizeEvent* event )
     _ui->labelFilteredView->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
                                   _ui->labelFilteredView->pos().y() );
 
-    _ui->graphicsView->resize( width() / 1.75,
-                               height() - 100 );
+    int leftSpace = width() - ( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() );
+    _ui->graphicsView->resize( leftSpace - 10,
+                               _resultSceneRatio.y() * height() );
 
     _ui->filterProgressBar->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
                                   _ui->graphicsView->pos().y() + _ui->graphicsView->height() + 2 );

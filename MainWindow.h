@@ -58,6 +58,10 @@ private:
     QGraphicsScene* _originalScene;
     QGraphicsScene* _graphScene;
 
+    QPointF _resultSceneRatio;
+    QPointF _originalSceneRatio;
+    QPointF _graphSceneRatio;
+
     GifSaver* _gifSaver;
 
     bool _isAnimatedGif;
