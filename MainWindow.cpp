@@ -25,6 +25,7 @@
 #include "Filters/EagleFilter.h"
 #include "Filters/CRTFilter.h"
 #include "Filters/Super2xSal.h"
+#include "Filters/BeadsFilter.h"
 #include "ImageOperations/CheckUpscale.h"
 #include "GifSaver.h"
 
@@ -100,6 +101,7 @@ void MainWindow::connectSignals()
     connect( _ui->radioButtonScale2x, SIGNAL( clicked() ), this, SLOT( applyScale2x() ) );
     connect( _ui->radioButtonEagle, SIGNAL( clicked() ), this, SLOT( applyEagle() ) );
     connect( _ui->radioButtonCRT, SIGNAL( clicked() ), this, SLOT( applyCRT() ) );
+    connect( _ui->radioButtonBeads, SIGNAL( clicked() ), this, SLOT( applyBeads() ) );
     connect( _ui->radioButtonVector, SIGNAL( clicked() ), this, SLOT( applyVector() ) );
     connect( _ui->radioButtonSuperSaI2x, SIGNAL( clicked() ), this, SLOT( applySuperSaI2x() ) );
 
@@ -110,15 +112,13 @@ void MainWindow::connectSignals()
     connect( _ui->eagleSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyEagle() ) );
     connect( _ui->xBRZSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbrZ() ) );
     connect( _ui->xBRSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbr() ) );
+    connect( _ui->beadsSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyBeads() ) );
 
     // Hide filters with issues and resize frame
     _ui->glButton->setVisible( false );
     _ui->testButton->setVisible( false );
     _ui->radioButtonVector->setVisible( false );
     _ui->radioButtonSuperSaI2x->setVisible( false );
-    _ui->frameFiltersOptions->resize(
-                _ui->frameFiltersOptions->size().width(),
-                _ui->frameFiltersOptions->size().height() - 50 );
 }
 
 
@@ -634,6 +634,19 @@ void MainWindow::applyCRT()
     CRTFilter* crtFilter = new CRTFilter( _inputImage, _ui->spinBoxScaleFactor->value() );
 
     applyAndShowOutputImage( crtFilter );
+}
+
+
+void MainWindow::applyBeads()
+{
+    if( _inputImage == 0 || !_ui->radioButtonBeads->isChecked() )
+    {
+        return;
+    }
+
+    BeadsFilter* beadsFilter = new BeadsFilter( _inputImage, _ui->beadsSpinBox->value() );
+
+    applyAndShowOutputImage( beadsFilter );
 }
 
 

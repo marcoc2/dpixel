@@ -103,6 +103,7 @@ private Q_SLOTS:
     void applyXbrZ();
     void applyXbr();
     void applyCRT();
+    void applyBeads();
     void applyScale2x();
     void applyEagle();
     void applySuperSaI2x();

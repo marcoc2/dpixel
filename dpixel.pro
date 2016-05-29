@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     CheckUpscaleWindow.cpp \
     GifSaver.cpp \
     OpenGLCanvas.cpp \
-    Depixel/SimilarityGraphExportToImage.cpp
+    Depixel/SimilarityGraphExportToImage.cpp \
+    Filters/BeadsFilter.cpp
 
 HEADERS  += MainWindow.h \
     Image.h \
@@ -84,7 +85,8 @@ HEADERS  += MainWindow.h \
     CheckUpscaleWindow.h \
     GifSaver.h \
     OpenGLCanvas.h \
-    Depixel/SimilarityGraphExportToImage.h
+    Depixel/SimilarityGraphExportToImage.h \
+    Filters/BeadsFilter.h
 
 FORMS    += MainWindow.ui \
     CheckUpscaleWindow.ui
