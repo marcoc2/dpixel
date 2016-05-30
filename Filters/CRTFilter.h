@@ -18,7 +18,12 @@ public:
 
 private:
 
+    void bloom( int w, int h, double luminance );
+    double gaussian( double x, double mu, double sigma );
+    double getPixelLuminance( const Pixel& pixel );
+
     Image* _intermediateImage;
+    Image* _convolutedImage;
 };
 
 #endif // CRTFILTER_H

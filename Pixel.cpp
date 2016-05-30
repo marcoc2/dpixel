@@ -63,3 +63,19 @@ bool Pixel::operator!=( const Pixel& p ) const
 }
 
 
+Pixel Pixel::operator*( double m ) const
+{
+    return Pixel( ( double ) red * m,
+                  ( double ) green * m,
+                  ( double ) blue * m);
+}
+
+
+Pixel& Pixel::operator+=( const Pixel& p )
+{
+    red += p.red;
+    green += p.green;
+    blue += p.blue;
+
+    return *this;
+}

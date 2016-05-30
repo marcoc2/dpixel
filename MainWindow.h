@@ -58,6 +58,10 @@ private:
     QGraphicsScene* _originalScene;
     QGraphicsScene* _graphScene;
 
+    QPointF _resultSceneRatio;
+    QPointF _originalSceneRatio;
+    QPointF _graphSceneRatio;
+
     GifSaver* _gifSaver;
 
     bool _isAnimatedGif;
@@ -73,6 +77,9 @@ private:
     void initialize();
     bool checkCurrentFilter( bool showWarning = false );
     QString getSuggestedFileName( QString format );
+
+    void clearGifHolder();
+    void loadAnimatedGifHolder( QImageReader& qImageReader );
 
 protected:
 
@@ -96,12 +103,12 @@ private Q_SLOTS:
     void applyXbrZ();
     void applyXbr();
     void applyCRT();
+    void applyBeads();
     void applyScale2x();
     void applyEagle();
     void applySuperSaI2x();
     void createSimilarityGraph();
     void saveAnimatedGif();
-    void loadAnimatedGifHolder( QImageReader& qImageReader );
     void applyVector();
 
     void finishFilter();

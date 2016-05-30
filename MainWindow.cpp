@@ -25,6 +25,7 @@
 #include "Filters/EagleFilter.h"
 #include "Filters/CRTFilter.h"
 #include "Filters/Super2xSal.h"
+#include "Filters/BeadsFilter.h"
 #include "ImageOperations/CheckUpscale.h"
 #include "GifSaver.h"
 
@@ -60,6 +61,17 @@ MainWindow::MainWindow( QWidget* parent ) :
     {
         initialize();
     }
+    else
+    {
+        _inputImage = 0;
+    }
+
+    _resultSceneRatio.setX( ( double ) _ui->graphicsView->size().width() / width() );
+    _resultSceneRatio.setY( ( double ) _ui->graphicsView->size().height() / height() );
+    _originalSceneRatio.setX( ( double ) _ui->graphicsViewOriginal->size().width() / width() );
+    _originalSceneRatio.setY( ( double ) _ui->graphicsViewOriginal->size().height() / height() );
+    _graphSceneRatio.setX( ( double ) _ui->graphicsViewGraph->size().width() / width() );
+    _graphSceneRatio.setY( ( double ) _ui->graphicsViewGraph->size().height() / height() );
 
     // Center window position
     QRect screenGeometry = QApplication::desktop()->screenGeometry();
@@ -78,6 +90,8 @@ void MainWindow::connectSignals()
     connect( _ui->saveImageButton, SIGNAL( clicked() ), this, SLOT( saveImage() ) );
     connect( _ui->exportGIFButton, SIGNAL( clicked() ), this, SLOT( saveAnimatedGif() ) );
 
+    _ui->exportGIFButton->setEnabled( false );
+
     connect( _ui->radioButtonOriginal, SIGNAL( clicked() ), this, SLOT( loadOriginal() ) );
     connect( _ui->radioButtonNearest, SIGNAL( clicked() ), this, SLOT( applyNearest() ) );
     connect( _ui->radioButtonBilinear, SIGNAL( clicked() ), this, SLOT( applyBilinear() ) );
@@ -87,6 +101,7 @@ void MainWindow::connectSignals()
     connect( _ui->radioButtonScale2x, SIGNAL( clicked() ), this, SLOT( applyScale2x() ) );
     connect( _ui->radioButtonEagle, SIGNAL( clicked() ), this, SLOT( applyEagle() ) );
     connect( _ui->radioButtonCRT, SIGNAL( clicked() ), this, SLOT( applyCRT() ) );
+    connect( _ui->radioButtonBeads, SIGNAL( clicked() ), this, SLOT( applyBeads() ) );
     connect( _ui->radioButtonVector, SIGNAL( clicked() ), this, SLOT( applyVector() ) );
     connect( _ui->radioButtonSuperSaI2x, SIGNAL( clicked() ), this, SLOT( applySuperSaI2x() ) );
 
@@ -97,6 +112,13 @@ void MainWindow::connectSignals()
     connect( _ui->eagleSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyEagle() ) );
     connect( _ui->xBRZSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbrZ() ) );
     connect( _ui->xBRSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbr() ) );
+    connect( _ui->beadsSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyBeads() ) );
+
+    // Hide filters with issues and resize frame
+    _ui->glButton->setVisible( false );
+    _ui->testButton->setVisible( false );
+    _ui->radioButtonVector->setVisible( false );
+    _ui->radioButtonSuperSaI2x->setVisible( false );
 }
 
 
@@ -107,11 +129,7 @@ MainWindow::~MainWindow()
     delete _inputImage;
     delete _outputImage;
     delete _currentFilter;
-
-    for( auto const& frame : _inputAnimatedGif )
-    {
-        delete frame;
-    }
+    clearGifHolder();
 }
 
 
@@ -168,11 +186,11 @@ void MainWindow::initialize()
 
     if( _isAnimatedGif )
     {
-        _ui->exportGIFButton->setVisible( true );
+        _ui->exportGIFButton->setEnabled( true );
     }
     else
     {
-        _ui->exportGIFButton->setVisible( false );
+        _ui->exportGIFButton->setEnabled( false );
     }
 }
 
@@ -281,14 +299,20 @@ void MainWindow::loadImage()
     if( qImageReader.supportsAnimation() && ( qImageReader.imageCount() > 1 ) )
     {
         _isAnimatedGif = true;
+        if( _inputAnimatedGif.size() > 0 )
+        {
+            clearGifHolder();
+        }
+
         loadAnimatedGifHolder( qImageReader );
+
         std::stringstream s;
         s << "Animated gif containing " << qImageReader.imageCount() << " frames" << std::endl;
         s << "You can only preview the first frame, but can export the filtered animated gif";
         QMessageBox dialog;
         dialog.setWindowTitle( "Warning!" );
         dialog.setText( s.str().c_str() );
-        dialog.show();
+        dialog.exec();
     }
     else
     {
@@ -613,6 +637,19 @@ void MainWindow::applyCRT()
 }
 
 
+void MainWindow::applyBeads()
+{
+    if( _inputImage == 0 || !_ui->radioButtonBeads->isChecked() )
+    {
+        return;
+    }
+
+    BeadsFilter* beadsFilter = new BeadsFilter( _inputImage, _ui->beadsSpinBox->value() );
+
+    applyAndShowOutputImage( beadsFilter );
+}
+
+
 void MainWindow::applyScale2x()
 {
     if( _inputImage == 0 || !_ui->radioButtonScale2x->isChecked() )
@@ -642,6 +679,7 @@ void MainWindow::applyEagle()
 void MainWindow::applyAndShowOutputImage( Filter* filter )
 {
     _ui->filterProgressBar->setVisible( true );
+    _ui->frameFiltersOptions->setEnabled( false );
 
     _currentFilter = filter;
     connect( _currentFilter, SIGNAL( finished()) , this, SLOT( finishFilter() ) );
@@ -787,11 +825,11 @@ void MainWindow::resizeEvent( QResizeEvent* event )
         return;
     }
 
-    _ui->graphicsViewOriginal->resize( width() / 3.5,
-                                       height() / 2.35 );
+    _ui->graphicsViewOriginal->resize( _originalSceneRatio.x() * width(),
+                                       _originalSceneRatio.y() * height() );
 
-    _ui->graphicsViewGraph->resize( width() / 3.5,
-                                    height() / 2.35 );
+    _ui->graphicsViewGraph->resize( _graphSceneRatio.x() * width(),
+                                    _graphSceneRatio.y() * height() );
 
     _ui->graphicsViewGraph->move( _ui->graphicsViewGraph->pos().x(),
                                   _ui->graphicsViewOriginal->pos().y() + _ui->graphicsViewOriginal->height() + 25 );
@@ -809,8 +847,9 @@ void MainWindow::resizeEvent( QResizeEvent* event )
     _ui->labelFilteredView->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
                                   _ui->labelFilteredView->pos().y() );
 
-    _ui->graphicsView->resize( width() / 1.75,
-                               height() - 100 );
+    int leftSpace = width() - ( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() );
+    _ui->graphicsView->resize( leftSpace - 10,
+                               _resultSceneRatio.y() * height() );
 
     _ui->filterProgressBar->move( _ui->graphicsViewOriginal->pos().x() + _ui->graphicsViewOriginal->width() + 5,
                                   _ui->graphicsView->pos().y() + _ui->graphicsView->height() + 2 );
@@ -832,6 +871,8 @@ void MainWindow::reloadResizedImage( float resizedFactor )
     }
 
     _inputImage->resize( resizedFactor );
+
+    createSimilarityGraph();
 
     if( _isAnimatedGif )
     {
@@ -880,6 +921,7 @@ void MainWindow::finishFilter()
     _ui->filterProgressBar->setMinimum( 0 );
     _ui->filterProgressBar->setValue( 0 );
     _ui->filterProgressBar->setVisible( false );
+    _ui->frameFiltersOptions->setEnabled( true );
 }
 
 
@@ -907,4 +949,14 @@ void MainWindow::loadAnimatedGifHolder( QImageReader& qImageReader )
         Image* image = new Image( qFrame );
         _inputAnimatedGif.push_back( image );
     }
+}
+
+
+void MainWindow::clearGifHolder()
+{
+    for( auto const& frame : _inputAnimatedGif )
+    {
+        delete frame;
+    }
+    _inputAnimatedGif.clear();
 }

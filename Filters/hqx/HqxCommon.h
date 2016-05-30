@@ -24,7 +24,10 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+
+#if defined(__linux__) || defined(_WIN32)
 #include <omp.h>
+#endif
 
 #define MASK_2     0x0000FF00
 #define MASK_13    0x00FF00FF
@@ -41,6 +44,9 @@
 #ifdef _WIN32
 #define u_int32_t uint32_t
 #define u_int8_t uint8_t
+#elif defined __clang__
+typedef u_int32_t uint32_t;
+typedef uint8_t u_int8_t;
 #endif
 
 /* RGB to YUV lookup table */
@@ -54,9 +60,9 @@ static inline u_int32_t rgb_to_yuv(u_int32_t c)
 
 /* Test if there is difference in color */
 static inline int yuv_diff(u_int32_t yuv1, u_int32_t yuv2) {
-    return (( abs((yuv1 & Ymask) - (yuv2 & Ymask)) > trY ) ||
-            ( abs((yuv1 & Umask) - (yuv2 & Umask)) > trU ) ||
-            ( abs((yuv1 & Vmask) - (yuv2 & Vmask)) > trV ) );
+    return (( abs( (int)(yuv1 & Ymask) - (int)(yuv2 & Ymask)) > trY ) ||
+            ( abs((int)(yuv1 & Umask) - (int)(yuv2 & Umask)) > trU ) ||
+            ( abs((int)(yuv1 & Vmask) - (int)(yuv2 & Vmask)) > trV ) );
 }
 
 

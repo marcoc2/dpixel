@@ -38,7 +38,7 @@ void XbrFilter::apply()
     xbrParams.inWidth = _inputImage->getWidth();
     xbrParams.inHeight = _inputImage->getHeight();
     xbrParams.inPitch = _inputImage->getWidth() * 4;
-    xbrParams.outPitch = _inputImage->getWidth() * _scaleFactor * 4;
+    xbrParams.outPitch = _outputImage->getWidth() * 4;
 
     fillBufferBGRA( inputBuffer );
 

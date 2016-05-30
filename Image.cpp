@@ -264,7 +264,7 @@ void Image::getBufferRGBA8( uint8_t* buffer)
 
 void Image::fillBufferRGB()
 {
-    //#pragma omp for
+    #pragma omp for
     for( u_int w = 0; w < _width; w++ )
     {
         for( u_int h = 0; h < _height; h++ )
@@ -281,7 +281,7 @@ void Image::fillBufferRGB()
 
 void Image::fillQImageRGB()
 {
-    //#pragma omp for
+    #pragma omp for
     for( u_int w = 0; w < _width; w++ )
     {
         for( u_int h = 0; h < _height; h++ )

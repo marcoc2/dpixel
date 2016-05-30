@@ -5,9 +5,20 @@
 #-------------------------------------------------
 
 QT       += core gui opengl
-LIBS     += -fopenmp
+unix:CONFIG += C++11
 
-QMAKE_CXXFLAGS += -fopenmp -std=c++11
+#GCC
+unix:!macx:QMAKE_CXXFLAGS += -fopenmp
+unix:!macx:LIBS += -fopenmp
+
+#MSVC
+msvc:QMAKE_CXXFLAGS += /std=c++11
+msvc:QMAKE_CXXFLAGS_RELEASE *= -O2
+
+#MingW
+win32:QMAKE_CXXFLAGS += -fopenmp -std=c++11
+win32:LIBS += -fopenmp
+win32:QMAKE_CXXFLAGS_RELEASE *= -O2
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -40,7 +51,8 @@ SOURCES += main.cpp\
     CheckUpscaleWindow.cpp \
     GifSaver.cpp \
     OpenGLCanvas.cpp \
-    Depixel/SimilarityGraphExportToImage.cpp
+    Depixel/SimilarityGraphExportToImage.cpp \
+    Filters/BeadsFilter.cpp
 
 HEADERS  += MainWindow.h \
     Image.h \
@@ -73,7 +85,8 @@ HEADERS  += MainWindow.h \
     CheckUpscaleWindow.h \
     GifSaver.h \
     OpenGLCanvas.h \
-    Depixel/SimilarityGraphExportToImage.h
+    Depixel/SimilarityGraphExportToImage.h \
+    Filters/BeadsFilter.h
 
 FORMS    += MainWindow.ui \
     CheckUpscaleWindow.ui

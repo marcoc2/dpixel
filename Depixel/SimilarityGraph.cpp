@@ -390,9 +390,9 @@ int SimilarityGraph::diff( int w, int h, int pos )
         YUV1 = RGBtoYUV[inPixelYUV];
         YUV2 = RGBtoYUV[outPixelYUV];
 
-        result = ( ( abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY ) ||
-                   ( abs((YUV1 & Umask) - (YUV2 & Umask)) > trU ) ||
-                   ( abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV ) );
+        result = ( ( abs((int)(YUV1 & Ymask) - (int)(YUV2 & Ymask)) > trY ) ||
+                   ( abs((int)(YUV1 & Umask) - (int)(YUV2 & Umask)) > trU ) ||
+                   ( abs((int)(YUV1 & Vmask) - (int)(YUV2 & Vmask)) > trV ) );
 
         return result;
     }
