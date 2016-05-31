@@ -486,7 +486,7 @@
       <rect>
        <x>10</x>
        <y>430</y>
-       <width>61</width>
+       <width>81</width>
        <height>22</height>
       </rect>
      </property>
@@ -872,7 +872,7 @@ Animated GIF</string>
      <x>0</x>
      <y>0</y>
      <width>1223</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

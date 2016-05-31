@@ -524,7 +524,7 @@ void MainWindow::aboutDialog()
 {
     QMessageBox* dialog = new QMessageBox();
     dialog->setWindowTitle( "About" );
-    dialog->setText( "dpixel - A Pixel Art Remaster Tool\n\nhttps://github.com/marcoc2/dpixel\n\nmarcoc2@gmail.com" );
+    dialog->setText( "dpixel 0.1 - A Pixel Art Remaster Tool\n\nhttps://github.com/marcoc2/dpixel\n\nmarcoc2@gmail.com" );
     dialog->show();
 }
 
