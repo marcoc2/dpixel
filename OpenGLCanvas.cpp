@@ -47,7 +47,8 @@ void OpenGLCanvas::initializeGL()
 {
     //initBasicExample();
     //initSphereRayTrace();
-    initShaderToyCanvas();
+    //initShaderToyCanvas();
+    initLibRetroCanvas();
     QOpenGLFunctions glFuncs( QOpenGLContext::currentContext() );
     printf( "OpenGl information: VENDOR:       %s\n" , (const char*)glFuncs.glGetString(GL_VENDOR) );
     printf( "                    RENDERDER:    %s\n" , (const char*)glFuncs.glGetString(GL_RENDERER) );
@@ -96,7 +97,8 @@ void OpenGLCanvas::paintGL()
     //paintSphereRayTrace();
     if( _version >= 4.0f )
     {
-        paintShaderToyCanvas();
+        paintLibRetroCanvas();
+        //paintShaderToyCanvas();
         //paintBasicExample();
     }
     else
@@ -349,6 +351,46 @@ void OpenGLCanvas::initSphereRayTrace()
 }
 
 
+void OpenGLCanvas::loadLibRetroVariables()
+{
+    /*
+        gl_glsl_get_uniform(glsl, prog, "MVPMatrix");
+        gl_glsl_get_attrib(glsl, prog, "TexCoord");
+        gl_glsl_get_attrib(glsl, prog, "VertexCoord");
+        gl_glsl_get_attrib(glsl, prog, "Color");
+        gl_glsl_get_attrib(glsl, prog, "LUTTexCoord");
+
+        gl_glsl_get_uniform(glsl, prog, "InputSize");
+        gl_glsl_get_uniform(glsl, prog, "OutputSize");
+        gl_glsl_get_uniform(glsl, prog, "TextureSize");
+
+        gl_glsl_get_uniform(glsl, prog, "FrameCount");
+        gl_glsl_get_uniform(glsl, prog, "FrameDirection");
+    */
+
+    QMatrix4x4 modelView;
+    modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
+    QMatrix4x4 modelViewProjection =  m_projection * modelView;
+
+    //const QVector3D resolution = QVector3D( ( float ) _width, ( float ) _height, 0.0 );
+    m_program->setUniformValue( "MVPMatrix", modelViewProjection );
+
+    // 1 or -1
+    m_program->setUniformValue( "FrameDirection", 1 );
+
+    m_program->setUniformValue( "FrameCount", 30 );
+
+    const QVector2D outputSize = QVector2D( ( float ) _width, ( float ) _height );
+    m_program->setUniformValue( "OutputSize", outputSize );
+
+    const QVector2D textureSize = QVector2D( ( float ) _width, ( float ) _height );
+    m_program->setUniformValue( "TextureSize", textureSize );
+
+    const QVector2D inputSize = QVector2D( ( float ) _width, ( float ) _height );
+    m_program->setUniformValue( "InputSize", inputSize );
+}
+
+
 void OpenGLCanvas::loadShaderToyVariables()
 {
     /*
@@ -373,6 +415,23 @@ void OpenGLCanvas::loadShaderToyVariables()
 }
 
 
+void OpenGLCanvas::paintLibRetroCanvas()
+{
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glClearColor( 0.2, 0.2, 0.2, 1.0 );
+
+    m_program->bind();
+    _vao->bind();
+
+    loadLibRetroVariables();
+
+    glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+
+    _vao->release();
+    m_program->release();
+}
+
+
 void OpenGLCanvas::paintShaderToyCanvas()
 {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -384,6 +443,50 @@ void OpenGLCanvas::paintShaderToyCanvas()
     loadShaderToyVariables();
 
     glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+
+    _vao->release();
+    m_program->release();
+}
+
+
+void OpenGLCanvas::initLibRetroCanvas()
+{
+    initializeOpenGLFunctions();
+    m_program = new QOpenGLShaderProgram();
+
+    m_program->addShaderFromSourceFile( QOpenGLShader::Vertex,
+                                        "../Shaders/basicVertex.vert" );
+    m_program->addShaderFromSourceFile( QOpenGLShader::Fragment,
+                                        "../Shaders/bead.glsl" );
+    if( !m_program->link() )
+    {
+        qWarning( "Failed to compile and link shader program" );
+        qWarning( "Shader program log:" );
+        qWarning() << m_program->log();
+
+        delete m_program;
+        m_program = 0;
+    }
+
+    GLfloat plane[ 12 ] = {
+        -0.95, -0.95, 0.0,
+        -0.95, 0.95, 0.0,
+        0.95, -0.95, 0.0,
+        0.95, 0.95, 0.0
+    };
+
+    _vao->create();
+    _vao->bind();
+
+    _vbo->create();
+    _vbo->setUsagePattern( QOpenGLBuffer::StaticDraw );
+    _vbo->bind();
+    _vbo->allocate( 12 * sizeof( GLfloat ) );
+    _vbo->bind();
+    _vbo->write( 0, plane, 12 * sizeof( GLfloat ) );
+
+    m_program->setAttributeBuffer( "vertex_position", GL_FLOAT, 0, 3, 0 );
+    m_program->enableAttributeArray( "vertex_position" );
 
     _vao->release();
     m_program->release();

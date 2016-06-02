@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1223</width>
-    <height>692</height>
+    <height>719</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,479 +39,6 @@
       <bold>true</bold>
      </font>
     </property>
-   </widget>
-   <widget class="QFrame" name="frameFiltersOptions">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>151</width>
-      <height>481</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QLabel" name="labelFilter">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>10</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Select Filter</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonHqx">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>166</y>
-       <width>113</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>hq4x</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonOriginal">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>101</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Original</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonNearest">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>70</y>
-       <width>91</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Scale without any interpolation (pixelated)</string>
-     </property>
-     <property name="text">
-      <string>Nearest</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonXbrZ">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>241</y>
-       <width>113</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>xBRZ</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonScale2x">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>286</y>
-       <width>113</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Scale2x</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonEagle">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>333</y>
-       <width>113</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Eagle</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonCRT">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>385</y>
-       <width>61</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>CRT</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBoxScaleFactor">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>408</y>
-       <width>41</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>2</number>
-     </property>
-     <property name="maximum">
-      <number>10</number>
-     </property>
-     <property name="singleStep">
-      <number>1</number>
-     </property>
-     <property name="value">
-      <number>4</number>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBoxNearestScaleFactor">
-     <property name="geometry">
-      <rect>
-       <x>98</x>
-       <y>95</y>
-       <width>42</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="value">
-      <number>4</number>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="scale2xSpinBox">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>309</y>
-       <width>41</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string extracomment="Number of passes"/>
-     </property>
-     <property name="toolTipDuration">
-      <number>4</number>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>5</number>
-     </property>
-     <property name="singleStep">
-      <number>1</number>
-     </property>
-     <property name="value">
-      <number>2</number>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="eagleSpinBox">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>358</y>
-       <width>41</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>5</number>
-     </property>
-     <property name="value">
-      <number>2</number>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>358</y>
-       <width>81</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>N. passes:</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_4">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>95</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Factor:</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>309</y>
-       <width>81</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>N. passes:</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_3">
-     <property name="geometry">
-      <rect>
-       <x>41</x>
-       <y>408</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Factor:</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_5">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>266</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Factor:</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="xBRZSpinBox">
-     <property name="geometry">
-      <rect>
-       <x>98</x>
-       <y>266</y>
-       <width>42</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>4</number>
-     </property>
-     <property name="maximum">
-      <number>5</number>
-     </property>
-     <property name="value">
-      <number>4</number>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="xBRSpinBox">
-     <property name="geometry">
-      <rect>
-       <x>98</x>
-       <y>220</y>
-       <width>42</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>2</number>
-     </property>
-     <property name="maximum">
-      <number>4</number>
-     </property>
-     <property name="value">
-      <number>4</number>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonXbr">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>195</y>
-       <width>113</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>xBR</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_6">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>220</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Factor:</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBoxBilinearScaleFactor">
-     <property name="geometry">
-      <rect>
-       <x>98</x>
-       <y>143</y>
-       <width>42</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="value">
-      <number>4</number>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonBilinear">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>118</y>
-       <width>91</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Scale without any interpolation (pixelated)</string>
-     </property>
-     <property name="text">
-      <string>Bilinear</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_7">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>143</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Factor:</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="beadsSpinBox">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>453</y>
-       <width>41</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>2</number>
-     </property>
-     <property name="maximum">
-      <number>10</number>
-     </property>
-     <property name="singleStep">
-      <number>1</number>
-     </property>
-     <property name="value">
-      <number>4</number>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonBeads">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>430</y>
-       <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Beads</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_8">
-     <property name="geometry">
-      <rect>
-       <x>41</x>
-       <y>453</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Factor:</string>
-     </property>
-    </widget>
    </widget>
    <widget class="QGraphicsView" name="graphicsViewOriginal">
     <property name="geometry">
@@ -741,7 +268,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>490</y>
+      <y>520</y>
       <width>141</width>
       <height>141</height>
      </rect>
@@ -864,6 +391,515 @@ Animated GIF</string>
     <property name="text">
      <string>Vectorize</string>
     </property>
+   </widget>
+   <widget class="QTabWidget" name="tabFrontEnd">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>151</width>
+      <height>521</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>CPU</string>
+     </attribute>
+     <widget class="QFrame" name="frameFiltersOptions">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>145</width>
+        <height>481</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLabel" name="labelFilter">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>10</y>
+         <width>101</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Select Filter</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonHqx">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>166</y>
+         <width>113</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>hq4x</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonOriginal">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>101</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Original</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonNearest">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>70</y>
+         <width>91</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>Scale without any interpolation (pixelated)</string>
+       </property>
+       <property name="text">
+        <string>Nearest</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonXbrZ">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>241</y>
+         <width>113</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>xBRZ</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonScale2x">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>286</y>
+         <width>113</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Scale2x</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonEagle">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>333</y>
+         <width>113</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Eagle</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonCRT">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>385</y>
+         <width>61</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>CRT</string>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="spinBoxScaleFactor">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>408</y>
+         <width>41</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="minimum">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <number>10</number>
+       </property>
+       <property name="singleStep">
+        <number>1</number>
+       </property>
+       <property name="value">
+        <number>4</number>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="spinBoxNearestScaleFactor">
+       <property name="geometry">
+        <rect>
+         <x>98</x>
+         <y>95</y>
+         <width>42</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="value">
+        <number>4</number>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="scale2xSpinBox">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>309</y>
+         <width>41</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string extracomment="Number of passes"/>
+       </property>
+       <property name="toolTipDuration">
+        <number>4</number>
+       </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>5</number>
+       </property>
+       <property name="singleStep">
+        <number>1</number>
+       </property>
+       <property name="value">
+        <number>2</number>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="eagleSpinBox">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>358</y>
+         <width>41</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>5</number>
+       </property>
+       <property name="value">
+        <number>2</number>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_2">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>358</y>
+         <width>81</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>N. passes:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_4">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>95</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Factor:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>309</y>
+         <width>81</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>N. passes:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_3">
+       <property name="geometry">
+        <rect>
+         <x>41</x>
+         <y>408</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Factor:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_5">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>266</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Factor:</string>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="xBRZSpinBox">
+       <property name="geometry">
+        <rect>
+         <x>98</x>
+         <y>266</y>
+         <width>42</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="minimum">
+        <number>4</number>
+       </property>
+       <property name="maximum">
+        <number>5</number>
+       </property>
+       <property name="value">
+        <number>4</number>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="xBRSpinBox">
+       <property name="geometry">
+        <rect>
+         <x>98</x>
+         <y>220</y>
+         <width>42</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="minimum">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <number>4</number>
+       </property>
+       <property name="value">
+        <number>4</number>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonXbr">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>195</y>
+         <width>113</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>xBR</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_6">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>220</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Factor:</string>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="spinBoxBilinearScaleFactor">
+       <property name="geometry">
+        <rect>
+         <x>98</x>
+         <y>143</y>
+         <width>42</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="value">
+        <number>4</number>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonBilinear">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>118</y>
+         <width>91</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>Scale without any interpolation (pixelated)</string>
+       </property>
+       <property name="text">
+        <string>Bilinear</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_7">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>143</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Factor:</string>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="beadsSpinBox">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>453</y>
+         <width>41</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="minimum">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <number>10</number>
+       </property>
+       <property name="singleStep">
+        <number>1</number>
+       </property>
+       <property name="value">
+        <number>4</number>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonBeads">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>430</y>
+         <width>81</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Beads</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_8">
+       <property name="geometry">
+        <rect>
+         <x>41</x>
+         <y>453</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Factor:</string>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>GPU</string>
+     </attribute>
+     <widget class="QRadioButton" name="radioButton">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>133</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>xBR</string>
+      </property>
+     </widget>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

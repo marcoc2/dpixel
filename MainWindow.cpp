@@ -85,7 +85,7 @@ MainWindow::MainWindow( QWidget* parent ) :
 void MainWindow::connectSignals()
 {
     connect( _ui->testButton, SIGNAL( clicked() ), this, SLOT( createTest() ) );
-    connect( _ui->glButton, SIGNAL( clicked() ), this, SLOT( enableOpenGLFrontEnd() ) );
+    //connect( _ui->glButton, SIGNAL( clicked() ), this, SLOT( enableOpenGLFrontEnd() ) );
     connect( _ui->loadImageButton, SIGNAL( clicked() ), this, SLOT( loadImage() ) );
     connect( _ui->saveImageButton, SIGNAL( clicked() ), this, SLOT( saveImage() ) );
     connect( _ui->exportGIFButton, SIGNAL( clicked() ), this, SLOT( saveAnimatedGif() ) );
@@ -113,6 +113,9 @@ void MainWindow::connectSignals()
     connect( _ui->xBRZSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbrZ() ) );
     connect( _ui->xBRSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyXbr() ) );
     connect( _ui->beadsSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyBeads() ) );
+
+    connect( _ui->tabFrontEnd, SIGNAL( currentChanged( int ) ), this, SLOT( changeFrontEnd( int ) ) );
+    _ui->tabFrontEnd->setCurrentIndex( 0 );
 
     // Hide filters with issues and resize frame
     _ui->glButton->setVisible( false );
@@ -241,9 +244,9 @@ void MainWindow::createMenus()
 }
 
 
-void MainWindow::enableOpenGLFrontEnd()
+void MainWindow::changeFrontEnd( int index )
 {
-    if( !checkCurrentFilter( true ) )
+    if( index < 1 )
     {
         return;
     }

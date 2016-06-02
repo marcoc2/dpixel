@@ -30,6 +30,10 @@ public:
     void initShaderToyCanvas();
     void paintShaderToyCanvas();
 
+    void loadLibRetroVariables();
+    void initLibRetroCanvas();
+    void paintLibRetroCanvas();
+
     float getOpenGLVersion();
     void setTexture( QImage& image );
 
