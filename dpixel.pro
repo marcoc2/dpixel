@@ -100,8 +100,9 @@ DISTFILES += \
     Shaders/basicDeprecatedVertex.vert \
     Shaders/basicVertex.vert \
     Shaders/rayTraceSphere.vert \
-    Shaders/bead.glsl \
-    Shaders/lsd_ufos.frag
+    Shaders/lsd_ufos.frag \
+    Shaders/bead_frag.glsl \
+    Shaders/bead_vert.glsl
 
 RESOURCES += \
     gui.qrc

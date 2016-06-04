@@ -248,20 +248,14 @@ void MainWindow::changeFrontEnd( int index )
 {
     if( index < 1 )
     {
+        _ui->filteredGLWidget->setVisible( false );
         return;
     }
 
-    if( !(_ui->filteredGLWidget->isVisible()) )
-    {
-        //_ui->filteredGLWidget->setTexture( *( _outputImage->getQImage() ) );
-        _ui->filteredGLWidget->setVisible( true );
-        _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
-        _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
-    }
-    else
-    {
-        _ui->filteredGLWidget->setVisible( false );
-    }
+    _ui->filteredGLWidget->setTexture(  _inputImage->getQImage() );
+    _ui->filteredGLWidget->setVisible( true );
+    _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
+    _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
 
     if( _ui->filteredGLWidget->getOpenGLVersion() < 4 )
     {

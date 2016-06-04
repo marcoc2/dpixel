@@ -20,12 +20,13 @@ public:
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
+
     void paintBasicExample();
     void paintBasicDeprecatedOpenGL();
+
     void initBasicExample();
     void initBasicDeprecatedOpenGL();
-    void paintSphereRayTrace();
-    void initSphereRayTrace();
+
     void loadShaderToyVariables();
     void initShaderToyCanvas();
     void paintShaderToyCanvas();
@@ -35,7 +36,7 @@ public:
     void paintLibRetroCanvas();
 
     float getOpenGLVersion();
-    void setTexture( QImage& image );
+    void setTexture( QImage* image );
 
 private:
     QMatrix4x4 m_modelView;
@@ -43,7 +44,8 @@ private:
     QOpenGLShaderProgram* m_program;
     QOpenGLBuffer* _vbo;
     QOpenGLVertexArrayObject* _vao;
-    QOpenGLTexture* _colorTexture;
+    QImage* _qImage;
+    QOpenGLTexture* _texture;
     int _width;
     int _height;
 
