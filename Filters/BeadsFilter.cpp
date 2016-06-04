@@ -1,5 +1,7 @@
 #include "BeadsFilter.h"
 
+#include <cmath>
+
 #define BEAD_SIZE 10
 #define BEAD_RADIUS BEAD_SIZE / 2
 
