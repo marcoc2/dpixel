@@ -58,6 +58,8 @@ private:
     QGraphicsScene* _originalScene;
     QGraphicsScene* _graphScene;
 
+    QTabWidget* _tabFrontEnd;
+
     QPointF _resultSceneRatio;
     QPointF _originalSceneRatio;
     QPointF _graphSceneRatio;
@@ -88,7 +90,7 @@ protected:
 private Q_SLOTS:
 
     void createTest();
-    void enableOpenGLFrontEnd();
+    void changeFrontEnd( int index );
     void loadImage();
     void saveImage();
     void exportSimilarityGraph();

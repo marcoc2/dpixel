@@ -1,5 +1,7 @@
 #include "CRTFilter.h"
 
+#include <cmath>
+
 #define APPERTURE_SCALE_FACTOR 10
 
 CRTFilter::CRTFilter( Image* inputImage, float scaleFactor ) :
