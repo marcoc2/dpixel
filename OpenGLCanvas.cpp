@@ -95,7 +95,6 @@ void OpenGLCanvas::resizeGL( int w, int h )
 
 void OpenGLCanvas::paintGL()
 {
-    //paintSphereRayTrace();
     if( _version >= 4.0f )
     {
         paintLibRetroCanvas();
@@ -116,14 +115,21 @@ void OpenGLCanvas::paintBasicExample()
     glClearColor( 0.2, 0.2, 0.2, 1.0 );
 
     m_program->bind();
-    m_program->setUniformValue( _texLocation, 1 );
+    m_program->setUniformValue( _texLocation, 0 );
     _vao->bind();
-    _texture->bind(0);
+
+    if( _texture && _texture->isCreated() )
+    {
+        _texture->bind();
+    }
 
     glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
     //glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, 0);
 
-    _texture->bind(0);
+    if( _texture && _texture->isCreated() )
+    {
+        _texture->release();
+    }
     _vao->release();
     m_program->release();
 }
@@ -189,8 +195,17 @@ void OpenGLCanvas::initBasicExample()
         m_program = 0;
     }
 
+    _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+
+    _texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+    _texture->setMagnificationFilter(QOpenGLTexture::Nearest);
+    _texture->setWrapMode(QOpenGLTexture::DirectionS,
+                              QOpenGLTexture::ClampToEdge);
+    _texture->setWrapMode(QOpenGLTexture::DirectionT,
+                              QOpenGLTexture::ClampToEdge);
+
     _texLocation = m_program->uniformLocation("tex");
-    m_program->setUniformValue( _texLocation, 1 );
+    m_program->setUniformValue( _texLocation, 0 );
 
     GLfloat plane[ 12 ] = {
         -0.8, -0.8, 0.0,
@@ -207,10 +222,10 @@ void OpenGLCanvas::initBasicExample()
     };
 
     GLfloat texCoords[ 8 ] = {
-        -0.8, -0.8,
-        -0.8, 0.8,
-        0.8, -0.8,
-        0.8, 0.8
+        0.0, 0.0,
+        0.0, 1.0,
+        1.0, 0.0,
+        1.0, 1.0
     };
 
     _vao->create();
@@ -230,6 +245,9 @@ void OpenGLCanvas::initBasicExample()
 
     m_program->setAttributeBuffer( "vertex_color", GL_FLOAT, 12 * sizeof( GLfloat ), 3, 0 );
     m_program->enableAttributeArray( "vertex_color" );
+
+    m_program->setAttributeBuffer( "vertex_uv", GL_FLOAT, 24 * sizeof( GLfloat ), 2, 0 );
+    m_program->enableAttributeArray( "vertex_uv" );
 
     _vao->release();
     m_program->release();
@@ -285,25 +303,7 @@ void OpenGLCanvas::loadLibRetroVariables()
         gl_glsl_get_uniform(glsl, prog, "FrameDirection");
     */
 
-
-    //_colorTexture = new QOpenGLTexture( image.mirrored().mirrored().convertToFormat(QImage::Format_RGBA8888) );
-    //_colorTexture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    //_colorTexture->setMagnificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    //_colorTexture->setWrapMode(QOpenGLTexture::DirectionS,
-    //                          QOpenGLTexture::ClampToEdge);
-    //_colorTexture->setWrapMode(QOpenGLTexture::DirectionT,
-    //                          QOpenGLTexture::ClampToEdge);
-
-    _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat(QImage::Format_RGBA8888) );
-
-    _texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    _texture->setMagnificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    _texture->setWrapMode(QOpenGLTexture::DirectionS,
-                              QOpenGLTexture::ClampToEdge);
-    _texture->setWrapMode(QOpenGLTexture::DirectionT,
-                              QOpenGLTexture::ClampToEdge);
-
-    m_program->setUniformValue( "Texture", 0 );
+    m_program->setUniformValue( _texLocation, 0 );
 
     QMatrix4x4 modelView;
     modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
@@ -320,10 +320,10 @@ void OpenGLCanvas::loadLibRetroVariables()
     const QVector2D outputSize = QVector2D( ( float ) _width, ( float ) _height );
     m_program->setUniformValue( "OutputSize", outputSize );
 
-    const QVector2D textureSize = QVector2D( ( float ) _width, ( float ) _height );
+    const QVector2D textureSize = QVector2D( ( float ) _texture->width(), ( float ) _texture->height() );
     m_program->setUniformValue( "TextureSize", textureSize );
 
-    const QVector2D inputSize = QVector2D( ( float ) _width, ( float ) _height );
+    const QVector2D inputSize = QVector2D( ( float ) _texture->width(), ( float ) _texture->height() );
     m_program->setUniformValue( "InputSize", inputSize );
 }
 
@@ -358,16 +358,22 @@ void OpenGLCanvas::paintLibRetroCanvas()
     glClearColor( 0.2, 0.2, 0.2, 1.0 );
 
     m_program->bind();
-    _vao->bind();
 
     loadLibRetroVariables();
 
+    _vao->bind();
+
     if( _texture && _texture->isCreated() )
     {
-        _texture->bind( 0 );
+        _texture->bind();
     }
 
     glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+
+    if( _texture && _texture->isCreated() )
+    {
+        _texture->release();
+    }
 
     _vao->release();
     m_program->release();
@@ -410,11 +416,37 @@ void OpenGLCanvas::initLibRetroCanvas()
         m_program = 0;
     }
 
+    _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+
+    _texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+    _texture->setMagnificationFilter(QOpenGLTexture::Nearest);
+    _texture->setWrapMode(QOpenGLTexture::DirectionS,
+                              QOpenGLTexture::ClampToEdge);
+    _texture->setWrapMode(QOpenGLTexture::DirectionT,
+                              QOpenGLTexture::ClampToEdge);
+
+    _texLocation = m_program->uniformLocation("tex");
+    m_program->setUniformValue( _texLocation, 0 );
+
     GLfloat plane[ 16 ] = {
-        -0.95, -0.95, 0.0, 0.0,
-        -0.95, 0.95, 0.0, 0.0,
-        0.95, -0.95, 0.0, 0.0,
-        0.95, 0.95, 0.0, 0.0
+        -0.8, -0.8, 0.0, 0.0,
+        -0.8, 0.8, 0.0, 0.0,
+        0.8, -0.8, 0.0, 0.0,
+        0.8, 0.8, 0.0, 0.0
+    };
+
+    GLfloat colors[ 16 ] = {
+        0.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        1.0, 0.0, 0.0, 0.0,
+        1.0, 1.0, 0.0, 0.0
+    };
+
+    GLfloat texCoords[ 16 ] = {
+        0.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        1.0, 0.0, 0.0, 0.0,
+        1.0, 1.0, 0.0, 0.0
     };
 
     _vao->create();
@@ -423,18 +455,20 @@ void OpenGLCanvas::initLibRetroCanvas()
     _vbo->create();
     _vbo->setUsagePattern( QOpenGLBuffer::StaticDraw );
     _vbo->bind();
-    _vbo->allocate( 16 * sizeof( GLfloat ) );
+    _vbo->allocate( 3 * 16 * sizeof( GLfloat ) );
     _vbo->bind();
     _vbo->write( 0, plane, 16 * sizeof( GLfloat ) );
-
-    //in vec4 COLOR;
-    //out vec4 COL0;
-    //in vec4 TexCoord;
-    //out vec4 TEX1;
-    //out vec4 TEX2;
+    _vbo->write( 16 * sizeof( GLfloat ), colors, 16 * sizeof( GLfloat ) );
+    _vbo->write( 32 * sizeof( GLfloat ), texCoords, 16 * sizeof( GLfloat ) );
 
     m_program->setAttributeBuffer( "VertexCoord", GL_FLOAT, 0, 4, 0 );
     m_program->enableAttributeArray( "VertexCoord" );
+
+    m_program->setAttributeBuffer( "COLOR", GL_FLOAT, 16 * sizeof( GLfloat ), 4, 0 );
+    m_program->enableAttributeArray( "COLOR" );
+
+    m_program->setAttributeBuffer( "TexCoord", GL_FLOAT, 32 * sizeof( GLfloat ), 4, 0 );
+    m_program->enableAttributeArray( "TexCoord" );
 
     _vao->release();
     m_program->release();
