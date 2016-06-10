@@ -79,3 +79,7 @@ Makefile
 cmake_install.cmake
 install_manifest.txt
 CTestTestfile.cmake
+
+### CMake with QT ###
+*_automoc.cpp
+*.depends

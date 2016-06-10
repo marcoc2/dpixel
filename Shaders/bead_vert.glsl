@@ -57,7 +57,8 @@ void main()
     _oColor = COLOR;
     _coords._c11 = TexCoord.xy;
     _coords._pixel_no = TexCoord.xy*TextureSize;
-    gl_Position = _r0006;
+    //gl_Position = _r0006;
+    gl_Position = vec4( _r0006.xyz, 1.0 );
     COL0 = COLOR;
     TEX1.xy = TexCoord.xy;
     TEX2.xy = _coords._pixel_no;

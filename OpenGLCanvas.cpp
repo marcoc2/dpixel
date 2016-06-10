@@ -51,18 +51,19 @@ void OpenGLCanvas::initializeGL()
     //initShaderToyCanvas();
     initLibRetroCanvas();
     QOpenGLFunctions glFuncs( QOpenGLContext::currentContext() );
-    printf( "OpenGl information: VENDOR:       %s\n" , (const char*)glFuncs.glGetString(GL_VENDOR) );
-    printf( "                    RENDERDER:    %s\n" , (const char*)glFuncs.glGetString(GL_RENDERER) );
-    printf( "                    VERSION:      %s\n" , (const char*)glFuncs.glGetString(GL_VERSION ));
-    printf( "                    GLSL VERSION: %s\n" , (const char*)glFuncs.glGetString(GL_SHADING_LANGUAGE_VERSION) );
+    printf( "OpenGl information: VENDOR:       %s\n", ( const char* )glFuncs.glGetString( GL_VENDOR ) );
+    printf( "                    RENDERDER:    %s\n", ( const char* )glFuncs.glGetString( GL_RENDERER ) );
+    printf( "                    VERSION:      %s\n", ( const char* )glFuncs.glGetString( GL_VERSION ) );
+    printf( "                    GLSL VERSION: %s\n",
+            ( const char* )glFuncs.glGetString( GL_SHADING_LANGUAGE_VERSION ) );
 
-    QString version = reinterpret_cast<const char*>( glFuncs.glGetString(GL_SHADING_LANGUAGE_VERSION) );
+    QString version = reinterpret_cast< const char* >( glFuncs.glGetString( GL_SHADING_LANGUAGE_VERSION ) );
 
-    int major = version.left(version.indexOf(".")).toInt();
-    int minor = version.mid(version.indexOf(".") + 1, 1).toInt();
+    int major = version.left( version.indexOf( "." ) ).toInt();
+    int minor = version.mid( version.indexOf( "." ) + 1, 1 ).toInt();
     _version = ( float ) major + ( ( float ) minor / 10 );
 
-    if(!(major >= 4 && minor >= 0))
+    if( !( major >= 4 && minor >= 0 ) )
     {
         initBasicDeprecatedOpenGL();
     }
@@ -197,14 +198,14 @@ void OpenGLCanvas::initBasicExample()
 
     _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
 
-    _texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    _texture->setMagnificationFilter(QOpenGLTexture::Nearest);
-    _texture->setWrapMode(QOpenGLTexture::DirectionS,
-                              QOpenGLTexture::ClampToEdge);
-    _texture->setWrapMode(QOpenGLTexture::DirectionT,
-                              QOpenGLTexture::ClampToEdge);
+    _texture->setMinificationFilter( QOpenGLTexture::LinearMipMapLinear );
+    _texture->setMagnificationFilter( QOpenGLTexture::Nearest );
+    _texture->setWrapMode( QOpenGLTexture::DirectionS,
+                           QOpenGLTexture::ClampToEdge );
+    _texture->setWrapMode( QOpenGLTexture::DirectionT,
+                           QOpenGLTexture::ClampToEdge );
 
-    _texLocation = m_program->uniformLocation("tex");
+    _texLocation = m_program->uniformLocation( "tex" );
     m_program->setUniformValue( _texLocation, 0 );
 
     GLfloat plane[ 12 ] = {
@@ -273,7 +274,7 @@ void OpenGLCanvas::initBasicDeprecatedOpenGL()
         m_program = 0;
     }
 
-    glEnable(GL_COLOR_MATERIAL);
+    glEnable( GL_COLOR_MATERIAL );
 
     //glBegin(GL_TRIANGLES);
     //    glVertex3f(-0.8, -0.8, 0.0);
@@ -307,7 +308,7 @@ void OpenGLCanvas::loadLibRetroVariables()
 
     QMatrix4x4 modelView;
     modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
-    QMatrix4x4 modelViewProjection =  m_projection * modelView;
+    QMatrix4x4 modelViewProjection = m_projection * modelView;
 
     //const QVector3D resolution = QVector3D( ( float ) _width, ( float ) _height, 0.0 );
     m_program->setUniformValue( "MVPMatrix", modelViewProjection );
@@ -403,9 +404,9 @@ void OpenGLCanvas::initLibRetroCanvas()
     m_program = new QOpenGLShaderProgram();
 
     m_program->addShaderFromSourceFile( QOpenGLShader::Vertex,
-                                        "../Shaders/bead_vert.glsl" );
+                                        "../Shaders/crt-hyllian_vert.glsl" );
     m_program->addShaderFromSourceFile( QOpenGLShader::Fragment,
-                                        "../Shaders/bead_frag.glsl" );
+                                        "../Shaders/crt-hyllian_frag.glsl" );
     if( !m_program->link() )
     {
         qWarning( "Failed to compile and link shader program" );
@@ -418,22 +419,27 @@ void OpenGLCanvas::initLibRetroCanvas()
 
     _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
 
-    _texture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    _texture->setMagnificationFilter(QOpenGLTexture::Nearest);
-    _texture->setWrapMode(QOpenGLTexture::DirectionS,
-                              QOpenGLTexture::ClampToEdge);
-    _texture->setWrapMode(QOpenGLTexture::DirectionT,
-                              QOpenGLTexture::ClampToEdge);
+    _texture->setMinificationFilter( QOpenGLTexture::LinearMipMapLinear );
+    _texture->setMagnificationFilter( QOpenGLTexture::Nearest );
+    _texture->setWrapMode( QOpenGLTexture::DirectionS,
+                           QOpenGLTexture::ClampToEdge );
+    _texture->setWrapMode( QOpenGLTexture::DirectionT,
+                           QOpenGLTexture::ClampToEdge );
 
-    _texLocation = m_program->uniformLocation("tex");
+    _texLocation = m_program->uniformLocation( "Texture" );
     m_program->setUniformValue( _texLocation, 0 );
 
     GLfloat plane[ 16 ] = {
-        -0.8, -0.8, 0.0, 0.0,
-        -0.8, 0.8, 0.0, 0.0,
-        0.8, -0.8, 0.0, 0.0,
-        0.8, 0.8, 0.0, 0.0
+        -1.0, -1.0, 0.0, 0.0,
+        -1.0, 1.0, 0.0, 0.0,
+        1.0, -1.0, 0.0, 0.0,
+        1.0, 1.0, 0.0, 0.0
     };
+
+    for( int i = 0; i < 16; i++ )
+    {
+        plane[i] = plane[i] / 3.0;
+    }
 
     GLfloat colors[ 16 ] = {
         0.0, 0.0, 0.0, 0.0,
@@ -522,11 +528,6 @@ void OpenGLCanvas::initShaderToyCanvas()
 void OpenGLCanvas::setTexture( QImage* image )
 {
     _qImage = image;
-    //_colorTexture = new QOpenGLTexture( image.mirrored().mirrored().convertToFormat(QImage::Format_RGBA8888) );
-    //_colorTexture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    //_colorTexture->setMagnificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    //_colorTexture->setWrapMode(QOpenGLTexture::DirectionS,
-    //                          QOpenGLTexture::ClampToEdge);
-    //_colorTexture->setWrapMode(QOpenGLTexture::DirectionT,
-    //                          QOpenGLTexture::ClampToEdge);
 }
+
+

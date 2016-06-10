@@ -102,7 +102,9 @@ DISTFILES += \
     Shaders/rayTraceSphere.vert \
     Shaders/lsd_ufos.frag \
     Shaders/bead_frag.glsl \
-    Shaders/bead_vert.glsl
+    Shaders/bead_vert.glsl \
+    Shaders/crt-hyllian_frag.glsl \
+    Shaders/crt-hyllian_vert.glsl
 
 RESOURCES += \
     gui.qrc

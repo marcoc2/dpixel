@@ -11,14 +11,16 @@ class QOpenGLTexture;
 class QOpenGLBuffer;
 class QOpenGLVertexArrayObject;
 
-class OpenGLCanvas : public QOpenGLWidget, protected QOpenGLFunctions
+class OpenGLCanvas :
+    public QOpenGLWidget,
+    protected QOpenGLFunctions
 {
 public:
-    OpenGLCanvas(QWidget *parent = 0);
+    OpenGLCanvas( QWidget* parent = 0 );
     ~OpenGLCanvas();
 
     void initializeGL();
-    void resizeGL(int w, int h);
+    void resizeGL( int w, int h );
     void paintGL();
 
     void paintBasicExample();
@@ -60,8 +62,8 @@ private:
     GLint _texLocation;
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent( QMouseEvent* event );
+    void mouseMoveEvent( QMouseEvent* event );
 };
 
 #endif // OPENGLCANVAS_H
