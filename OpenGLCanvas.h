@@ -53,6 +53,8 @@ private:
 
     /* Mouse Events */
     QPoint _lastPos;
+    float _zoom;
+    QPoint _mousePosition;
 
     QTime _time;
 
@@ -64,6 +66,7 @@ private:
 protected:
     void mousePressEvent( QMouseEvent* event );
     void mouseMoveEvent( QMouseEvent* event );
+    void wheelEvent( QWheelEvent* event );
 };
 
 #endif // OPENGLCANVAS_H

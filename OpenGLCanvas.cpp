@@ -18,7 +18,9 @@ OpenGLCanvas::OpenGLCanvas( QWidget* parent ) :
     _qImage( nullptr ),
     _texture( nullptr ),
     _width( parent->width() ),
-    _height( parent->height() )
+    _height( parent->height() ),
+    _zoom( 1.0 ),
+    _mousePosition( 0 ,0 )
 {
     _time = QTime( 0, 0, 0, 0 );
     QSurfaceFormat format;
@@ -82,8 +84,15 @@ void OpenGLCanvas::mouseMoveEvent( QMouseEvent* event )
 //    int dy = event->y() - lastPos.y();
 
     _lastPos = event->pos();
+    _mousePosition = event->pos();
+    //printf( "mouse position: %d, %d\n", event->pos().x(), event->pos().y() );
 }
 
+
+void OpenGLCanvas::wheelEvent( QWheelEvent* event )
+{
+    _zoom  += event->angleDelta().y() / (8.0 * 60);
+}
 
 void OpenGLCanvas::resizeGL( int w, int h )
 {
@@ -309,6 +318,9 @@ void OpenGLCanvas::loadLibRetroVariables()
     QMatrix4x4 modelView;
     modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
     QMatrix4x4 modelViewProjection = m_projection * modelView;
+    modelViewProjection.scale( _zoom );
+    modelViewProjection.translate( (float)_mousePosition.x()/1000.0f, -(float)_mousePosition.y()/1000.0f );
+    printf( "mouse position: %d, %d\n", _mousePosition.x(), _mousePosition.y() );
 
     //const QVector3D resolution = QVector3D( ( float ) _width, ( float ) _height, 0.0 );
     m_program->setUniformValue( "MVPMatrix", modelViewProjection );
