@@ -886,18 +886,23 @@ Animated GIF</string>
      <attribute name="title">
       <string>GPU</string>
      </attribute>
-     <widget class="QRadioButton" name="radioButton">
+     <widget class="QTreeWidget" name="treeWidget">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>0</x>
         <y>10</y>
-        <width>133</width>
-        <height>26</height>
+        <width>141</width>
+        <height>461</height>
        </rect>
       </property>
-      <property name="text">
-       <string>xBR</string>
-      </property>
+      <attribute name="headerVisible">
+       <bool>false</bool>
+      </attribute>
+      <column>
+       <property name="text">
+        <string notr="true">1</string>
+       </property>
+      </column>
      </widget>
     </widget>
    </widget>

@@ -58,8 +58,6 @@ private:
     QGraphicsScene* _originalScene;
     QGraphicsScene* _graphScene;
 
-    QTabWidget* _tabFrontEnd;
-
     QPointF _resultSceneRatio;
     QPointF _originalSceneRatio;
     QPointF _graphSceneRatio;

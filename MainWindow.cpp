@@ -74,10 +74,10 @@ MainWindow::MainWindow( QWidget* parent ) :
     _graphSceneRatio.setY( ( double ) _ui->graphicsViewGraph->size().height() / height() );
 
     // Center window position
-    QRect screenGeometry = QApplication::desktop()->screenGeometry();
-    int x = ( screenGeometry.width() - this->width() ) / 2;
-    int y = ( screenGeometry.height() - this->height() ) / 2;
-    this->move( x, y );
+    //QRect screenGeometry = QApplication::desktop()->screenGeometry();
+    //int x = ( screenGeometry.width() - this->width() ) / 2;
+    //int y = ( screenGeometry.height() - this->height() ) / 2;
+    //this->move( x, y );
     this->show();
 }
 
@@ -116,6 +116,37 @@ void MainWindow::connectSignals()
 
     connect( _ui->tabFrontEnd, SIGNAL( currentChanged( int ) ), this, SLOT( changeFrontEnd( int ) ) );
     _ui->tabFrontEnd->setCurrentIndex( 0 );
+
+    QDir shadersDir( tr("/home/marco/Projects/shaders_glsl/") );
+
+    //shadersDir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
+
+    QFileInfoList list = shadersDir.entryInfoList();
+    //std::cout << "     Bytes Filename" << std::endl;
+
+    _ui->treeWidget->setColumnCount( 1 );
+    QTreeWidgetItem* item = new QTreeWidgetItem( _ui->treeWidget );
+    item->setText( 0, tr( "Primeiro item" ) );
+
+    QTreeWidgetItem* subItem = new QTreeWidgetItem( item );
+    item->setText( 0, tr( "Pasta 1" ) );
+    QList<QTreeWidgetItem *> items;
+    for (int i = 0; i < list.size(); ++i)
+    {
+        QFileInfo fileInfo = list.at(i);
+        //std::cout << qPrintable(QString("%1 %2").arg(fileInfo.size(), 10)
+                                                //.arg(fileInfo.fileName()));
+        //std::cout << std::endl;
+
+        items.append(new QTreeWidgetItem( item, QStringList(fileInfo.fileName().arg(i))));
+    }
+
+    //for (int i = 0; i < 10; ++i)
+    //{
+    //    items.append(new QTreeWidgetItem( item, QStringList(QString("item: %1").arg(i))));
+    //}
+
+    _ui->treeWidget->addTopLevelItem( item );
 
     // Hide filters with issues and resize frame
     _ui->glButton->setVisible( false );
