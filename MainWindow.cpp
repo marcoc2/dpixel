@@ -115,38 +115,18 @@ void MainWindow::connectSignals()
     connect( _ui->beadsSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyBeads() ) );
 
     connect( _ui->tabFrontEnd, SIGNAL( currentChanged( int ) ), this, SLOT( changeFrontEnd( int ) ) );
+
+    connect( _ui->treeWidget, SIGNAL( itemActivated( QTreeWidgetItem*, int ) ), this, SLOT( changeShader( QTreeWidgetItem*, int ) ) );
     _ui->tabFrontEnd->setCurrentIndex( 0 );
 
-    QDir shadersDir( tr("/home/marco/Projects/shaders_glsl/") );
+    _ui->treeWidget->setColumnCount( 2 );
+    _ui->treeWidget->setColumnHidden( 1, true );
 
-    //shadersDir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
-
-    QFileInfoList list = shadersDir.entryInfoList();
-    //std::cout << "     Bytes Filename" << std::endl;
-
-    _ui->treeWidget->setColumnCount( 1 );
     QTreeWidgetItem* item = new QTreeWidgetItem( _ui->treeWidget );
-    item->setText( 0, tr( "Primeiro item" ) );
-
-    QTreeWidgetItem* subItem = new QTreeWidgetItem( item );
-    item->setText( 0, tr( "Pasta 1" ) );
-    QList<QTreeWidgetItem *> items;
-    for (int i = 0; i < list.size(); ++i)
-    {
-        QFileInfo fileInfo = list.at(i);
-        //std::cout << qPrintable(QString("%1 %2").arg(fileInfo.size(), 10)
-                                                //.arg(fileInfo.fileName()));
-        //std::cout << std::endl;
-
-        items.append(new QTreeWidgetItem( item, QStringList(fileInfo.fileName().arg(i))));
-    }
-
-    //for (int i = 0; i < 10; ++i)
-    //{
-    //    items.append(new QTreeWidgetItem( item, QStringList(QString("item: %1").arg(i))));
-    //}
-
+    item->setText( 0, tr( "Shaders" ) );
     _ui->treeWidget->addTopLevelItem( item );
+
+    listFolderItems( tr("/home/marco/Projects/shaders_glsl/"), item );
 
     // Hide filters with issues and resize frame
     _ui->glButton->setVisible( false );
@@ -164,6 +144,30 @@ MainWindow::~MainWindow()
     delete _outputImage;
     delete _currentFilter;
     clearGifHolder();
+}
+
+
+void MainWindow::listFolderItems( QString folder, QTreeWidgetItem* item )
+{
+    QDir dir( folder );
+
+    dir.setFilter( QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Files | QDir::Dirs );
+
+    QFileInfoList folderList = dir.entryInfoList();
+    QList< QTreeWidgetItem* > items;
+    for( int i = 0; i < folderList.size(); ++i )
+    {
+        QFileInfo fileInfo = folderList[ i ];
+
+        QTreeWidgetItem* newEntry = new QTreeWidgetItem( item, QStringList( fileInfo.fileName().arg( i ) ) );
+        newEntry->setData( 0, Qt::ToolTipRole, folderList.at( i ).absoluteFilePath() );
+        items.append( newEntry );
+
+        if( folderList.at( i ).isDir() )
+        {
+            listFolderItems( folderList.at( i ).absoluteFilePath(), newEntry );
+        }
+    }
 }
 
 
@@ -296,6 +300,30 @@ void MainWindow::changeFrontEnd( int index )
         //dialog->show();
         //_ui->filteredGLWidget->setVisible( false );
     }
+}
+
+
+void MainWindow::changeShader( QTreeWidgetItem *item, int column )
+{
+    QString path = item->data( column, Qt::ToolTipRole ).toString();
+    //if( !( QDir( path ).exists() ) )
+    //{
+    //    return;
+    //}
+
+    QFile file( path );
+    file.open( QIODevice::ReadOnly );
+    QString s;
+    QTextStream s1( &file );
+    s.append( s1.readAll() );
+
+    QStringList stringList = s.split( "#elif defined(FRAGMENT)" );
+    stringList[ 0 ].remove( "#if defined(VERTEX)", Qt::CaseInsensitive );
+    stringList[ 1 ].remove( "#elif defined(FRAGMENT)", Qt::CaseInsensitive );
+    // Relative to "#endif"
+    stringList[ 1 ].chop( 6 );
+
+    _ui->filteredGLWidget->setPrograms( stringList[ 0 ], stringList[ 1 ] );
 }
 
 

@@ -39,6 +39,7 @@ public:
 
     float getOpenGLVersion();
     void setTexture( QImage* image );
+    void setPrograms( QString vertexShader, QString fragmentShader );
 
 private:
     QMatrix4x4 m_modelView;
@@ -62,6 +63,10 @@ private:
     uchar* _texels;
 
     GLint _texLocation;
+
+    QString _vertexShader;
+    QString _fragmentShader;
+    bool _isToLoadFromFile;
 
 protected:
     void mousePressEvent( QMouseEvent* event );

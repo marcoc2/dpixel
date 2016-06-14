@@ -20,7 +20,10 @@ OpenGLCanvas::OpenGLCanvas( QWidget* parent ) :
     _width( parent->width() ),
     _height( parent->height() ),
     _zoom( 1.0 ),
-    _mousePosition( 0 ,0 )
+    _mousePosition( 0 ,0 ),
+    _vertexShader( "../Shaders/crt-hyllian_vert.glsl" ),
+    _fragmentShader( "../Shaders/crt-hyllian_frag.glsl" ),
+    _isToLoadFromFile( true )
 {
     _time = QTime( 0, 0, 0, 0 );
     QSurfaceFormat format;
@@ -320,7 +323,7 @@ void OpenGLCanvas::loadLibRetroVariables()
     QMatrix4x4 modelViewProjection = m_projection * modelView;
     modelViewProjection.scale( _zoom );
     modelViewProjection.translate( (float)_mousePosition.x()/1000.0f, -(float)_mousePosition.y()/1000.0f );
-    printf( "mouse position: %d, %d\n", _mousePosition.x(), _mousePosition.y() );
+    //printf( "mouse position: %d, %d\n", _mousePosition.x(), _mousePosition.y() );
 
     //const QVector3D resolution = QVector3D( ( float ) _width, ( float ) _height, 0.0 );
     m_program->setUniformValue( "MVPMatrix", modelViewProjection );
@@ -415,10 +418,20 @@ void OpenGLCanvas::initLibRetroCanvas()
     initializeOpenGLFunctions();
     m_program = new QOpenGLShaderProgram();
 
-    m_program->addShaderFromSourceFile( QOpenGLShader::Vertex,
-                                        "../Shaders/crt-hyllian_vert.glsl" );
-    m_program->addShaderFromSourceFile( QOpenGLShader::Fragment,
-                                        "../Shaders/crt-hyllian_frag.glsl" );
+    if( _isToLoadFromFile )
+    {
+        m_program->addShaderFromSourceFile( QOpenGLShader::Vertex,
+                                            _vertexShader );
+        m_program->addShaderFromSourceFile( QOpenGLShader::Fragment,
+                                            _fragmentShader );
+    }
+    else
+    {
+        m_program->addShaderFromSourceCode( QOpenGLShader::Vertex,
+                                            _vertexShader );
+        m_program->addShaderFromSourceCode( QOpenGLShader::Fragment,
+                                            _fragmentShader );
+    }
     if( !m_program->link() )
     {
         qWarning( "Failed to compile and link shader program" );
@@ -543,3 +556,12 @@ void OpenGLCanvas::setTexture( QImage* image )
 }
 
 
+void OpenGLCanvas::setPrograms( QString vertexShader, QString fragmentShader )
+{
+    _vertexShader = vertexShader;
+    _fragmentShader = fragmentShader;
+
+    _isToLoadFromFile = false;
+
+    initializeGL();
+}

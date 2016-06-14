@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1223</width>
+    <width>1346</width>
     <height>719</height>
    </rect>
   </property>
@@ -27,7 +27,7 @@
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>570</x>
+      <x>700</x>
       <y>20</y>
       <width>641</width>
       <height>601</height>
@@ -43,7 +43,7 @@
    <widget class="QGraphicsView" name="graphicsViewOriginal">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>300</x>
       <y>20</y>
       <width>391</width>
       <height>291</height>
@@ -53,7 +53,7 @@
    <widget class="QGraphicsView" name="graphicsViewGraph">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>300</x>
       <y>330</y>
       <width>391</width>
       <height>301</height>
@@ -63,7 +63,7 @@
    <widget class="QLabel" name="labelSimilarityGraphView">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>300</x>
       <y>310</y>
       <width>121</width>
       <height>21</height>
@@ -76,7 +76,7 @@
    <widget class="QLabel" name="labelOriginalView">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>300</x>
       <y>0</y>
       <width>66</width>
       <height>21</height>
@@ -89,7 +89,7 @@
    <widget class="QLabel" name="labelFilteredView">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>710</x>
       <y>0</y>
       <width>66</width>
       <height>21</height>
@@ -105,7 +105,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>720</x>
       <y>40</y>
       <width>599</width>
       <height>571</height>
@@ -120,7 +120,7 @@
     <widget class="QLabel" name="labeImageInfo">
      <property name="geometry">
       <rect>
-       <x>45</x>
+       <x>175</x>
        <y>430</y>
        <width>91</width>
        <height>21</height>
@@ -133,7 +133,7 @@
     <widget class="QLabel" name="labelNameInfo">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>140</x>
        <y>460</y>
        <width>61</width>
        <height>21</height>
@@ -146,7 +146,7 @@
     <widget class="QLabel" name="LabelSizeInfo">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>140</x>
        <y>480</y>
        <width>66</width>
        <height>21</height>
@@ -159,7 +159,7 @@
     <widget class="QLabel" name="labelWidthInfo">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>140</x>
        <y>500</y>
        <width>66</width>
        <height>21</height>
@@ -172,7 +172,7 @@
     <widget class="QLabel" name="LabelHeightInfo">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>140</x>
        <y>520</y>
        <width>66</width>
        <height>21</height>
@@ -241,7 +241,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>574</x>
+      <x>704</x>
       <y>620</y>
       <width>631</width>
       <height>10</height>
@@ -257,7 +257,7 @@
    <widget class="OpenGLCanvas" name="filteredGLWidget" native="true">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>310</x>
       <y>340</y>
       <width>371</width>
       <height>261</height>
@@ -366,7 +366,7 @@ Animated GIF</string>
    <widget class="QRadioButton" name="radioButtonSuperSaI2x">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>560</x>
       <y>290</y>
       <width>135</width>
       <height>25</height>
@@ -382,7 +382,7 @@ Animated GIF</string>
     </property>
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>560</x>
       <y>260</y>
       <width>113</width>
       <height>26</height>
@@ -397,12 +397,12 @@ Animated GIF</string>
      <rect>
       <x>10</x>
       <y>0</y>
-      <width>151</width>
+      <width>281</width>
       <height>521</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -413,7 +413,7 @@ Animated GIF</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>145</width>
+        <width>271</width>
         <height>481</height>
        </rect>
       </property>
@@ -891,7 +891,7 @@ Animated GIF</string>
        <rect>
         <x>0</x>
         <y>10</y>
-        <width>141</width>
+        <width>271</width>
         <height>461</height>
        </rect>
       </property>
@@ -912,7 +912,7 @@ Animated GIF</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1223</width>
+     <width>1346</width>
      <height>25</height>
     </rect>
    </property>

@@ -14,6 +14,7 @@
 class SimilarityGraph;
 class Filter;
 class GifSaver;
+class QTreeWidgetItem;
 
 namespace Ui
 {
@@ -80,6 +81,7 @@ private:
 
     void clearGifHolder();
     void loadAnimatedGifHolder( QImageReader& qImageReader );
+    void listFolderItems( QString folder, QTreeWidgetItem* item );
 
 protected:
 
@@ -89,6 +91,7 @@ private Q_SLOTS:
 
     void createTest();
     void changeFrontEnd( int index );
+    void changeShader( QTreeWidgetItem *item, int column );
     void loadImage();
     void saveImage();
     void exportSimilarityGraph();
