@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions>
 #include <QMatrix4x4>
 #include <QTime>
+#include "DebugWindow.h"
 
 class QOpenGLShaderProgram;
 class QOpenGLTexture;
@@ -41,9 +42,16 @@ public:
     void setTexture( QImage* image );
     void setPrograms( QString vertexShader, QString fragmentShader );
 
+    //## DEBUG ##
+    void setScaleFactor( double factor );
+    void setMatrices( QMatrix4x4 mvp,
+                      QMatrix4x4 proj,
+                      QMatrix4x4 mv );
+
 private:
     QMatrix4x4 m_modelView;
     QMatrix4x4 m_projection;
+    QMatrix4x4 m_MVPMatrix;
     QOpenGLShaderProgram* m_program;
     QOpenGLBuffer* _vbo;
     QOpenGLVertexArrayObject* _vao;
@@ -67,6 +75,9 @@ private:
     QString _vertexShader;
     QString _fragmentShader;
     bool _isToLoadFromFile;
+
+    //## DEBUG ##
+    DebugWindow* _debugWindow;
 
 protected:
     void mousePressEvent( QMouseEvent* event );

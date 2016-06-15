@@ -52,7 +52,8 @@ SOURCES += main.cpp\
     GifSaver.cpp \
     OpenGLCanvas.cpp \
     Depixel/SimilarityGraphExportToImage.cpp \
-    Filters/BeadsFilter.cpp
+    Filters/BeadsFilter.cpp \
+    DebugWindow.cpp
 
 HEADERS  += MainWindow.h \
     Image.h \
@@ -86,10 +87,12 @@ HEADERS  += MainWindow.h \
     GifSaver.h \
     OpenGLCanvas.h \
     Depixel/SimilarityGraphExportToImage.h \
-    Filters/BeadsFilter.h
+    Filters/BeadsFilter.h \
+    DebugWindow.h
 
 FORMS    += MainWindow.ui \
-    CheckUpscaleWindow.ui
+    CheckUpscaleWindow.ui \
+    DebugWindow.ui
 
 DISTFILES += \
     Doc/uncrustify.cfg \

@@ -23,7 +23,8 @@ OpenGLCanvas::OpenGLCanvas( QWidget* parent ) :
     _mousePosition( 0 ,0 ),
     _vertexShader( "../Shaders/crt-hyllian_vert.glsl" ),
     _fragmentShader( "../Shaders/crt-hyllian_frag.glsl" ),
-    _isToLoadFromFile( true )
+    _isToLoadFromFile( true ),
+    _debugWindow( new DebugWindow( this ) )
 {
     _time = QTime( 0, 0, 0, 0 );
     QSurfaceFormat format;
@@ -101,6 +102,10 @@ void OpenGLCanvas::resizeGL( int w, int h )
 {
     m_projection.setToIdentity();
     m_projection.perspective( 45.0f, w / float( h ), 0.1f, 1000.0f );
+
+    m_modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
+    m_MVPMatrix = m_projection * m_modelView;
+
     _width = w;
     _height = h;
 }
@@ -318,15 +323,20 @@ void OpenGLCanvas::loadLibRetroVariables()
 
     m_program->setUniformValue( _texLocation, 0 );
 
-    QMatrix4x4 modelView;
-    modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
-    QMatrix4x4 modelViewProjection = m_projection * modelView;
-    modelViewProjection.scale( _zoom );
-    modelViewProjection.translate( (float)_mousePosition.x()/1000.0f, -(float)_mousePosition.y()/1000.0f );
+    //QMatrix4x4 modelView;
+    //modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
+    //QMatrix4x4 modelViewProjection = m_projection * modelView;
+    //modelViewProjection.translate( (float)_mousePosition.x()/1000.0f, -(float)_mousePosition.y()/1000.0f );
+    //modelViewProjection.scale( _zoom );
     //printf( "mouse position: %d, %d\n", _mousePosition.x(), _mousePosition.y() );
 
+    m_MVPMatrix.translate( (float)_mousePosition.x()/1000.0f, -(float)_mousePosition.y()/1000.0f );
+    m_MVPMatrix.scale( _zoom );
+
+    _debugWindow->setData( m_MVPMatrix, m_projection, m_modelView, _zoom );
+
     //const QVector3D resolution = QVector3D( ( float ) _width, ( float ) _height, 0.0 );
-    m_program->setUniformValue( "MVPMatrix", modelViewProjection );
+    m_program->setUniformValue( "MVPMatrix", m_MVPMatrix );
 
     // 1 or -1
     m_program->setUniformValue( "FrameDirection", 1 );
@@ -564,4 +574,20 @@ void OpenGLCanvas::setPrograms( QString vertexShader, QString fragmentShader )
     _isToLoadFromFile = false;
 
     initializeGL();
+}
+
+
+void OpenGLCanvas::setScaleFactor( double factor )
+{
+    _zoom = factor;
+}
+
+
+void OpenGLCanvas::setMatrices( QMatrix4x4 mvp,
+                                QMatrix4x4 proj,
+                                QMatrix4x4 mv )
+{
+    m_MVPMatrix = mvp;
+    m_projection = proj;
+    m_modelView = mv;
 }
