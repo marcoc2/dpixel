@@ -26,6 +26,12 @@ class MainWindow :
 {
     Q_OBJECT
 
+    enum class FrontEnd
+    {
+        CPU_IMAGE,
+        OPENGL
+    };
+
 public:
 
     /**
@@ -67,6 +73,8 @@ private:
 
     bool _isAnimatedGif;
 
+    FrontEnd _frontEndEnabled;
+
     void connectSignals();
     void createActions();
     void createMenus();
@@ -90,7 +98,7 @@ protected:
 private Q_SLOTS:
 
     void createTest();
-    void changeFrontEnd( int index );
+    void changeFrontEnd( int FrontEnd );
     void changeShader( QTreeWidgetItem *item, int column );
     void loadImage();
     void saveImage();

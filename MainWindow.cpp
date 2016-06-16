@@ -40,7 +40,8 @@ MainWindow::MainWindow( QWidget* parent ) :
     _originalScene( nullptr ),
     _graphScene( nullptr ),
     _gifSaver( nullptr ),
-    _isAnimatedGif( false )
+    _isAnimatedGif( false ),
+    _frontEndEnabled( FrontEnd::CPU_IMAGE )
 {
     #ifdef _WIN32
     _inputImage = new Image( "../Samples/metalslug.png" );
@@ -126,7 +127,11 @@ void MainWindow::connectSignals()
     item->setText( 0, tr( "Shaders" ) );
     _ui->treeWidget->addTopLevelItem( item );
 
-    listFolderItems( tr("/home/marco/Projects/shaders_glsl/"), item );
+#ifdef _WIN32
+    listFolderItems( tr("../../shaders_glsl"), item );
+#else
+    listFolderItems( tr("/local/msilva/workspace/libretro/shaders_glsl"), item );
+#endif
 
     // Hide filters with issues and resize frame
     _ui->glButton->setVisible( false );
@@ -284,9 +289,11 @@ void MainWindow::createMenus()
 }
 
 
-void MainWindow::changeFrontEnd( int index )
+void MainWindow::changeFrontEnd( int frontEnd )
 {
-    if( index < 1 )
+    _frontEndEnabled = ( FrontEnd ) frontEnd;
+
+    if( _frontEndEnabled != FrontEnd::OPENGL )
     {
         _ui->filteredGLWidget->setVisible( false );
         return;
@@ -452,23 +459,41 @@ QString MainWindow::getSuggestedFileName( QString format )
 
 void MainWindow::saveImage()
 {
-    if( !checkCurrentFilter( true ) )
+    if( _frontEndEnabled == FrontEnd::CPU_IMAGE )
     {
-        return;
+        if( !checkCurrentFilter( true ) )
+        {
+            return;
+        }
+
+        QString outputFileName =
+                QFileDialog::getSaveFileName( this,
+                                              tr( "Save Image" ),
+                                              getSuggestedFileName( "png" ).toStdString().c_str(),
+                                              tr( "Image Files (*.png *.jpg *.bmp)" ) );
+
+        if( outputFileName == 0 )
+        {
+            return;
+        }
+
+        _outputImage->getQImage()->save( outputFileName );
     }
-
-    QString outputFileName =
-            QFileDialog::getSaveFileName( this,
-                                          tr( "Save Image" ),
-                                          getSuggestedFileName( "png" ).toStdString().c_str(),
-                                          tr( "Image Files (*.png *.jpg *.bmp)" ) );
-
-    if( outputFileName == 0 )
+    else
     {
-        return;
-    }
+        QString outputFileName =
+                QFileDialog::getSaveFileName( this,
+                                              tr( "Save Image" ),
+                                              "OpenGL_exported",
+                                              tr( "Image Files (*.png *.jpg *.bmp)" ) );
 
-    _outputImage->getQImage()->save( outputFileName );
+        if( outputFileName == 0 )
+        {
+            return;
+        }
+
+        _ui->filteredGLWidget->exportFrameBuffer().save( outputFileName );
+    }
 }
 
 

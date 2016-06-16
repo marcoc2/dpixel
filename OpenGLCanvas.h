@@ -41,6 +41,7 @@ public:
     float getOpenGLVersion();
     void setTexture( QImage* image );
     void setPrograms( QString vertexShader, QString fragmentShader );
+    QImage exportFrameBuffer();
 
     //## DEBUG ##
     void setScaleFactor( double factor );

@@ -605,3 +605,9 @@ void OpenGLCanvas::setMatrices( QMatrix4x4 mvp,
     m_projection = proj;
     m_modelView = mv;
 }
+
+
+QImage OpenGLCanvas::exportFrameBuffer()
+{
+    return grabFramebuffer();
+}
