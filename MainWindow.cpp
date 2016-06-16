@@ -159,6 +159,11 @@ void MainWindow::listFolderItems( QString folder, QTreeWidgetItem* item )
     {
         QFileInfo fileInfo = folderList[ i ];
 
+        if( fileInfo.fileName().contains( ".glslp", Qt::CaseInsensitive ) )
+        {
+            continue;
+        }
+
         QTreeWidgetItem* newEntry = new QTreeWidgetItem( item, QStringList( fileInfo.fileName().arg( i ) ) );
         newEntry->setData( 0, Qt::ToolTipRole, folderList.at( i ).absoluteFilePath() );
         items.append( newEntry );
@@ -306,10 +311,10 @@ void MainWindow::changeFrontEnd( int index )
 void MainWindow::changeShader( QTreeWidgetItem *item, int column )
 {
     QString path = item->data( column, Qt::ToolTipRole ).toString();
-    //if( !( QDir( path ).exists() ) )
-    //{
-    //    return;
-    //}
+    if( !path.contains( ".glsl", Qt::CaseInsensitive ) )
+    {
+        return;
+    }
 
     QFile file( path );
     file.open( QIODevice::ReadOnly );

@@ -61,7 +61,8 @@ private:
     int _height;
 
     /* Mouse Events */
-    QPoint _lastPos;
+    QPoint _lastPostition;
+    QPoint _currentPosition;
     float _zoom;
     QPoint _mousePosition;
 
@@ -81,6 +82,7 @@ private:
 
 protected:
     void mousePressEvent( QMouseEvent* event );
+    void mouseDoubleClickEvent( QMouseEvent* event );
     void mouseMoveEvent( QMouseEvent* event );
     void wheelEvent( QWheelEvent* event );
 };

@@ -31,8 +31,8 @@ void DebugWindow::setData( QMatrix4x4 mvp,
 
     _ui->mvp0->setValue(  mvp(0,0) );
     _ui->mvp1->setValue(  mvp(0,1) );
-    _ui->mvp2->setValue(  mvp(0,3) );
-    _ui->mvp3->setValue(  mvp(0,4) );
+    _ui->mvp2->setValue(  mvp(0,2) );
+    _ui->mvp3->setValue(  mvp(0,3) );
     _ui->mvp4->setValue(  mvp(1,0) );
     _ui->mvp5->setValue(  mvp(1,1) );
     _ui->mvp6->setValue(  mvp(1,2) );
@@ -48,8 +48,8 @@ void DebugWindow::setData( QMatrix4x4 mvp,
 
     _ui->proj0->setValue(  projection(0,0) );
     _ui->proj1->setValue(  projection(0,1) );
-    _ui->proj2->setValue(  projection(0,3) );
-    _ui->proj3->setValue(  projection(0,4) );
+    _ui->proj2->setValue(  projection(0,2) );
+    _ui->proj3->setValue(  projection(0,3) );
     _ui->proj4->setValue(  projection(1,0) );
     _ui->proj5->setValue(  projection(1,1) );
     _ui->proj6->setValue(  projection(1,2) );
@@ -65,8 +65,8 @@ void DebugWindow::setData( QMatrix4x4 mvp,
 
     _ui->mv0->setValue(  modelview(0,0) );
     _ui->mv1->setValue(  modelview(0,1) );
-    _ui->mv2->setValue(  modelview(0,3) );
-    _ui->mv3->setValue(  modelview(0,4) );
+    _ui->mv2->setValue(  modelview(0,2) );
+    _ui->mv3->setValue(  modelview(0,3) );
     _ui->mv4->setValue(  modelview(1,0) );
     _ui->mv5->setValue(  modelview(1,1) );
     _ui->mv6->setValue(  modelview(1,2) );
@@ -93,8 +93,8 @@ void DebugWindow::changeMatrices( double value )
     QMatrix4x4 mvp, proj, mv;
     mvp(0,0) = _ui->mvp0->value();
     mvp(0,1) = _ui->mvp1->value();
-    mvp(0,3) = _ui->mvp2->value();
-    mvp(0,4) = _ui->mvp3->value();
+    mvp(0,2) = _ui->mvp2->value();
+    mvp(0,3) = _ui->mvp3->value();
     mvp(1,0) = _ui->mvp4->value();
     mvp(1,1) = _ui->mvp5->value();
     mvp(1,2) = _ui->mvp6->value();
@@ -110,8 +110,8 @@ void DebugWindow::changeMatrices( double value )
 
     proj(0,0) = _ui->proj0->value(  );
     proj(0,1) = _ui->proj1->value(  );
-    proj(0,3) = _ui->proj2->value(  );
-    proj(0,4) = _ui->proj3->value(  );
+    proj(0,2) = _ui->proj2->value(  );
+    proj(0,3) = _ui->proj3->value(  );
     proj(1,0) = _ui->proj4->value(  );
     proj(1,1) = _ui->proj5->value(  );
     proj(1,2) = _ui->proj6->value(  );
@@ -127,8 +127,8 @@ void DebugWindow::changeMatrices( double value )
 
     mv(0,0) = _ui->mv0->value(   );
     mv(0,1) = _ui->mv1->value(   );
-    mv(0,3) = _ui->mv2->value(   );
-    mv(0,4) = _ui->mv3->value(   );
+    mv(0,2) = _ui->mv2->value(   );
+    mv(0,3) = _ui->mv3->value(   );
     mv(1,0) = _ui->mv4->value(   );
     mv(1,1) = _ui->mv5->value(   );
     mv(1,2) = _ui->mv6->value(   );

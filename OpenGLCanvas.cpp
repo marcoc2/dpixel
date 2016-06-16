@@ -19,12 +19,14 @@ OpenGLCanvas::OpenGLCanvas( QWidget* parent ) :
     _texture( nullptr ),
     _width( parent->width() ),
     _height( parent->height() ),
+    _lastPostition( 0.0f, 0.0f ),
+    _currentPosition( 0.0f, 0.0f ),
     _zoom( 1.0 ),
     _mousePosition( 0 ,0 ),
     _vertexShader( "../Shaders/crt-hyllian_vert.glsl" ),
     _fragmentShader( "../Shaders/crt-hyllian_frag.glsl" ),
     _isToLoadFromFile( true ),
-    _debugWindow( new DebugWindow( this ) )
+    _debugWindow( nullptr )//new DebugWindow( this ) )
 {
     _time = QTime( 0, 0, 0, 0 );
     QSurfaceFormat format;
@@ -78,17 +80,28 @@ void OpenGLCanvas::initializeGL()
 
 void OpenGLCanvas::mousePressEvent( QMouseEvent* event )
 {
-    _lastPos = event->pos();
+    _lastPostition = event->pos();
+}
+
+
+void OpenGLCanvas::mouseDoubleClickEvent( QMouseEvent* event )
+{
+    _zoom = 1.0;
+    _currentPosition = QPoint( 0.0f, 0.0f );
 }
 
 
 void OpenGLCanvas::mouseMoveEvent( QMouseEvent* event )
 {
-//    int dx = event->x() - lastPos.x();
-//    int dy = event->y() - lastPos.y();
+    QPoint delta;
+    delta.setX( event->x() - _lastPostition.x() );
+    delta.setY( event->y() - _lastPostition.y() );
 
-    _lastPos = event->pos();
+    _lastPostition = event->pos();
     _mousePosition = event->pos();
+
+    _currentPosition += delta;
+
     //printf( "mouse position: %d, %d\n", event->pos().x(), event->pos().y() );
 }
 
@@ -101,10 +114,10 @@ void OpenGLCanvas::wheelEvent( QWheelEvent* event )
 void OpenGLCanvas::resizeGL( int w, int h )
 {
     m_projection.setToIdentity();
-    m_projection.perspective( 45.0f, w / float( h ), 0.1f, 1000.0f );
+    m_projection.perspective( 45.0f, w / float( h ), 0.1f, 1.0f );
 
-    m_modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
-    m_MVPMatrix = m_projection * m_modelView;
+    //m_modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
+    //m_MVPMatrix = m_projection * m_modelView;
 
     _width = w;
     _height = h;
@@ -326,17 +339,18 @@ void OpenGLCanvas::loadLibRetroVariables()
     //QMatrix4x4 modelView;
     //modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
     //QMatrix4x4 modelViewProjection = m_projection * modelView;
-    //modelViewProjection.translate( (float)_mousePosition.x()/1000.0f, -(float)_mousePosition.y()/1000.0f );
-    //modelViewProjection.scale( _zoom );
-    //printf( "mouse position: %d, %d\n", _mousePosition.x(), _mousePosition.y() );
 
-    m_MVPMatrix.translate( (float)_mousePosition.x()/1000.0f, -(float)_mousePosition.y()/1000.0f );
-    m_MVPMatrix.scale( _zoom );
+    //printf( "mouse position: %d, %d\n", _currentPosition.x(), _currentPosition.y() );
 
-    _debugWindow->setData( m_MVPMatrix, m_projection, m_modelView, _zoom );
+    QMatrix4x4 modelViewProjection;
+    modelViewProjection.setToIdentity();
+    modelViewProjection.translate( ( float ) _currentPosition.x()/1000,( float ) - _currentPosition.y()/1000 );
+    modelViewProjection.scale( _zoom );
+
+    //_debugWindow->setData( m_MVPMatrix, m_projection, modelView, _zoom );
 
     //const QVector3D resolution = QVector3D( ( float ) _width, ( float ) _height, 0.0 );
-    m_program->setUniformValue( "MVPMatrix", m_MVPMatrix );
+    m_program->setUniformValue( "MVPMatrix", modelViewProjection );
 
     // 1 or -1
     m_program->setUniformValue( "FrameDirection", 1 );
@@ -370,7 +384,7 @@ void OpenGLCanvas::loadShaderToyVariables()
     const QVector3D resolution = QVector3D( ( float ) _width, ( float ) _height, 0.0 );
     m_program->setUniformValue( "iResolution", resolution );
 
-    const QVector4D mouse = QVector4D( ( float ) _lastPos.x(), ( float ) _lastPos.y(), 0.0, 0.0 );
+    const QVector4D mouse = QVector4D( ( float ) _lastPostition.x(), ( float ) _lastPostition.y(), 0.0, 0.0 );
     m_program->setUniformValue( "iMouse", mouse );
 
     m_program->setUniformValue( "iGlobalTime", ( float ) _time.currentTime().msecsSinceStartOfDay() / 1000 );
@@ -465,16 +479,16 @@ void OpenGLCanvas::initLibRetroCanvas()
     m_program->setUniformValue( _texLocation, 0 );
 
     GLfloat plane[ 16 ] = {
-        -1.0, -1.0, 0.0, 0.0,
-        -1.0, 1.0, 0.0, 0.0,
-        1.0, -1.0, 0.0, 0.0,
-        1.0, 1.0, 0.0, 0.0
+        -1.0, -1.0, 0.0, 1.0,
+        -1.0, 1.0, 0.0, 1.0,
+        1.0, -1.0, 0.0, 1.0,
+        1.0, 1.0, 0.0, 1.0
     };
 
-    for( int i = 0; i < 16; i++ )
-    {
-        plane[i] = plane[i] / 3.0;
-    }
+    //for( int i = 0; i < 16; i++ )
+    //{
+    //    plane[i] = plane[i] / 3.0;
+    //}
 
     GLfloat colors[ 16 ] = {
         0.0, 0.0, 0.0, 0.0,
