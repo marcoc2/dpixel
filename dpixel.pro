@@ -52,7 +52,8 @@ SOURCES += main.cpp\
     GifSaver.cpp \
     OpenGLCanvas.cpp \
     Depixel/SimilarityGraphExportToImage.cpp \
-    Filters/BeadsFilter.cpp
+    Filters/BeadsFilter.cpp \
+    DebugWindow.cpp
 
 HEADERS  += MainWindow.h \
     Image.h \
@@ -86,10 +87,12 @@ HEADERS  += MainWindow.h \
     GifSaver.h \
     OpenGLCanvas.h \
     Depixel/SimilarityGraphExportToImage.h \
-    Filters/BeadsFilter.h
+    Filters/BeadsFilter.h \
+    DebugWindow.h
 
 FORMS    += MainWindow.ui \
-    CheckUpscaleWindow.ui
+    CheckUpscaleWindow.ui \
+    DebugWindow.ui
 
 DISTFILES += \
     Doc/uncrustify.cfg \
@@ -100,8 +103,11 @@ DISTFILES += \
     Shaders/basicDeprecatedVertex.vert \
     Shaders/basicVertex.vert \
     Shaders/rayTraceSphere.vert \
-    Shaders/bead.glsl \
-    Shaders/lsd_ufos.frag
+    Shaders/lsd_ufos.frag \
+    Shaders/bead_frag.glsl \
+    Shaders/bead_vert.glsl \
+    Shaders/crt-hyllian_frag.glsl \
+    Shaders/crt-hyllian_vert.glsl
 
 RESOURCES += \
     gui.qrc

@@ -38,11 +38,11 @@ CheckUpscaleWindow::CheckUpscaleWindow( QWidget* parent, Image* image ) :
     //setWindowFlags(Qt::FramelessWindowHint);
     //setWindowFlags( Qt::X11BypassWindowManagerHint );
 
-    QRect screenGeometry = QApplication::desktop()->screenGeometry();
-    int x = ( screenGeometry.width() - this->width() ) / 2;
-    int y = ( screenGeometry.height() - this->height() ) / 2;
-    this->move( x, y );
-    this->show();
+    //QRect screenGeometry = QApplication::desktop()->screenGeometry();
+    //int x = ( screenGeometry.width() - this->width() ) / 2;
+    //int y = ( screenGeometry.height() - this->height() ) / 2;
+    //this->move( x, y );
+    //this->show();
 
     show();
 }

@@ -52,6 +52,7 @@ void BeadsFilter::apply()
                 }
             }
         }
+        emit setProgress( ( float ) w * 100 / ( float ) _inputImage->getWidth() );
     }
 
     // Resize smoothly as second pass

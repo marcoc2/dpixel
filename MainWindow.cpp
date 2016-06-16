@@ -74,10 +74,10 @@ MainWindow::MainWindow( QWidget* parent ) :
     _graphSceneRatio.setY( ( double ) _ui->graphicsViewGraph->size().height() / height() );
 
     // Center window position
-    QRect screenGeometry = QApplication::desktop()->screenGeometry();
-    int x = ( screenGeometry.width() - this->width() ) / 2;
-    int y = ( screenGeometry.height() - this->height() ) / 2;
-    this->move( x, y );
+    //QRect screenGeometry = QApplication::desktop()->screenGeometry();
+    //int x = ( screenGeometry.width() - this->width() ) / 2;
+    //int y = ( screenGeometry.height() - this->height() ) / 2;
+    //this->move( x, y );
     this->show();
 }
 
@@ -115,7 +115,18 @@ void MainWindow::connectSignals()
     connect( _ui->beadsSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( applyBeads() ) );
 
     connect( _ui->tabFrontEnd, SIGNAL( currentChanged( int ) ), this, SLOT( changeFrontEnd( int ) ) );
+
+    connect( _ui->treeWidget, SIGNAL( itemActivated( QTreeWidgetItem*, int ) ), this, SLOT( changeShader( QTreeWidgetItem*, int ) ) );
     _ui->tabFrontEnd->setCurrentIndex( 0 );
+
+    _ui->treeWidget->setColumnCount( 2 );
+    _ui->treeWidget->setColumnHidden( 1, true );
+
+    QTreeWidgetItem* item = new QTreeWidgetItem( _ui->treeWidget );
+    item->setText( 0, tr( "Shaders" ) );
+    _ui->treeWidget->addTopLevelItem( item );
+
+    listFolderItems( tr("/home/marco/Projects/shaders_glsl/"), item );
 
     // Hide filters with issues and resize frame
     _ui->glButton->setVisible( false );
@@ -133,6 +144,35 @@ MainWindow::~MainWindow()
     delete _outputImage;
     delete _currentFilter;
     clearGifHolder();
+}
+
+
+void MainWindow::listFolderItems( QString folder, QTreeWidgetItem* item )
+{
+    QDir dir( folder );
+
+    dir.setFilter( QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Files | QDir::Dirs );
+
+    QFileInfoList folderList = dir.entryInfoList();
+    QList< QTreeWidgetItem* > items;
+    for( int i = 0; i < folderList.size(); ++i )
+    {
+        QFileInfo fileInfo = folderList[ i ];
+
+        if( fileInfo.fileName().contains( ".glslp", Qt::CaseInsensitive ) )
+        {
+            continue;
+        }
+
+        QTreeWidgetItem* newEntry = new QTreeWidgetItem( item, QStringList( fileInfo.fileName().arg( i ) ) );
+        newEntry->setData( 0, Qt::ToolTipRole, folderList.at( i ).absoluteFilePath() );
+        items.append( newEntry );
+
+        if( folderList.at( i ).isDir() )
+        {
+            listFolderItems( folderList.at( i ).absoluteFilePath(), newEntry );
+        }
+    }
 }
 
 
@@ -248,20 +288,14 @@ void MainWindow::changeFrontEnd( int index )
 {
     if( index < 1 )
     {
+        _ui->filteredGLWidget->setVisible( false );
         return;
     }
 
-    if( !(_ui->filteredGLWidget->isVisible()) )
-    {
-        //_ui->filteredGLWidget->setTexture( *( _outputImage->getQImage() ) );
-        _ui->filteredGLWidget->setVisible( true );
-        _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
-        _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
-    }
-    else
-    {
-        _ui->filteredGLWidget->setVisible( false );
-    }
+    _ui->filteredGLWidget->setTexture(  _inputImage->getQImage() );
+    _ui->filteredGLWidget->setVisible( true );
+    _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
+    _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
 
     if( _ui->filteredGLWidget->getOpenGLVersion() < 4 )
     {
@@ -271,6 +305,30 @@ void MainWindow::changeFrontEnd( int index )
         //dialog->show();
         //_ui->filteredGLWidget->setVisible( false );
     }
+}
+
+
+void MainWindow::changeShader( QTreeWidgetItem *item, int column )
+{
+    QString path = item->data( column, Qt::ToolTipRole ).toString();
+    if( !path.contains( ".glsl", Qt::CaseInsensitive ) )
+    {
+        return;
+    }
+
+    QFile file( path );
+    file.open( QIODevice::ReadOnly );
+    QString s;
+    QTextStream s1( &file );
+    s.append( s1.readAll() );
+
+    QStringList stringList = s.split( "#elif defined(FRAGMENT)" );
+    stringList[ 0 ].remove( "#if defined(VERTEX)", Qt::CaseInsensitive );
+    stringList[ 1 ].remove( "#elif defined(FRAGMENT)", Qt::CaseInsensitive );
+    // Relative to "#endif"
+    stringList[ 1 ].chop( 6 );
+
+    _ui->filteredGLWidget->setPrograms( stringList[ 0 ], stringList[ 1 ] );
 }
 
 

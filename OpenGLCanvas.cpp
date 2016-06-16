@@ -15,9 +15,18 @@ OpenGLCanvas::OpenGLCanvas( QWidget* parent ) :
     m_program( 0 ),
     _vbo( new QOpenGLBuffer( QOpenGLBuffer::VertexBuffer ) ),
     _vao( new QOpenGLVertexArrayObject() ),
-    _colorTexture( nullptr ),
+    _qImage( nullptr ),
+    _texture( nullptr ),
     _width( parent->width() ),
-    _height( parent->height() )
+    _height( parent->height() ),
+    _lastPostition( 0.0f, 0.0f ),
+    _currentPosition( 0.0f, 0.0f ),
+    _zoom( 1.0 ),
+    _mousePosition( 0 ,0 ),
+    _vertexShader( "../Shaders/crt-hyllian_vert.glsl" ),
+    _fragmentShader( "../Shaders/crt-hyllian_frag.glsl" ),
+    _isToLoadFromFile( true ),
+    _debugWindow( nullptr )//new DebugWindow( this ) )
 {
     _time = QTime( 0, 0, 0, 0 );
     QSurfaceFormat format;
@@ -50,18 +59,19 @@ void OpenGLCanvas::initializeGL()
     //initShaderToyCanvas();
     initLibRetroCanvas();
     QOpenGLFunctions glFuncs( QOpenGLContext::currentContext() );
-    printf( "OpenGl information: VENDOR:       %s\n" , (const char*)glFuncs.glGetString(GL_VENDOR) );
-    printf( "                    RENDERDER:    %s\n" , (const char*)glFuncs.glGetString(GL_RENDERER) );
-    printf( "                    VERSION:      %s\n" , (const char*)glFuncs.glGetString(GL_VERSION ));
-    printf( "                    GLSL VERSION: %s\n" , (const char*)glFuncs.glGetString(GL_SHADING_LANGUAGE_VERSION) );
+    printf( "OpenGl information: VENDOR:       %s\n", ( const char* )glFuncs.glGetString( GL_VENDOR ) );
+    printf( "                    RENDERDER:    %s\n", ( const char* )glFuncs.glGetString( GL_RENDERER ) );
+    printf( "                    VERSION:      %s\n", ( const char* )glFuncs.glGetString( GL_VERSION ) );
+    printf( "                    GLSL VERSION: %s\n",
+            ( const char* )glFuncs.glGetString( GL_SHADING_LANGUAGE_VERSION ) );
 
-    QString version = reinterpret_cast<const char*>( glFuncs.glGetString(GL_SHADING_LANGUAGE_VERSION) );
+    QString version = reinterpret_cast< const char* >( glFuncs.glGetString( GL_SHADING_LANGUAGE_VERSION ) );
 
-    int major = version.left(version.indexOf(".")).toInt();
-    int minor = version.mid(version.indexOf(".") + 1, 1).toInt();
+    int major = version.left( version.indexOf( "." ) ).toInt();
+    int minor = version.mid( version.indexOf( "." ) + 1, 1 ).toInt();
     _version = ( float ) major + ( ( float ) minor / 10 );
 
-    if(!(major >= 4 && minor >= 0))
+    if( !( major >= 4 && minor >= 0 ) )
     {
         initBasicDeprecatedOpenGL();
     }
@@ -70,23 +80,45 @@ void OpenGLCanvas::initializeGL()
 
 void OpenGLCanvas::mousePressEvent( QMouseEvent* event )
 {
-    _lastPos = event->pos();
+    _lastPostition = event->pos();
+}
+
+
+void OpenGLCanvas::mouseDoubleClickEvent( QMouseEvent* event )
+{
+    _zoom = 1.0;
+    _currentPosition = QPoint( 0.0f, 0.0f );
 }
 
 
 void OpenGLCanvas::mouseMoveEvent( QMouseEvent* event )
 {
-//    int dx = event->x() - lastPos.x();
-//    int dy = event->y() - lastPos.y();
+    QPoint delta;
+    delta.setX( event->x() - _lastPostition.x() );
+    delta.setY( event->y() - _lastPostition.y() );
 
-    _lastPos = event->pos();
+    _lastPostition = event->pos();
+    _mousePosition = event->pos();
+
+    _currentPosition += delta;
+
+    //printf( "mouse position: %d, %d\n", event->pos().x(), event->pos().y() );
 }
 
+
+void OpenGLCanvas::wheelEvent( QWheelEvent* event )
+{
+    _zoom  += event->angleDelta().y() / (8.0 * 60);
+}
 
 void OpenGLCanvas::resizeGL( int w, int h )
 {
     m_projection.setToIdentity();
-    m_projection.perspective( 45.0f, w / float( h ), 0.1f, 1000.0f );
+    m_projection.perspective( 45.0f, w / float( h ), 0.1f, 1.0f );
+
+    //m_modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
+    //m_MVPMatrix = m_projection * m_modelView;
+
     _width = w;
     _height = h;
 }
@@ -94,7 +126,6 @@ void OpenGLCanvas::resizeGL( int w, int h )
 
 void OpenGLCanvas::paintGL()
 {
-    //paintSphereRayTrace();
     if( _version >= 4.0f )
     {
         paintLibRetroCanvas();
@@ -115,14 +146,21 @@ void OpenGLCanvas::paintBasicExample()
     glClearColor( 0.2, 0.2, 0.2, 1.0 );
 
     m_program->bind();
-    m_program->setUniformValue( _texLocation, 1 );
+    m_program->setUniformValue( _texLocation, 0 );
     _vao->bind();
-    _colorTexture->bind(0);
+
+    if( _texture && _texture->isCreated() )
+    {
+        _texture->bind();
+    }
 
     glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
     //glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, 0);
 
-    _colorTexture->bind(0);
+    if( _texture && _texture->isCreated() )
+    {
+        _texture->release();
+    }
     _vao->release();
     m_program->release();
 }
@@ -188,8 +226,17 @@ void OpenGLCanvas::initBasicExample()
         m_program = 0;
     }
 
-    _texLocation = m_program->uniformLocation("tex");
-    m_program->setUniformValue( _texLocation, 1 );
+    _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+
+    _texture->setMinificationFilter( QOpenGLTexture::LinearMipMapLinear );
+    _texture->setMagnificationFilter( QOpenGLTexture::Nearest );
+    _texture->setWrapMode( QOpenGLTexture::DirectionS,
+                           QOpenGLTexture::ClampToEdge );
+    _texture->setWrapMode( QOpenGLTexture::DirectionT,
+                           QOpenGLTexture::ClampToEdge );
+
+    _texLocation = m_program->uniformLocation( "tex" );
+    m_program->setUniformValue( _texLocation, 0 );
 
     GLfloat plane[ 12 ] = {
         -0.8, -0.8, 0.0,
@@ -206,10 +253,10 @@ void OpenGLCanvas::initBasicExample()
     };
 
     GLfloat texCoords[ 8 ] = {
-        -0.8, -0.8,
-        -0.8, 0.8,
-        0.8, -0.8,
-        0.8, 0.8
+        0.0, 0.0,
+        0.0, 1.0,
+        1.0, 0.0,
+        1.0, 1.0
     };
 
     _vao->create();
@@ -229,6 +276,9 @@ void OpenGLCanvas::initBasicExample()
 
     m_program->setAttributeBuffer( "vertex_color", GL_FLOAT, 12 * sizeof( GLfloat ), 3, 0 );
     m_program->enableAttributeArray( "vertex_color" );
+
+    m_program->setAttributeBuffer( "vertex_uv", GL_FLOAT, 24 * sizeof( GLfloat ), 2, 0 );
+    m_program->enableAttributeArray( "vertex_uv" );
 
     _vao->release();
     m_program->release();
@@ -254,7 +304,7 @@ void OpenGLCanvas::initBasicDeprecatedOpenGL()
         m_program = 0;
     }
 
-    glEnable(GL_COLOR_MATERIAL);
+    glEnable( GL_COLOR_MATERIAL );
 
     //glBegin(GL_TRIANGLES);
     //    glVertex3f(-0.8, -0.8, 0.0);
@@ -263,90 +313,6 @@ void OpenGLCanvas::initBasicDeprecatedOpenGL()
     //    glVertex3f(0.8, 0.8, 0.0);
     //glEnd();
 
-    m_program->release();
-}
-
-
-void OpenGLCanvas::paintSphereRayTrace()
-{
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glClearColor( 0.2, 0.2, 0.2, 1.0 );
-
-    //glPushAttrib( GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TRANSFORM_BIT | GL_POLYGON_BIT | GL_POINT_BIT );
-    //glPushClientAttrib( GL_CLIENT_ALL_ATTRIB_BITS );
-    glEnable( GL_DEPTH_TEST );
-    glEnable( GL_COLOR_MATERIAL );
-
-    //glMatrixMode( GL_MODELVIEW );
-
-    glEnable( GL_VERTEX_PROGRAM_POINT_SIZE_ARB );
-    glEnable( GL_POINT_SPRITE_ARB );
-    //glEnableClientState( GL_VERTEX_ARRAY );
-    //glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-    //glEnableClientState( GL_FOG_COORD_ARRAY );
-
-    // passa tamanho da tela
-    QVector2D size( ( float ) _width, ( float ) _height );
-    m_program->setUniformValueArray( "screenSize", &size, 1 );
-
-    m_program->bind();
-    _vao->bind();
-
-    glDrawArrays( GL_POINTS, 0, 4 );
-
-    _vao->release();
-    m_program->release();
-}
-
-
-void OpenGLCanvas::initSphereRayTrace()
-{
-    initializeOpenGLFunctions();
-    m_program = new QOpenGLShaderProgram();
-
-    m_program->addShaderFromSourceFile(
-        QOpenGLShader::Vertex,
-        "/home/marco/Dropbox/Programação/LSD-Shaders/LSD-Shaders/Shaders/basicVertex.vert" );
-    m_program->addShaderFromSourceFile(
-        QOpenGLShader::Fragment,
-        "/home/marco/Dropbox/Programação/LSD-Shaders/LSD-Shaders/Shaders/basicPragment.frag" );
-    if( !m_program->link() )
-    {
-        qWarning( "Failed to compile and link shader program" );
-        qWarning( "Shader program log:" );
-        qWarning() << m_program->log();
-
-        delete m_program;
-        m_program = 0;
-    }
-
-    GLfloat spheres[ 12 ] = {
-        -0.5, -0.5, -0.5,
-        -0.5, 0.5, 0.0,
-        0.5, -0.5, 0.5,
-        0.5, 0.5, 0.0
-    };
-
-    _vao->create();
-    _vao->bind();
-
-    _vbo->create();
-    _vbo->setUsagePattern( QOpenGLBuffer::StaticDraw );
-    _vbo->bind();
-    _vbo->allocate( 12 * sizeof( GLfloat ) );
-    _vbo->bind();
-    _vbo->write( 0, spheres, 12 * sizeof( GLfloat ) );
-
-    int loc = m_program->attributeLocation( "sphereOrigin" );
-    m_program->setAttributeBuffer( loc, GL_FLOAT, 0, 3, 0 );
-    m_program->enableAttributeArray( loc );
-
-//    unsigned int vbo;
-//    QOpenGLFunctions::glGenBuffers(1, &vbo);
-//    QOpenGLFunctions::glBindBuffer( GL_ARRAY_BUFFER, vbo);
-//    QOpenGLFunctions::glBufferData( GL_ARRAY_BUFFER, sizeof(float) * 4 * 3, &spheres, GL_STATIC_DRAW );
-
-    _vao->release();
     m_program->release();
 }
 
@@ -368,9 +334,20 @@ void OpenGLCanvas::loadLibRetroVariables()
         gl_glsl_get_uniform(glsl, prog, "FrameDirection");
     */
 
-    QMatrix4x4 modelView;
-    modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
-    QMatrix4x4 modelViewProjection =  m_projection * modelView;
+    m_program->setUniformValue( _texLocation, 0 );
+
+    //QMatrix4x4 modelView;
+    //modelView.lookAt( QVector3D( 0.5, 0.5, 1.0 ), QVector3D( 0.5, 0.5, 0.0 ), QVector3D( 0.0, 1.0, 0.0 ) );
+    //QMatrix4x4 modelViewProjection = m_projection * modelView;
+
+    //printf( "mouse position: %d, %d\n", _currentPosition.x(), _currentPosition.y() );
+
+    QMatrix4x4 modelViewProjection;
+    modelViewProjection.setToIdentity();
+    modelViewProjection.translate( ( float ) _currentPosition.x()/1000,( float ) - _currentPosition.y()/1000 );
+    modelViewProjection.scale( _zoom );
+
+    //_debugWindow->setData( m_MVPMatrix, m_projection, modelView, _zoom );
 
     //const QVector3D resolution = QVector3D( ( float ) _width, ( float ) _height, 0.0 );
     m_program->setUniformValue( "MVPMatrix", modelViewProjection );
@@ -383,10 +360,10 @@ void OpenGLCanvas::loadLibRetroVariables()
     const QVector2D outputSize = QVector2D( ( float ) _width, ( float ) _height );
     m_program->setUniformValue( "OutputSize", outputSize );
 
-    const QVector2D textureSize = QVector2D( ( float ) _width, ( float ) _height );
+    const QVector2D textureSize = QVector2D( ( float ) _texture->width(), ( float ) _texture->height() );
     m_program->setUniformValue( "TextureSize", textureSize );
 
-    const QVector2D inputSize = QVector2D( ( float ) _width, ( float ) _height );
+    const QVector2D inputSize = QVector2D( ( float ) _texture->width(), ( float ) _texture->height() );
     m_program->setUniformValue( "InputSize", inputSize );
 }
 
@@ -407,7 +384,7 @@ void OpenGLCanvas::loadShaderToyVariables()
     const QVector3D resolution = QVector3D( ( float ) _width, ( float ) _height, 0.0 );
     m_program->setUniformValue( "iResolution", resolution );
 
-    const QVector4D mouse = QVector4D( ( float ) _lastPos.x(), ( float ) _lastPos.y(), 0.0, 0.0 );
+    const QVector4D mouse = QVector4D( ( float ) _lastPostition.x(), ( float ) _lastPostition.y(), 0.0, 0.0 );
     m_program->setUniformValue( "iMouse", mouse );
 
     m_program->setUniformValue( "iGlobalTime", ( float ) _time.currentTime().msecsSinceStartOfDay() / 1000 );
@@ -421,11 +398,22 @@ void OpenGLCanvas::paintLibRetroCanvas()
     glClearColor( 0.2, 0.2, 0.2, 1.0 );
 
     m_program->bind();
-    _vao->bind();
 
     loadLibRetroVariables();
 
+    _vao->bind();
+
+    if( _texture && _texture->isCreated() )
+    {
+        _texture->bind();
+    }
+
     glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+
+    if( _texture && _texture->isCreated() )
+    {
+        _texture->release();
+    }
 
     _vao->release();
     m_program->release();
@@ -454,10 +442,20 @@ void OpenGLCanvas::initLibRetroCanvas()
     initializeOpenGLFunctions();
     m_program = new QOpenGLShaderProgram();
 
-    m_program->addShaderFromSourceFile( QOpenGLShader::Vertex,
-                                        "../Shaders/basicVertex.vert" );
-    m_program->addShaderFromSourceFile( QOpenGLShader::Fragment,
-                                        "../Shaders/bead.glsl" );
+    if( _isToLoadFromFile )
+    {
+        m_program->addShaderFromSourceFile( QOpenGLShader::Vertex,
+                                            _vertexShader );
+        m_program->addShaderFromSourceFile( QOpenGLShader::Fragment,
+                                            _fragmentShader );
+    }
+    else
+    {
+        m_program->addShaderFromSourceCode( QOpenGLShader::Vertex,
+                                            _vertexShader );
+        m_program->addShaderFromSourceCode( QOpenGLShader::Fragment,
+                                            _fragmentShader );
+    }
     if( !m_program->link() )
     {
         qWarning( "Failed to compile and link shader program" );
@@ -468,11 +466,42 @@ void OpenGLCanvas::initLibRetroCanvas()
         m_program = 0;
     }
 
-    GLfloat plane[ 12 ] = {
-        -0.95, -0.95, 0.0,
-        -0.95, 0.95, 0.0,
-        0.95, -0.95, 0.0,
-        0.95, 0.95, 0.0
+    _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+
+    _texture->setMinificationFilter( QOpenGLTexture::LinearMipMapLinear );
+    _texture->setMagnificationFilter( QOpenGLTexture::Nearest );
+    _texture->setWrapMode( QOpenGLTexture::DirectionS,
+                           QOpenGLTexture::ClampToEdge );
+    _texture->setWrapMode( QOpenGLTexture::DirectionT,
+                           QOpenGLTexture::ClampToEdge );
+
+    _texLocation = m_program->uniformLocation( "Texture" );
+    m_program->setUniformValue( _texLocation, 0 );
+
+    GLfloat plane[ 16 ] = {
+        -1.0, -1.0, 0.0, 1.0,
+        -1.0, 1.0, 0.0, 1.0,
+        1.0, -1.0, 0.0, 1.0,
+        1.0, 1.0, 0.0, 1.0
+    };
+
+    //for( int i = 0; i < 16; i++ )
+    //{
+    //    plane[i] = plane[i] / 3.0;
+    //}
+
+    GLfloat colors[ 16 ] = {
+        0.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        1.0, 0.0, 0.0, 0.0,
+        1.0, 1.0, 0.0, 0.0
+    };
+
+    GLfloat texCoords[ 16 ] = {
+        0.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        1.0, 0.0, 0.0, 0.0,
+        1.0, 1.0, 0.0, 0.0
     };
 
     _vao->create();
@@ -481,12 +510,20 @@ void OpenGLCanvas::initLibRetroCanvas()
     _vbo->create();
     _vbo->setUsagePattern( QOpenGLBuffer::StaticDraw );
     _vbo->bind();
-    _vbo->allocate( 12 * sizeof( GLfloat ) );
+    _vbo->allocate( 3 * 16 * sizeof( GLfloat ) );
     _vbo->bind();
-    _vbo->write( 0, plane, 12 * sizeof( GLfloat ) );
+    _vbo->write( 0, plane, 16 * sizeof( GLfloat ) );
+    _vbo->write( 16 * sizeof( GLfloat ), colors, 16 * sizeof( GLfloat ) );
+    _vbo->write( 32 * sizeof( GLfloat ), texCoords, 16 * sizeof( GLfloat ) );
 
-    m_program->setAttributeBuffer( "vertex_position", GL_FLOAT, 0, 3, 0 );
-    m_program->enableAttributeArray( "vertex_position" );
+    m_program->setAttributeBuffer( "VertexCoord", GL_FLOAT, 0, 4, 0 );
+    m_program->enableAttributeArray( "VertexCoord" );
+
+    m_program->setAttributeBuffer( "COLOR", GL_FLOAT, 16 * sizeof( GLfloat ), 4, 0 );
+    m_program->enableAttributeArray( "COLOR" );
+
+    m_program->setAttributeBuffer( "TexCoord", GL_FLOAT, 32 * sizeof( GLfloat ), 4, 0 );
+    m_program->enableAttributeArray( "TexCoord" );
 
     _vao->release();
     m_program->release();
@@ -537,13 +574,34 @@ void OpenGLCanvas::initShaderToyCanvas()
 }
 
 
-void OpenGLCanvas::setTexture( QImage& image )
+void OpenGLCanvas::setTexture( QImage* image )
 {
-    _colorTexture = new QOpenGLTexture( image.mirrored().mirrored().convertToFormat(QImage::Format_RGBA8888) );
-    _colorTexture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    _colorTexture->setMagnificationFilter(QOpenGLTexture::LinearMipMapLinear);
-    _colorTexture->setWrapMode(QOpenGLTexture::DirectionS,
-                              QOpenGLTexture::ClampToEdge);
-    _colorTexture->setWrapMode(QOpenGLTexture::DirectionT,
-                              QOpenGLTexture::ClampToEdge);
+    _qImage = image;
+}
+
+
+void OpenGLCanvas::setPrograms( QString vertexShader, QString fragmentShader )
+{
+    _vertexShader = vertexShader;
+    _fragmentShader = fragmentShader;
+
+    _isToLoadFromFile = false;
+
+    initializeGL();
+}
+
+
+void OpenGLCanvas::setScaleFactor( double factor )
+{
+    _zoom = factor;
+}
+
+
+void OpenGLCanvas::setMatrices( QMatrix4x4 mvp,
+                                QMatrix4x4 proj,
+                                QMatrix4x4 mv )
+{
+    m_MVPMatrix = mvp;
+    m_projection = proj;
+    m_modelView = mv;
 }

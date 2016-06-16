@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DebugWindow</class>
+ <widget class="QDialog" name="DebugWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>778</width>
+    <height>508</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>761</width>
+     <height>491</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>20</y>
+      <width>251</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Model View Projection Matrix</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>20</y>
+      <width>161</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Model View Matrix</string>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frame_2">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>50</y>
+      <width>351</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QDoubleSpinBox" name="mvp0">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp1">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>20</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp3">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>20</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp2">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>20</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp6">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>60</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp5">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>60</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>60</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp7">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>60</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp10">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>100</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp12">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>140</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp14">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>140</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp9">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>100</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp13">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>140</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp15">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>140</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp8">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>100</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mvp11">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>100</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>260</y>
+      <width>151</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Projection Matrix</string>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frame_3">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>50</y>
+      <width>351</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QDoubleSpinBox" name="mv0">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv1">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>20</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv3">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>20</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv2">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>20</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv6">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>60</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv5">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>60</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>60</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv7">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>60</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv10">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>100</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv12">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>140</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv14">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>140</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv9">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>100</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv13">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>140</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv15">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>140</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv8">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>100</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="mv11">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>100</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frame_4">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>290</y>
+      <width>351</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QDoubleSpinBox" name="proj0">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj1">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>20</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj3">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>20</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj2">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>20</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj6">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>60</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj5">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>60</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>60</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj7">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>60</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj10">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>100</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj12">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>140</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj14">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>140</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj9">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>100</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj13">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>140</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj15">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>140</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj8">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>100</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="proj11">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>100</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frame_5">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>290</y>
+      <width>351</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>111</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Scale Factor</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="scale">
+     <property name="geometry">
+      <rect>
+       <x>129</x>
+       <y>17</y>
+       <width>71</width>
+       <height>29</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
