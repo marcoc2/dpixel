@@ -23,12 +23,16 @@ OpenGLCanvas::OpenGLCanvas( QWidget* parent ) :
     _currentPosition( 0.0f, 0.0f ),
     _zoom( 1.0 ),
     _mousePosition( 0 ,0 ),
+    _time( 0, 0, 0, 0 ),
+    _spriteTime( 0 ),
+    _spriteIndex( 0 ),
     _vertexShader( "../Shaders/crt-hyllian_vert.glsl" ),
     _fragmentShader( "../Shaders/crt-hyllian_frag.glsl" ),
     _isToLoadFromFile( true ),
     _debugWindow( nullptr )//new DebugWindow( this ) )
 {
     _time = QTime( 0, 0, 0, 0 );
+    _spriteTime = _time.currentTime().msecsSinceStartOfDay();
     QSurfaceFormat format;
     format.setDepthBufferSize( 24 );
     setFormat( format );
@@ -401,6 +405,32 @@ void OpenGLCanvas::paintLibRetroCanvas()
 
     loadLibRetroVariables();
 
+    if( _animatedGif.size() > 0 )
+    {
+        if( ( ( _time.currentTime().msecsSinceStartOfDay() ) - _spriteTime ) > 100 )
+        {
+            _spriteTime = _time.currentTime().msecsSinceStartOfDay();
+            _spriteIndex++;
+            if( _spriteIndex == ( int ) _animatedGif.size() )
+            {
+                _spriteIndex = 0;
+            }
+            delete _texture;
+            _texture = new QOpenGLTexture( _animatedGif[ _spriteIndex ]->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+        }
+    }
+    else
+    {
+        _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+    }
+
+    _texture->setMinificationFilter( QOpenGLTexture::LinearMipMapLinear );
+    _texture->setMagnificationFilter( QOpenGLTexture::Nearest );
+    _texture->setWrapMode( QOpenGLTexture::DirectionS,
+                           QOpenGLTexture::ClampToEdge );
+    _texture->setWrapMode( QOpenGLTexture::DirectionT,
+                           QOpenGLTexture::ClampToEdge );
+
     _vao->bind();
 
     if( _texture && _texture->isCreated() )
@@ -466,7 +496,15 @@ void OpenGLCanvas::initLibRetroCanvas()
         m_program = 0;
     }
 
-    _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+    if( _animatedGif.size() > 0 )
+    {
+        _spriteIndex = 0;
+        _texture = new QOpenGLTexture( _animatedGif[ _spriteIndex++ ]->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+    }
+    else
+    {
+        _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+    }
 
     _texture->setMinificationFilter( QOpenGLTexture::LinearMipMapLinear );
     _texture->setMagnificationFilter( QOpenGLTexture::Nearest );
@@ -610,4 +648,10 @@ void OpenGLCanvas::setMatrices( QMatrix4x4 mvp,
 QImage OpenGLCanvas::exportFrameBuffer()
 {
     return grabFramebuffer();
+}
+
+
+void OpenGLCanvas::setGifVector( std::vector< QImage* > animatedGif )
+{
+    _animatedGif = animatedGif;
 }

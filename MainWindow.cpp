@@ -130,7 +130,7 @@ void MainWindow::connectSignals()
 #ifdef _WIN32
     listFolderItems( tr("../../shaders_glsl"), item );
 #else
-    listFolderItems( tr("/local/msilva/workspace/libretro/shaders_glsl"), item );
+    listFolderItems( tr("/home/marco/Projects/shaders_glsl/"), item );
 #endif
 
     // Hide filters with issues and resize frame
@@ -299,7 +299,19 @@ void MainWindow::changeFrontEnd( int frontEnd )
         return;
     }
 
-    _ui->filteredGLWidget->setTexture(  _inputImage->getQImage() );
+    if( _isAnimatedGif )
+    {
+        std::vector< QImage* > animatedGif;
+        for( const auto& frame : _inputAnimatedGif )
+        {
+            animatedGif.push_back( frame->getQImage() );
+        }
+        _ui->filteredGLWidget->setGifVector( animatedGif );
+    }
+    else
+    {
+        _ui->filteredGLWidget->setTexture(  _inputImage->getQImage() );
+    }
     _ui->filteredGLWidget->setVisible( true );
     _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
     _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
@@ -449,30 +461,39 @@ void MainWindow::fillQGraphicsViewOriginal( QImage& qimage )
 
 QString MainWindow::getSuggestedFileName( QString format )
 {
-    return QFileInfo( _currentFileName ).absoluteDir().absolutePath() +
-                QString( "/" ) + QFileInfo( _currentFileName ).baseName() + QString( "_" ) +
-                QString( _currentFilter->getName().c_str() ) + QString( "_" ) +
-                QString::number( _currentFilter->getScaleFactor() ) + QString( "x." ) +
-                format;
+    if( _frontEndEnabled == FrontEnd::CPU_IMAGE )
+    {
+        return QFileInfo( _currentFileName ).absoluteDir().absolutePath() +
+                    QString( "/" ) + QFileInfo( _currentFileName ).baseName() + QString( "_" ) +
+                    QString( _currentFilter->getName().c_str() ) + QString( "_" ) +
+                    QString::number( _currentFilter->getScaleFactor() ) + QString( "x." ) +
+                    format;
+    }
+    else
+    {
+        return QFileInfo( _currentFileName ).absoluteDir().absolutePath() +
+                    QString( "/" ) + QFileInfo( _currentFileName ).baseName() + QString( "_exported.") +
+                    format;
+    }
 }
 
 
 void MainWindow::saveImage()
 {
+    QString outputFileName =
+            QFileDialog::getSaveFileName( this,
+                                          tr( "Save Image" ),
+                                          getSuggestedFileName( "png" ).toStdString().c_str(),
+                                          tr( "Image Files (*.png *.jpg *.bmp)" ) );
+
+    if( outputFileName == 0 )
+    {
+        return;
+    }
+
     if( _frontEndEnabled == FrontEnd::CPU_IMAGE )
     {
         if( !checkCurrentFilter( true ) )
-        {
-            return;
-        }
-
-        QString outputFileName =
-                QFileDialog::getSaveFileName( this,
-                                              tr( "Save Image" ),
-                                              getSuggestedFileName( "png" ).toStdString().c_str(),
-                                              tr( "Image Files (*.png *.jpg *.bmp)" ) );
-
-        if( outputFileName == 0 )
         {
             return;
         }
@@ -481,17 +502,6 @@ void MainWindow::saveImage()
     }
     else
     {
-        QString outputFileName =
-                QFileDialog::getSaveFileName( this,
-                                              tr( "Save Image" ),
-                                              "OpenGL_exported",
-                                              tr( "Image Files (*.png *.jpg *.bmp)" ) );
-
-        if( outputFileName == 0 )
-        {
-            return;
-        }
-
         _ui->filteredGLWidget->exportFrameBuffer().save( outputFileName );
     }
 }

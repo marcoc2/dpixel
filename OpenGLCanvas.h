@@ -42,6 +42,7 @@ public:
     void setTexture( QImage* image );
     void setPrograms( QString vertexShader, QString fragmentShader );
     QImage exportFrameBuffer();
+    void setGifVector( std::vector< QImage* > animatedGif );
 
     //## DEBUG ##
     void setScaleFactor( double factor );
@@ -57,6 +58,7 @@ private:
     QOpenGLBuffer* _vbo;
     QOpenGLVertexArrayObject* _vao;
     QImage* _qImage;
+    std::vector< QImage* > _animatedGif;
     QOpenGLTexture* _texture;
     int _width;
     int _height;
@@ -68,6 +70,8 @@ private:
     QPoint _mousePosition;
 
     QTime _time;
+    int _spriteTime;
+    int _spriteIndex;
 
     float _version;
     uchar* _texels;
