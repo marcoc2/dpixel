@@ -90,6 +90,8 @@ private:
     void clearGifHolder();
     void loadAnimatedGifHolder( QImageReader& qImageReader );
     void listFolderItems( QString folder, QTreeWidgetItem* item );
+    void dropEvent( QDropEvent* event );
+    void dragEnterEvent( QDragEnterEvent* event );
 
 protected:
 
@@ -100,7 +102,7 @@ private Q_SLOTS:
     void createTest();
     void changeFrontEnd( int FrontEnd );
     void changeShader( QTreeWidgetItem *item, int column );
-    void loadImage();
+    void loadImage( QString path = "");
     void saveImage();
     void exportSimilarityGraph();
     void loadOriginal();

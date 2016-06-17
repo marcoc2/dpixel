@@ -10,6 +10,7 @@
 #include <QResizeEvent>
 #include <QImageReader>
 #include <QDesktopWidget>
+#include <QMimeData>
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "CheckUpscaleWindow.h"
@@ -66,6 +67,8 @@ MainWindow::MainWindow( QWidget* parent ) :
     {
         _inputImage = 0;
     }
+
+    setAcceptDrops( true );
 
     _resultSceneRatio.setX( ( double ) _ui->graphicsView->size().width() / width() );
     _resultSceneRatio.setY( ( double ) _ui->graphicsView->size().height() / height() );
@@ -130,7 +133,7 @@ void MainWindow::connectSignals()
 #ifdef _WIN32
     listFolderItems( tr("../../shaders_glsl"), item );
 #else
-    listFolderItems( tr("/home/marco/Projects/shaders_glsl/"), item );
+    listFolderItems( tr("/local/msilva/workspace/libretro/shaders_glsl"), item );
 #endif
 
     // Hide filters with issues and resize frame
@@ -351,11 +354,18 @@ void MainWindow::changeShader( QTreeWidgetItem *item, int column )
 }
 
 
-void MainWindow::loadImage()
+void MainWindow::loadImage( QString path )
 {
-    _currentFileName = QFileDialog::getOpenFileName( this,
-                                                     tr( "Open Image" ), "/home/",
-                                                     tr( "Image Files (*.png *.jpg *.bmp *.gif)" ) );
+    if( path != QString("") )
+    {
+        _currentFileName = path;
+    }
+    else
+    {
+        _currentFileName = QFileDialog::getOpenFileName( this,
+                                                         tr( "Open Image" ), "/home/",
+                                                         tr( "Image Files (*.png *.jpg *.bmp *.gif)" ) );
+    }
 
     if( _currentFileName == 0 )
     {
@@ -1055,4 +1065,32 @@ void MainWindow::clearGifHolder()
         delete frame;
     }
     _inputAnimatedGif.clear();
+}
+
+
+void MainWindow::dropEvent( QDropEvent* event )
+{
+  const QMimeData* mimeData = event->mimeData();
+
+  // check for our needed mime type, here a file or a list of files
+  if (mimeData->hasUrls())
+  {
+    QStringList pathList;
+    QList<QUrl> urlList = mimeData->urls();
+
+    // extract the local paths of the files
+    for( int i = 0; i < urlList.size() && i < 32; ++i )
+    {
+      pathList.append(urlList.at(i).toLocalFile());
+    }
+
+    // call a function to open the files
+    loadImage( pathList[ 0 ] );
+  }
+}
+
+
+void MainWindow::dragEnterEvent( QDragEnterEvent* event )
+{
+    event->accept();
 }
