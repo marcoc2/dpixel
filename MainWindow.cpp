@@ -228,20 +228,27 @@ void MainWindow::initialize()
         }
     }
 
-    fillLabels( _inputImage );
-    fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
-    fillQGraphicsViewOriginal( *( _inputImage->getQImage() ) );
-    enableFiltersFrame();
-
-    _ui->radioButtonOriginal->setChecked( true );
-
-    if( _isAnimatedGif )
+    if( _frontEndEnabled == FrontEnd::CPU_IMAGE )
     {
-        _ui->exportGIFButton->setEnabled( true );
+        fillLabels( _inputImage );
+        fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
+        fillQGraphicsViewOriginal( *( _inputImage->getQImage() ) );
+        enableFiltersFrame();
+
+        _ui->radioButtonOriginal->setChecked( true );
+
+        if( _isAnimatedGif )
+        {
+            _ui->exportGIFButton->setEnabled( true );
+        }
+        else
+        {
+            _ui->exportGIFButton->setEnabled( false );
+        }
     }
     else
     {
-        _ui->exportGIFButton->setEnabled( false );
+        setOpenGLCanvasData();
     }
 }
 
@@ -302,6 +309,25 @@ void MainWindow::changeFrontEnd( int frontEnd )
         return;
     }
 
+    setOpenGLCanvasData();
+
+    _ui->filteredGLWidget->setVisible( true );
+    _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
+    _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
+
+    if( _ui->filteredGLWidget->getOpenGLVersion() < 4 )
+    {
+        //QMessageBox* dialog = new QMessageBox();
+        //dialog->setWindowTitle( "Warning!" );
+        //dialog->setText( "OpenGL 4.0 not supported." );
+        //dialog->show();
+        //_ui->filteredGLWidget->setVisible( false );
+    }
+}
+
+
+void MainWindow::setOpenGLCanvasData()
+{
     if( _isAnimatedGif )
     {
         std::vector< QImage* > animatedGif;
@@ -314,18 +340,6 @@ void MainWindow::changeFrontEnd( int frontEnd )
     else
     {
         _ui->filteredGLWidget->setTexture(  _inputImage->getQImage() );
-    }
-    _ui->filteredGLWidget->setVisible( true );
-    _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
-    _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
-
-    if( _ui->filteredGLWidget->getOpenGLVersion() < 4 )
-    {
-        //QMessageBox* dialog = new QMessageBox();
-        //dialog->setWindowTitle( "Warning!" );
-        //dialog->setText( "OpenGL 4.0 not supported." );
-        //dialog->show();
-        //_ui->filteredGLWidget->setVisible( false );
     }
 }
 

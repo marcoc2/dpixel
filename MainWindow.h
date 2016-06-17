@@ -92,6 +92,7 @@ private:
     void listFolderItems( QString folder, QTreeWidgetItem* item );
     void dropEvent( QDropEvent* event );
     void dragEnterEvent( QDragEnterEvent* event );
+    void setOpenGLCanvasData();
 
 protected:
 
