@@ -77,6 +77,9 @@ MainWindow::MainWindow( QWidget* parent ) :
     _graphSceneRatio.setX( ( double ) _ui->graphicsViewGraph->size().width() / width() );
     _graphSceneRatio.setY( ( double ) _ui->graphicsViewGraph->size().height() / height() );
 
+    _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
+    _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
+
     // Center window position
     //QRect screenGeometry = QApplication::desktop()->screenGeometry();
     //int x = ( screenGeometry.width() - this->width() ) / 2;
@@ -133,7 +136,7 @@ void MainWindow::connectSignals()
 #ifdef _WIN32
     listFolderItems( tr("../../shaders_glsl"), item );
 #else
-    listFolderItems( tr("/local/msilva/workspace/libretro/shaders_glsl"), item );
+    listFolderItems( tr("/home/marco/Projects/shaders_glsl"), item );
 #endif
 
     // Hide filters with issues and resize frame
@@ -228,28 +231,26 @@ void MainWindow::initialize()
         }
     }
 
-    if( _frontEndEnabled == FrontEnd::CPU_IMAGE )
+    fillLabels( _inputImage );
+    fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
+    fillQGraphicsViewOriginal( *( _inputImage->getQImage() ) );
+    enableFiltersFrame();
+
+    _ui->radioButtonOriginal->setChecked( true );
+
+    if( _isAnimatedGif && _frontEndEnabled == FrontEnd::CPU_IMAGE )
     {
-        fillLabels( _inputImage );
-        fillQGraphicsView( *( _inputImage->getQImage() ), 1 );
-        fillQGraphicsViewOriginal( *( _inputImage->getQImage() ) );
-        enableFiltersFrame();
-
-        _ui->radioButtonOriginal->setChecked( true );
-
-        if( _isAnimatedGif )
-        {
-            _ui->exportGIFButton->setEnabled( true );
-        }
-        else
-        {
-            _ui->exportGIFButton->setEnabled( false );
-        }
+        _ui->exportGIFButton->setEnabled( true );
     }
     else
     {
-        setOpenGLCanvasData();
+        _ui->exportGIFButton->setEnabled( false );
     }
+
+    //if( _frontEndEnabled == FrontEnd::OPENGL )
+    //{
+        setOpenGLCanvasData();
+    //}
 }
 
 
@@ -305,23 +306,27 @@ void MainWindow::changeFrontEnd( int frontEnd )
 
     if( _frontEndEnabled != FrontEnd::OPENGL )
     {
-        _ui->filteredGLWidget->setVisible( false );
-        return;
+        _ui->filteredGLWidget->setHidden( true );
+
+        if( _isAnimatedGif )
+        {
+            _ui->exportGIFButton->setEnabled( false );
+        }
     }
-
-    setOpenGLCanvasData();
-
-    _ui->filteredGLWidget->setVisible( true );
-    _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
-    _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
-
-    if( _ui->filteredGLWidget->getOpenGLVersion() < 4 )
+    else
     {
-        //QMessageBox* dialog = new QMessageBox();
-        //dialog->setWindowTitle( "Warning!" );
-        //dialog->setText( "OpenGL 4.0 not supported." );
-        //dialog->show();
-        //_ui->filteredGLWidget->setVisible( false );
+        //setOpenGLCanvasData();
+        _ui->filteredGLWidget->setVisible( true );
+        if( _ui->filteredGLWidget->getOpenGLVersion() < 4 )
+        {
+            QMessageBox* dialog = new QMessageBox();
+            dialog->setWindowTitle( "Warning!" );
+            dialog->setText( "OpenGL 4.0 not supported." );
+            dialog->show();
+            _ui->filteredGLWidget->setVisible( false );
+        }
+
+        _ui->exportGIFButton->setEnabled( false );
     }
 }
 
@@ -364,7 +369,7 @@ void MainWindow::changeShader( QTreeWidgetItem *item, int column )
     // Relative to "#endif"
     stringList[ 1 ].chop( 6 );
 
-    _ui->filteredGLWidget->setPrograms( stringList[ 0 ], stringList[ 1 ] );
+    _ui->filteredGLWidget->setShaderSource( stringList[ 0 ], stringList[ 1 ] );
 }
 
 
@@ -405,6 +410,10 @@ void MainWindow::loadImage( QString path )
         _isAnimatedGif = true;
         if( _inputAnimatedGif.size() > 0 )
         {
+            if( _frontEndEnabled == FrontEnd::OPENGL )
+            {
+                _ui->filteredGLWidget->stopRenderLoop( true );
+            }
             clearGifHolder();
         }
 
@@ -990,6 +999,8 @@ void MainWindow::reloadResizedImage( float resizedFactor )
         return;
     }
 
+    _ui->filteredGLWidget->stopRenderLoop( true );
+
     _inputImage->resize( resizedFactor );
 
     createSimilarityGraph();
@@ -1001,6 +1012,8 @@ void MainWindow::reloadResizedImage( float resizedFactor )
             image->resize( resizedFactor );
         }
     }
+
+    setOpenGLCanvasData();
 }
 
 

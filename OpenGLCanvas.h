@@ -24,15 +24,8 @@ public:
     void resizeGL( int w, int h );
     void paintGL();
 
-    void paintBasicExample();
     void paintBasicDeprecatedOpenGL();
-
-    void initBasicExample();
     void initBasicDeprecatedOpenGL();
-
-    void loadShaderToyVariables();
-    void initShaderToyCanvas();
-    void paintShaderToyCanvas();
 
     void loadLibRetroVariables();
     void initLibRetroCanvas();
@@ -40,9 +33,10 @@ public:
 
     float getOpenGLVersion();
     void setTexture( QImage* image );
-    void setPrograms( QString vertexShader, QString fragmentShader );
+    void setShaderSource( QString vertexShader, QString fragmentShader );
     QImage exportFrameBuffer();
     void setGifVector( std::vector< QImage* > animatedGif );
+    void stopRenderLoop( bool state );
 
     //## DEBUG ##
     void setScaleFactor( double factor );
@@ -66,8 +60,9 @@ private:
     /* Mouse Events */
     QPoint _lastPostition;
     QPoint _currentPosition;
-    float _zoom;
     QPoint _mousePosition;
+
+    float _scaleFactor;
 
     QTime _time;
     int _spriteTime;
@@ -80,7 +75,9 @@ private:
 
     QString _vertexShader;
     QString _fragmentShader;
+
     bool _isToLoadFromFile;
+    bool _stopRender;
 
     //## DEBUG ##
     DebugWindow* _debugWindow;
