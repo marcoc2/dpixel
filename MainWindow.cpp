@@ -134,7 +134,7 @@ void MainWindow::connectSignals()
     _ui->treeWidget->addTopLevelItem( item );
 
 #ifdef _WIN32
-    listFolderItems( tr("../../shaders_glsl"), item );
+    listFolderItems( tr("../Shaders"), item );
 #else
     listFolderItems( tr("/home/marco/Projects/shaders_glsl"), item );
 #endif
@@ -304,13 +304,13 @@ void MainWindow::changeFrontEnd( int frontEnd )
 {
     _frontEndEnabled = ( FrontEnd ) frontEnd;
 
-    if( _frontEndEnabled != FrontEnd::OPENGL )
+    if( _frontEndEnabled == FrontEnd::CPU_IMAGE )
     {
         _ui->filteredGLWidget->setHidden( true );
 
         if( _isAnimatedGif )
         {
-            _ui->exportGIFButton->setEnabled( false );
+            _ui->exportGIFButton->setEnabled( true );
         }
     }
     else
@@ -325,7 +325,7 @@ void MainWindow::changeFrontEnd( int frontEnd )
             dialog->show();
             _ui->filteredGLWidget->setVisible( false );
         }
-
+        _ui->filteredGLWidget->paintGL();
         _ui->exportGIFButton->setEnabled( false );
     }
 }
@@ -653,7 +653,7 @@ void MainWindow::aboutDialog()
 {
     QMessageBox* dialog = new QMessageBox();
     dialog->setWindowTitle( "About" );
-    dialog->setText( "dpixel 0.1 - A Pixel Art Remaster Tool\n\nhttps://github.com/marcoc2/dpixel\n\nmarcoc2@gmail.com" );
+    dialog->setText( "dpixel 0.1.1 - A Pixel Art Remaster Tool\n\nhttps://github.com/marcoc2/dpixel\n\nmarcoc2@gmail.com" );
     dialog->show();
 }
 

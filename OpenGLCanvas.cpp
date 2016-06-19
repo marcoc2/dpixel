@@ -26,8 +26,8 @@ OpenGLCanvas::OpenGLCanvas( QWidget* parent ) :
     _time( 0, 0, 0, 0 ),
     _spriteTime( 0 ),
     _spriteIndex( 0 ),
-    _vertexShader( "../Shaders/crt-hyllian_vert.glsl" ),
-    _fragmentShader( "../Shaders/crt-hyllian_frag.glsl" ),
+    _vertexShader( "../Samples/crt-hyllian_vert.glsl" ),
+    _fragmentShader( "../Samples/crt-hyllian_frag.glsl" ),
     _isToLoadFromFile( true ),
     _stopRender( true ),
     _debugWindow( nullptr )//new DebugWindow( this ) )
@@ -37,6 +37,7 @@ OpenGLCanvas::OpenGLCanvas( QWidget* parent ) :
     QSurfaceFormat format;
     format.setDepthBufferSize( 24 );
     setFormat( format );
+    setUpdateBehavior( QOpenGLWidget::NoPartialUpdate );
 }
 
 
