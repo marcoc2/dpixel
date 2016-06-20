@@ -21,17 +21,23 @@ OpenGLCanvas::OpenGLCanvas( QWidget* parent ) :
     _height( parent->height() ),
     _lastPostition( 0.0f, 0.0f ),
     _currentPosition( 0.0f, 0.0f ),
-    _zoom( 1.0 ),
     _mousePosition( 0 ,0 ),
-    _vertexShader( "../Shaders/crt-hyllian_vert.glsl" ),
-    _fragmentShader( "../Shaders/crt-hyllian_frag.glsl" ),
+    _scaleFactor( 1.0 ),
+    _time( 0, 0, 0, 0 ),
+    _spriteTime( 0 ),
+    _spriteIndex( 0 ),
+    _vertexShader( "../Samples/crt-hyllian_vert.glsl" ),
+    _fragmentShader( "../Samples/crt-hyllian_frag.glsl" ),
     _isToLoadFromFile( true ),
+    _stopRender( true ),
     _debugWindow( nullptr )//new DebugWindow( this ) )
 {
     _time = QTime( 0, 0, 0, 0 );
+    _spriteTime = _time.currentTime().msecsSinceStartOfDay();
     QSurfaceFormat format;
     format.setDepthBufferSize( 24 );
     setFormat( format );
+    setUpdateBehavior( QOpenGLWidget::NoPartialUpdate );
 }
 
 
@@ -54,9 +60,6 @@ float OpenGLCanvas::getOpenGLVersion()
 
 void OpenGLCanvas::initializeGL()
 {
-    //initBasicExample();
-    //initSphereRayTrace();
-    //initShaderToyCanvas();
     initLibRetroCanvas();
     QOpenGLFunctions glFuncs( QOpenGLContext::currentContext() );
     printf( "OpenGl information: VENDOR:       %s\n", ( const char* )glFuncs.glGetString( GL_VENDOR ) );
@@ -86,7 +89,7 @@ void OpenGLCanvas::mousePressEvent( QMouseEvent* event )
 
 void OpenGLCanvas::mouseDoubleClickEvent( QMouseEvent* event )
 {
-    _zoom = 1.0;
+    _scaleFactor = 1.0;
     _currentPosition = QPoint( 0.0f, 0.0f );
 }
 
@@ -108,7 +111,7 @@ void OpenGLCanvas::mouseMoveEvent( QMouseEvent* event )
 
 void OpenGLCanvas::wheelEvent( QWheelEvent* event )
 {
-    _zoom  += event->angleDelta().y() / (8.0 * 60);
+    _scaleFactor  += event->angleDelta().y() / (8.0 * 60);
 }
 
 void OpenGLCanvas::resizeGL( int w, int h )
@@ -129,40 +132,12 @@ void OpenGLCanvas::paintGL()
     if( _version >= 4.0f )
     {
         paintLibRetroCanvas();
-        //paintShaderToyCanvas();
-        //paintBasicExample();
     }
     else
     {
         paintBasicDeprecatedOpenGL();
     }
     update();
-}
-
-
-void OpenGLCanvas::paintBasicExample()
-{
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glClearColor( 0.2, 0.2, 0.2, 1.0 );
-
-    m_program->bind();
-    m_program->setUniformValue( _texLocation, 0 );
-    _vao->bind();
-
-    if( _texture && _texture->isCreated() )
-    {
-        _texture->bind();
-    }
-
-    glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
-    //glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, 0);
-
-    if( _texture && _texture->isCreated() )
-    {
-        _texture->release();
-    }
-    _vao->release();
-    m_program->release();
 }
 
 
@@ -203,84 +178,6 @@ void OpenGLCanvas::paintBasicDeprecatedOpenGL()
     //glEnd();
 
     //_vao->release();
-    m_program->release();
-}
-
-
-void OpenGLCanvas::initBasicExample()
-{
-    initializeOpenGLFunctions();
-    m_program = new QOpenGLShaderProgram();
-
-    m_program->addShaderFromSourceFile( QOpenGLShader::Vertex,
-                                        "../Shaders/basicVertex.vert" );
-    m_program->addShaderFromSourceFile( QOpenGLShader::Fragment,
-                                        "../Shaders/basicFragment.frag" );
-    if( !m_program->link() )
-    {
-        qWarning( "Failed to compile and link shader program" );
-        qWarning( "Shader program log:" );
-        qWarning() << m_program->log();
-
-        delete m_program;
-        m_program = 0;
-    }
-
-    _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
-
-    _texture->setMinificationFilter( QOpenGLTexture::LinearMipMapLinear );
-    _texture->setMagnificationFilter( QOpenGLTexture::Nearest );
-    _texture->setWrapMode( QOpenGLTexture::DirectionS,
-                           QOpenGLTexture::ClampToEdge );
-    _texture->setWrapMode( QOpenGLTexture::DirectionT,
-                           QOpenGLTexture::ClampToEdge );
-
-    _texLocation = m_program->uniformLocation( "tex" );
-    m_program->setUniformValue( _texLocation, 0 );
-
-    GLfloat plane[ 12 ] = {
-        -0.8, -0.8, 0.0,
-        -0.8, 0.8, 0.0,
-        0.8, -0.8, 0.0,
-        0.8, 0.8, 0.0
-    };
-
-    GLfloat colors[ 12 ] = {
-        0.0, 0.0, 0.0,
-        0.0, 1.0, 0.0,
-        1.0, 0.0, 0.0,
-        1.0, 1.0, 0.0
-    };
-
-    GLfloat texCoords[ 8 ] = {
-        0.0, 0.0,
-        0.0, 1.0,
-        1.0, 0.0,
-        1.0, 1.0
-    };
-
-    _vao->create();
-    _vao->bind();
-
-    _vbo->create();
-    _vbo->setUsagePattern( QOpenGLBuffer::StaticDraw );
-    _vbo->bind();
-    _vbo->allocate( 2 * 12 * sizeof( GLfloat ) + ( 1 * 8 * sizeof( GLfloat ) ) );
-    _vbo->bind();
-    _vbo->write( 0, plane, 12 * sizeof( GLfloat ) );
-    _vbo->write( 12 * sizeof( GLfloat ), colors, 12 * sizeof( GLfloat ) );
-    _vbo->write( 24 * sizeof( GLfloat ), texCoords, 8 * sizeof( GLfloat ) );
-
-    m_program->setAttributeBuffer( "vertex_position", GL_FLOAT, 0, 3, 0 );
-    m_program->enableAttributeArray( "vertex_position" );
-
-    m_program->setAttributeBuffer( "vertex_color", GL_FLOAT, 12 * sizeof( GLfloat ), 3, 0 );
-    m_program->enableAttributeArray( "vertex_color" );
-
-    m_program->setAttributeBuffer( "vertex_uv", GL_FLOAT, 24 * sizeof( GLfloat ), 2, 0 );
-    m_program->enableAttributeArray( "vertex_uv" );
-
-    _vao->release();
     m_program->release();
 }
 
@@ -345,7 +242,7 @@ void OpenGLCanvas::loadLibRetroVariables()
     QMatrix4x4 modelViewProjection;
     modelViewProjection.setToIdentity();
     modelViewProjection.translate( ( float ) _currentPosition.x()/1000,( float ) - _currentPosition.y()/1000 );
-    modelViewProjection.scale( _zoom );
+    modelViewProjection.scale( _scaleFactor );
 
     //_debugWindow->setData( m_MVPMatrix, m_projection, modelView, _zoom );
 
@@ -368,38 +265,45 @@ void OpenGLCanvas::loadLibRetroVariables()
 }
 
 
-void OpenGLCanvas::loadShaderToyVariables()
-{
-    /*
-    uniform vec3      iResolution;           // viewport resolution (in pixels)
-    uniform float     iGlobalTime;           // shader playback time (in seconds)
-    uniform float     iChannelTime[4];       // channel playback time (in seconds)
-    uniform vec3      iChannelResolution[4]; // channel resolution (in pixels)
-    uniform vec4      iMouse;                // mouse pixel coords. xy: current (if MLB down), zw: click
-    uniform samplerXX iChannel0..3;          // input channel. XX = 2D/Cube
-    uniform vec4      iDate;                 // (year, month, day, time in seconds)
-    uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
-    */
-
-    const QVector3D resolution = QVector3D( ( float ) _width, ( float ) _height, 0.0 );
-    m_program->setUniformValue( "iResolution", resolution );
-
-    const QVector4D mouse = QVector4D( ( float ) _lastPostition.x(), ( float ) _lastPostition.y(), 0.0, 0.0 );
-    m_program->setUniformValue( "iMouse", mouse );
-
-    m_program->setUniformValue( "iGlobalTime", ( float ) _time.currentTime().msecsSinceStartOfDay() / 1000 );
-    _time.addMSecs( 1 );
-}
-
-
 void OpenGLCanvas::paintLibRetroCanvas()
 {
+    if( _stopRender )
+    {
+        return;
+    }
+
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glClearColor( 0.2, 0.2, 0.2, 1.0 );
 
     m_program->bind();
 
     loadLibRetroVariables();
+
+    if( _animatedGif.size() )
+    {
+        if( ( ( _time.currentTime().msecsSinceStartOfDay() ) - _spriteTime ) > 100 )
+        {
+            _spriteTime = _time.currentTime().msecsSinceStartOfDay();
+            _spriteIndex++;
+            if( _spriteIndex == ( int ) _animatedGif.size() )
+            {
+                _spriteIndex = 0;
+            }
+            delete _texture;
+            _texture = new QOpenGLTexture( _animatedGif[ _spriteIndex ]->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+        }
+    }
+    else
+    {
+        _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+    }
+
+    _texture->setMinificationFilter( QOpenGLTexture::LinearMipMapLinear );
+    _texture->setMagnificationFilter( QOpenGLTexture::Nearest );
+    _texture->setWrapMode( QOpenGLTexture::DirectionS,
+                           QOpenGLTexture::ClampToEdge );
+    _texture->setWrapMode( QOpenGLTexture::DirectionT,
+                           QOpenGLTexture::ClampToEdge );
 
     _vao->bind();
 
@@ -414,23 +318,6 @@ void OpenGLCanvas::paintLibRetroCanvas()
     {
         _texture->release();
     }
-
-    _vao->release();
-    m_program->release();
-}
-
-
-void OpenGLCanvas::paintShaderToyCanvas()
-{
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glClearColor( 0.2, 0.2, 0.2, 1.0 );
-
-    m_program->bind();
-    _vao->bind();
-
-    loadShaderToyVariables();
-
-    glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
 
     _vao->release();
     m_program->release();
@@ -466,7 +353,15 @@ void OpenGLCanvas::initLibRetroCanvas()
         m_program = 0;
     }
 
-    _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+    if( _animatedGif.size() > 0 )
+    {
+        _spriteIndex = 0;
+        _texture = new QOpenGLTexture( _animatedGif[ _spriteIndex++ ]->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+    }
+    else
+    {
+        _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+    }
 
     _texture->setMinificationFilter( QOpenGLTexture::LinearMipMapLinear );
     _texture->setMagnificationFilter( QOpenGLTexture::Nearest );
@@ -484,11 +379,6 @@ void OpenGLCanvas::initLibRetroCanvas()
         1.0, -1.0, 0.0, 1.0,
         1.0, 1.0, 0.0, 1.0
     };
-
-    //for( int i = 0; i < 16; i++ )
-    //{
-    //    plane[i] = plane[i] / 3.0;
-    //}
 
     GLfloat colors[ 16 ] = {
         0.0, 0.0, 0.0, 0.0,
@@ -530,57 +420,16 @@ void OpenGLCanvas::initLibRetroCanvas()
 }
 
 
-void OpenGLCanvas::initShaderToyCanvas()
-{
-    initializeOpenGLFunctions();
-    m_program = new QOpenGLShaderProgram();
-
-    m_program->addShaderFromSourceFile( QOpenGLShader::Vertex,
-                                        "../Shaders/basicVertex.vert" );
-    m_program->addShaderFromSourceFile( QOpenGLShader::Fragment,
-                                        "../Shaders/lsd_ufos.frag" );
-    if( !m_program->link() )
-    {
-        qWarning( "Failed to compile and link shader program" );
-        qWarning( "Shader program log:" );
-        qWarning() << m_program->log();
-
-        delete m_program;
-        m_program = 0;
-    }
-
-    GLfloat plane[ 12 ] = {
-        -0.95, -0.95, 0.0,
-        -0.95, 0.95, 0.0,
-        0.95, -0.95, 0.0,
-        0.95, 0.95, 0.0
-    };
-
-    _vao->create();
-    _vao->bind();
-
-    _vbo->create();
-    _vbo->setUsagePattern( QOpenGLBuffer::StaticDraw );
-    _vbo->bind();
-    _vbo->allocate( 12 * sizeof( GLfloat ) );
-    _vbo->bind();
-    _vbo->write( 0, plane, 12 * sizeof( GLfloat ) );
-
-    m_program->setAttributeBuffer( "vertex_position", GL_FLOAT, 0, 3, 0 );
-    m_program->enableAttributeArray( "vertex_position" );
-
-    _vao->release();
-    m_program->release();
-}
-
-
 void OpenGLCanvas::setTexture( QImage* image )
 {
     _qImage = image;
+    _animatedGif.clear();
+    _stopRender = false;
+    update();
 }
 
 
-void OpenGLCanvas::setPrograms( QString vertexShader, QString fragmentShader )
+void OpenGLCanvas::setShaderSource( QString vertexShader, QString fragmentShader )
 {
     _vertexShader = vertexShader;
     _fragmentShader = fragmentShader;
@@ -593,7 +442,7 @@ void OpenGLCanvas::setPrograms( QString vertexShader, QString fragmentShader )
 
 void OpenGLCanvas::setScaleFactor( double factor )
 {
-    _zoom = factor;
+    _scaleFactor = factor;
 }
 
 
@@ -604,4 +453,25 @@ void OpenGLCanvas::setMatrices( QMatrix4x4 mvp,
     m_MVPMatrix = mvp;
     m_projection = proj;
     m_modelView = mv;
+}
+
+
+QImage OpenGLCanvas::exportFrameBuffer()
+{
+    return grabFramebuffer();
+}
+
+
+void OpenGLCanvas::setGifVector( std::vector< QImage* > animatedGif )
+{
+    _animatedGif = animatedGif;
+    _stopRender = false;
+    _spriteIndex = 0;
+    update();
+}
+
+
+void OpenGLCanvas::stopRenderLoop( bool state )
+{
+    _stopRender = state;
 }

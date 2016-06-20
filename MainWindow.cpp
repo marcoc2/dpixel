@@ -10,6 +10,7 @@
 #include <QResizeEvent>
 #include <QImageReader>
 #include <QDesktopWidget>
+#include <QMimeData>
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "CheckUpscaleWindow.h"
@@ -40,7 +41,8 @@ MainWindow::MainWindow( QWidget* parent ) :
     _originalScene( nullptr ),
     _graphScene( nullptr ),
     _gifSaver( nullptr ),
-    _isAnimatedGif( false )
+    _isAnimatedGif( false ),
+    _frontEndEnabled( FrontEnd::CPU_IMAGE )
 {
     #ifdef _WIN32
     _inputImage = new Image( "../Samples/metalslug.png" );
@@ -66,12 +68,17 @@ MainWindow::MainWindow( QWidget* parent ) :
         _inputImage = 0;
     }
 
+    setAcceptDrops( true );
+
     _resultSceneRatio.setX( ( double ) _ui->graphicsView->size().width() / width() );
     _resultSceneRatio.setY( ( double ) _ui->graphicsView->size().height() / height() );
     _originalSceneRatio.setX( ( double ) _ui->graphicsViewOriginal->size().width() / width() );
     _originalSceneRatio.setY( ( double ) _ui->graphicsViewOriginal->size().height() / height() );
     _graphSceneRatio.setX( ( double ) _ui->graphicsViewGraph->size().width() / width() );
     _graphSceneRatio.setY( ( double ) _ui->graphicsViewGraph->size().height() / height() );
+
+    _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
+    _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
 
     // Center window position
     //QRect screenGeometry = QApplication::desktop()->screenGeometry();
@@ -126,7 +133,11 @@ void MainWindow::connectSignals()
     item->setText( 0, tr( "Shaders" ) );
     _ui->treeWidget->addTopLevelItem( item );
 
-    listFolderItems( tr("/home/marco/Projects/shaders_glsl/"), item );
+#ifdef _WIN32
+    listFolderItems( tr("../Shaders"), item );
+#else
+    listFolderItems( tr("/home/marco/Projects/shaders_glsl"), item );
+#endif
 
     // Hide filters with issues and resize frame
     _ui->glButton->setVisible( false );
@@ -227,7 +238,7 @@ void MainWindow::initialize()
 
     _ui->radioButtonOriginal->setChecked( true );
 
-    if( _isAnimatedGif )
+    if( _isAnimatedGif && _frontEndEnabled == FrontEnd::CPU_IMAGE )
     {
         _ui->exportGIFButton->setEnabled( true );
     }
@@ -235,6 +246,11 @@ void MainWindow::initialize()
     {
         _ui->exportGIFButton->setEnabled( false );
     }
+
+    //if( _frontEndEnabled == FrontEnd::OPENGL )
+    //{
+        setOpenGLCanvasData();
+    //}
 }
 
 
@@ -284,26 +300,51 @@ void MainWindow::createMenus()
 }
 
 
-void MainWindow::changeFrontEnd( int index )
+void MainWindow::changeFrontEnd( int frontEnd )
 {
-    if( index < 1 )
+    _frontEndEnabled = ( FrontEnd ) frontEnd;
+
+    if( _frontEndEnabled == FrontEnd::CPU_IMAGE )
     {
-        _ui->filteredGLWidget->setVisible( false );
-        return;
+        _ui->filteredGLWidget->setHidden( true );
+
+        if( _isAnimatedGif )
+        {
+            _ui->exportGIFButton->setEnabled( true );
+        }
     }
-
-    _ui->filteredGLWidget->setTexture(  _inputImage->getQImage() );
-    _ui->filteredGLWidget->setVisible( true );
-    _ui->filteredGLWidget->move( _ui->graphicsView->pos().x(), _ui->graphicsView->pos().y() );
-    _ui->filteredGLWidget->resize( _ui->graphicsView->width(), _ui->graphicsView->height() );
-
-    if( _ui->filteredGLWidget->getOpenGLVersion() < 4 )
+    else
     {
-        //QMessageBox* dialog = new QMessageBox();
-        //dialog->setWindowTitle( "Warning!" );
-        //dialog->setText( "OpenGL 4.0 not supported." );
-        //dialog->show();
-        //_ui->filteredGLWidget->setVisible( false );
+        //setOpenGLCanvasData();
+        _ui->filteredGLWidget->setVisible( true );
+        if( _ui->filteredGLWidget->getOpenGLVersion() < 4 )
+        {
+            QMessageBox* dialog = new QMessageBox();
+            dialog->setWindowTitle( "Warning!" );
+            dialog->setText( "OpenGL 4.0 not supported." );
+            dialog->show();
+            _ui->filteredGLWidget->setVisible( false );
+        }
+        _ui->filteredGLWidget->paintGL();
+        _ui->exportGIFButton->setEnabled( false );
+    }
+}
+
+
+void MainWindow::setOpenGLCanvasData()
+{
+    if( _isAnimatedGif )
+    {
+        std::vector< QImage* > animatedGif;
+        for( const auto& frame : _inputAnimatedGif )
+        {
+            animatedGif.push_back( frame->getQImage() );
+        }
+        _ui->filteredGLWidget->setGifVector( animatedGif );
+    }
+    else
+    {
+        _ui->filteredGLWidget->setTexture(  _inputImage->getQImage() );
     }
 }
 
@@ -328,15 +369,22 @@ void MainWindow::changeShader( QTreeWidgetItem *item, int column )
     // Relative to "#endif"
     stringList[ 1 ].chop( 6 );
 
-    _ui->filteredGLWidget->setPrograms( stringList[ 0 ], stringList[ 1 ] );
+    _ui->filteredGLWidget->setShaderSource( stringList[ 0 ], stringList[ 1 ] );
 }
 
 
-void MainWindow::loadImage()
+void MainWindow::loadImage( QString path )
 {
-    _currentFileName = QFileDialog::getOpenFileName( this,
-                                                     tr( "Open Image" ), "/home/",
-                                                     tr( "Image Files (*.png *.jpg *.bmp *.gif)" ) );
+    if( path != QString("") )
+    {
+        _currentFileName = path;
+    }
+    else
+    {
+        _currentFileName = QFileDialog::getOpenFileName( this,
+                                                         tr( "Open Image" ), "/home/",
+                                                         tr( "Image Files (*.png *.jpg *.bmp *.gif)" ) );
+    }
 
     if( _currentFileName == 0 )
     {
@@ -362,6 +410,10 @@ void MainWindow::loadImage()
         _isAnimatedGif = true;
         if( _inputAnimatedGif.size() > 0 )
         {
+            if( _frontEndEnabled == FrontEnd::OPENGL )
+            {
+                _ui->filteredGLWidget->stopRenderLoop( true );
+            }
             clearGifHolder();
         }
 
@@ -442,21 +494,25 @@ void MainWindow::fillQGraphicsViewOriginal( QImage& qimage )
 
 QString MainWindow::getSuggestedFileName( QString format )
 {
-    return QFileInfo( _currentFileName ).absoluteDir().absolutePath() +
-                QString( "/" ) + QFileInfo( _currentFileName ).baseName() + QString( "_" ) +
-                QString( _currentFilter->getName().c_str() ) + QString( "_" ) +
-                QString::number( _currentFilter->getScaleFactor() ) + QString( "x." ) +
-                format;
+    if( _frontEndEnabled == FrontEnd::CPU_IMAGE )
+    {
+        return QFileInfo( _currentFileName ).absoluteDir().absolutePath() +
+                    QString( "/" ) + QFileInfo( _currentFileName ).baseName() + QString( "_" ) +
+                    QString( _currentFilter->getName().c_str() ) + QString( "_" ) +
+                    QString::number( _currentFilter->getScaleFactor() ) + QString( "x." ) +
+                    format;
+    }
+    else
+    {
+        return QFileInfo( _currentFileName ).absoluteDir().absolutePath() +
+                    QString( "/" ) + QFileInfo( _currentFileName ).baseName() + QString( "_exported.") +
+                    format;
+    }
 }
 
 
 void MainWindow::saveImage()
 {
-    if( !checkCurrentFilter( true ) )
-    {
-        return;
-    }
-
     QString outputFileName =
             QFileDialog::getSaveFileName( this,
                                           tr( "Save Image" ),
@@ -468,7 +524,19 @@ void MainWindow::saveImage()
         return;
     }
 
-    _outputImage->getQImage()->save( outputFileName );
+    if( _frontEndEnabled == FrontEnd::CPU_IMAGE )
+    {
+        if( !checkCurrentFilter( true ) )
+        {
+            return;
+        }
+
+        _outputImage->getQImage()->save( outputFileName );
+    }
+    else
+    {
+        _ui->filteredGLWidget->exportFrameBuffer().save( outputFileName );
+    }
 }
 
 
@@ -585,7 +653,7 @@ void MainWindow::aboutDialog()
 {
     QMessageBox* dialog = new QMessageBox();
     dialog->setWindowTitle( "About" );
-    dialog->setText( "dpixel 0.1 - A Pixel Art Remaster Tool\n\nhttps://github.com/marcoc2/dpixel\n\nmarcoc2@gmail.com" );
+    dialog->setText( "dpixel 0.1.1 - A Pixel Art Remaster Tool\n\nhttps://github.com/marcoc2/dpixel\n\nmarcoc2@gmail.com" );
     dialog->show();
 }
 
@@ -931,6 +999,8 @@ void MainWindow::reloadResizedImage( float resizedFactor )
         return;
     }
 
+    _ui->filteredGLWidget->stopRenderLoop( true );
+
     _inputImage->resize( resizedFactor );
 
     createSimilarityGraph();
@@ -942,6 +1012,8 @@ void MainWindow::reloadResizedImage( float resizedFactor )
             image->resize( resizedFactor );
         }
     }
+
+    setOpenGLCanvasData();
 }
 
 
@@ -1020,4 +1092,32 @@ void MainWindow::clearGifHolder()
         delete frame;
     }
     _inputAnimatedGif.clear();
+}
+
+
+void MainWindow::dropEvent( QDropEvent* event )
+{
+  const QMimeData* mimeData = event->mimeData();
+
+  // check for our needed mime type, here a file or a list of files
+  if (mimeData->hasUrls())
+  {
+    QStringList pathList;
+    QList<QUrl> urlList = mimeData->urls();
+
+    // extract the local paths of the files
+    for( int i = 0; i < urlList.size() && i < 32; ++i )
+    {
+      pathList.append(urlList.at(i).toLocalFile());
+    }
+
+    // call a function to open the files
+    loadImage( pathList[ 0 ] );
+  }
+}
+
+
+void MainWindow::dragEnterEvent( QDragEnterEvent* event )
+{
+    event->accept();
 }

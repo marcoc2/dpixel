@@ -26,6 +26,12 @@ class MainWindow :
 {
     Q_OBJECT
 
+    enum class FrontEnd
+    {
+        CPU_IMAGE,
+        OPENGL
+    };
+
 public:
 
     /**
@@ -67,6 +73,8 @@ private:
 
     bool _isAnimatedGif;
 
+    FrontEnd _frontEndEnabled;
+
     void connectSignals();
     void createActions();
     void createMenus();
@@ -82,6 +90,9 @@ private:
     void clearGifHolder();
     void loadAnimatedGifHolder( QImageReader& qImageReader );
     void listFolderItems( QString folder, QTreeWidgetItem* item );
+    void dropEvent( QDropEvent* event );
+    void dragEnterEvent( QDragEnterEvent* event );
+    void setOpenGLCanvasData();
 
 protected:
 
@@ -90,9 +101,9 @@ protected:
 private Q_SLOTS:
 
     void createTest();
-    void changeFrontEnd( int index );
+    void changeFrontEnd( int FrontEnd );
     void changeShader( QTreeWidgetItem *item, int column );
-    void loadImage();
+    void loadImage( QString path = "");
     void saveImage();
     void exportSimilarityGraph();
     void loadOriginal();
