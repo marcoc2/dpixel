@@ -136,7 +136,7 @@ void MainWindow::connectSignals()
 #ifdef _WIN32
     listFolderItems( tr("../Shaders"), item );
 #else
-    listFolderItems( tr("/home/marco/Projects/shaders_glsl"), item );
+    listFolderItems( tr("/local/msilva/workspace/libretro/shaders_glsl"), item );
 #endif
 
     // Hide filters with issues and resize frame
@@ -312,6 +312,7 @@ void MainWindow::changeFrontEnd( int frontEnd )
         {
             _ui->exportGIFButton->setEnabled( true );
         }
+        update();
     }
     else
     {
@@ -375,6 +376,11 @@ void MainWindow::changeShader( QTreeWidgetItem *item, int column )
 
 void MainWindow::loadImage( QString path )
 {
+    if( _inputImage )
+    {
+        delete _inputImage;
+    }
+
     if( path != QString("") )
     {
         _currentFileName = path;

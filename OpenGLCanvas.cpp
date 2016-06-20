@@ -295,6 +295,7 @@ void OpenGLCanvas::paintLibRetroCanvas()
     }
     else
     {
+        delete _texture;
         _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
     }
 
