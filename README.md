@@ -1,7 +1,7 @@
 # dpixel
 
 A Pixel Art Remaster Tool using classic algorithms that can open and export jpg, png, gif and animated gif.
-It process images using CPU. Shaders is going to be added soon.
+It process images using classic algorithms and glsl shaders.
 
 Binaries Download available on Wiki Tab
 
