@@ -49,6 +49,7 @@ OpenGLCanvas::~OpenGLCanvas()
 
     delete _vbo;
     delete _vao;
+    delete _texture;
 }
 
 
@@ -295,8 +296,11 @@ void OpenGLCanvas::paintLibRetroCanvas()
     }
     else
     {
-        delete _texture;
-        _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+        if( _qImage )
+        {
+            delete _texture;
+            _texture = new QOpenGLTexture( _qImage->mirrored().convertToFormat( QImage::Format_RGBA8888 ) );
+        }
     }
 
     _texture->setMinificationFilter( QOpenGLTexture::LinearMipMapLinear );
