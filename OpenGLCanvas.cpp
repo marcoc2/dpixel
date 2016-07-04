@@ -26,6 +26,7 @@ OpenGLCanvas::OpenGLCanvas( QWidget* parent ) :
     _time( 0, 0, 0, 0 ),
     _spriteTime( 0 ),
     _spriteIndex( 0 ),
+    _spriteDelay( 100 ),
     _vertexShader( "../Samples/crt-hyllian_vert.glsl" ),
     _fragmentShader( "../Samples/crt-hyllian_frag.glsl" ),
     _isToLoadFromFile( true ),
@@ -282,7 +283,7 @@ void OpenGLCanvas::paintLibRetroCanvas()
 
     if( _animatedGif.size() )
     {
-        if( ( ( _time.currentTime().msecsSinceStartOfDay() ) - _spriteTime ) > 100 )
+        if( ( ( _time.currentTime().msecsSinceStartOfDay() ) - _spriteTime ) > _spriteDelay )
         {
             _spriteTime = _time.currentTime().msecsSinceStartOfDay();
             _spriteIndex++;
@@ -479,4 +480,10 @@ void OpenGLCanvas::setGifVector( std::vector< QImage* > animatedGif )
 void OpenGLCanvas::stopRenderLoop( bool state )
 {
     _stopRender = state;
+}
+
+
+void OpenGLCanvas::setAnimationDelay( int delay )
+{
+    _spriteDelay = delay;
 }

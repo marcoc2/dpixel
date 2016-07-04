@@ -37,6 +37,7 @@ public:
     QImage exportFrameBuffer();
     void setGifVector( std::vector< QImage* > animatedGif );
     void stopRenderLoop( bool state );
+    void setAnimationDelay( int delay );
 
     //## DEBUG ##
     void setScaleFactor( double factor );
@@ -67,6 +68,7 @@ private:
     QTime _time;
     int _spriteTime;
     int _spriteIndex;
+    int _spriteDelay;
 
     float _version;
     uchar* _texels;

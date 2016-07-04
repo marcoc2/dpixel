@@ -106,6 +106,7 @@ private Q_SLOTS:
     void changeFrontEnd( int FrontEnd );
     void changeShader( QTreeWidgetItem *item, int column );
     void updateShaderFile( const QString& path );
+    void shaderFileChangedCallback( const QString &path );
     void loadImage( QString path = "");
     void saveImage();
     void exportSimilarityGraph();
@@ -124,6 +125,7 @@ private Q_SLOTS:
     void applyScale2x();
     void applyEagle();
     void applySuperSaI2x();
+    void applyGIFDelay( int delay );
     void createSimilarityGraph();
     void saveAnimatedGif();
     void applyVector();

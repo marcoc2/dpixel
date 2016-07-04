@@ -402,7 +402,7 @@ Animated GIF</string>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -892,7 +892,7 @@ Animated GIF</string>
         <x>0</x>
         <y>10</y>
         <width>271</width>
-        <height>461</height>
+        <height>411</height>
        </rect>
       </property>
       <attribute name="headerVisible">
@@ -904,6 +904,57 @@ Animated GIF</string>
        </property>
       </column>
      </widget>
+     <widget class="QCheckBox" name="shaderUpdateCheckBox">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>430</y>
+        <width>181</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Automatically recompile shader source when changed</string>
+      </property>
+      <property name="text">
+       <string>Automatic update</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="gifDelaySpinBox">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>455</y>
+        <width>71</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="maximum">
+       <number>10000</number>
+      </property>
+      <property name="value">
+       <number>100</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_9">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>460</y>
+        <width>181</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Delay between frames of animated GIF</string>
+      </property>
+      <property name="text">
+       <string>Animated GIF delay (ms):</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -913,7 +964,7 @@ Animated GIF</string>
      <x>0</x>
      <y>0</y>
      <width>1346</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
