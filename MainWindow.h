@@ -10,6 +10,7 @@
 #include <QMainWindow>
 #include <QRadioButton>
 #include <QGraphicsView>
+#include <QFileSystemWatcher>
 
 class SimilarityGraph;
 class Filter;
@@ -60,6 +61,7 @@ private:
     QMenu* _fileMenu;
     QMenu* _editMenu;
     QMenu* _helpMenu;
+    QFileSystemWatcher _fileWatcher;
 
     QGraphicsScene* _resultScene;
     QGraphicsScene* _originalScene;
@@ -103,6 +105,7 @@ private Q_SLOTS:
     void createTest();
     void changeFrontEnd( int FrontEnd );
     void changeShader( QTreeWidgetItem *item, int column );
+    void updateShaderFile( const QString& path );
     void loadImage( QString path = "");
     void saveImage();
     void exportSimilarityGraph();

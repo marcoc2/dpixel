@@ -91,6 +91,8 @@ MainWindow::MainWindow( QWidget* parent ) :
 
 void MainWindow::connectSignals()
 {
+    connect( &_fileWatcher, SIGNAL( fileChanged( QString ) ), this, SLOT( updateShaderFile( QString ) ) );
+
     connect( _ui->testButton, SIGNAL( clicked() ), this, SLOT( createTest() ) );
     //connect( _ui->glButton, SIGNAL( clicked() ), this, SLOT( enableOpenGLFrontEnd() ) );
     connect( _ui->loadImageButton, SIGNAL( clicked() ), this, SLOT( loadImage() ) );
@@ -353,10 +355,21 @@ void MainWindow::setOpenGLCanvasData()
 void MainWindow::changeShader( QTreeWidgetItem *item, int column )
 {
     QString path = item->data( column, Qt::ToolTipRole ).toString();
+
     if( !path.contains( ".glsl", Qt::CaseInsensitive ) )
     {
         return;
     }
+
+    _fileWatcher.addPath( path );
+
+    updateShaderFile( path );
+}
+
+
+void MainWindow::updateShaderFile( const QString &path )
+{
+    _fileWatcher.addPath( path );
 
     QFile file( path );
     file.open( QIODevice::ReadOnly );
