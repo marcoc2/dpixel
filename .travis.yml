@@ -6,10 +6,10 @@ dist: trusty
 compiler:
   - gcc
   
-  before_install:
+before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y qt5
   
-  script:
+script:
   - qmake .
   - make -j4
