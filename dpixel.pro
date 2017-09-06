@@ -111,3 +111,5 @@ DISTFILES += \
 
 RESOURCES += \
     gui.qrc
+
+RC_ICONS = Resources/logo_atp_5x.ico

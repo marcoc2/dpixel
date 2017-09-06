@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>dpixel - A Pixel Art Remastering Tool</Name>
+    <Version>0.1.1</Version>
+    <Title>dpixel Installer</Title>
+    <Publisher>marcoc2</Publisher>
+    <Logo>Resources/logo_atp_5x.ico</Logo>
+    <StartMenuDir>dpixel - A Pixel Art Remastering Tool</StartMenuDir>
+    <TargetDir>@HomeDir@/dpixel</TargetDir>
+</Installer>

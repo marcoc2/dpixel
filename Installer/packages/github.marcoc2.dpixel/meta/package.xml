@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>dpixel - A Pixel Art Remastering Tool</DisplayName>
+    <Description>A tool for remaster pixel art</Description>
+    <Version>0.1.1</Version>
+    <ReleaseDate>2016-06-30</ReleaseDate>
+    <Default>true</Default>
+    <Script>installscript.qs</Script>
+</Package>
