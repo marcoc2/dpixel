@@ -7,7 +7,7 @@ Binaries Download available on Wiki Tab
 
 ![A dpixel](https://img.itch.io/aW1hZ2UvOTYxMDgvNDY0MTM2LnBuZw==/original/yd4UFL.png?raw=true "dpixel")
 
-##Filters available:
+## Filters available:
 
 * hq4x
 * xBR
@@ -18,16 +18,16 @@ Binaries Download available on Wiki Tab
 
 Retroarch shaders are also supported
 
-##Requirements
+## Requirements
 
 - Qt5
 - Windows (MingW or MSVC), Linux  (GCC) and MacOSX (XCode)
 
-##Building
+## Building
 
 Open and build on QtCreator.
 (Command lines for qmake to be added later)
 
-##License
+## License
 
 This project is under the terms of the GNU General Public License, version 3
